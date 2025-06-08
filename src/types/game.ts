@@ -69,3 +69,12 @@ export interface JoystickState {
   deltaX: number;
   deltaY: number;
 }
+
+export type GameMode = 'explore' | 'speedrun';
+
+export interface GameModeConfig {
+  mode: GameMode;
+  autoScroll: boolean;
+  allowVerticalMovement: boolean;
+  scrollSpeed: number;
+}

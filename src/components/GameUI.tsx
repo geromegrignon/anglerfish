@@ -1,9 +1,11 @@
 import React from 'react';
 import { Circle, Zap, Heart } from 'lucide-react';
+import { GameMode } from '../types/game';
 
 interface GameUIProps {
   hunger: number;
   hitPoints: number;
+  gameMode: GameMode;
   depth: number;
   lightBonusActive: boolean;
   lightBonusTimer: number;
@@ -14,6 +16,7 @@ interface GameUIProps {
 export const GameUI: React.FC<GameUIProps> = ({
   hunger,
   hitPoints,
+  gameMode,
   depth,
   lightBonusActive,
   lightBonusTimer,
@@ -33,9 +36,16 @@ export const GameUI: React.FC<GameUIProps> = ({
         
         {/* Bottom row with depth and hit points */}
         <div className="flex justify-between items-center mt-2">
-          {/* Depth indicator */}
-          <div className="text-lg font-bold text-cyan-300">
-            {Math.floor(depth).toLocaleString()}m
+          {/* Depth indicator with game mode */}
+          <div className="flex flex-col">
+            <div className="text-lg font-bold text-cyan-300">
+              {Math.floor(depth).toLocaleString()}m
+            </div>
+            <div className={`text-xs font-semibold ${
+              gameMode === 'speedrun' ? 'text-purple-300' : 'text-blue-300'
+            }`}>
+              {gameMode === 'speedrun' ? '⚡ SPEED RUN' : '🌊 EXPLORE'}
+            </div>
           </div>
           
           {/* Hit Points */}

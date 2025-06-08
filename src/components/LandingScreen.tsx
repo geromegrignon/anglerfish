@@ -1,8 +1,9 @@
 import React from 'react';
 import { Fish, Zap, Circle } from 'lucide-react';
+import { GameMode } from '../types/game';
 
 interface LandingScreenProps {
-  onStartGame: () => void;
+  onStartGame: (mode: GameMode) => void;
 }
 
 export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => {
@@ -108,16 +109,38 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
           </div>
         </div>
 
-        <button
-          onClick={onStartGame}
-          className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-4 px-12 rounded-lg text-2xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-blue-400/50"
-        >
-          Begin the Hunt
-        </button>
+        {/* Game Mode Selection */}
+        <div className="space-y-4">
+          <h3 className="text-2xl font-bold text-cyan-300 text-center mb-6">Choose Your Hunt</h3>
+          
+          <button
+            onClick={() => onStartGame('explore')}
+            className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-blue-400/50 mb-3"
+          >
+            <div className="text-center">
+              <div className="text-2xl mb-1">🌊 Explore Mode</div>
+              <div className="text-sm opacity-80">Free exploration - move in all directions</div>
+            </div>
+          </button>
+          
+          <button
+            onClick={() => onStartGame('speedrun')}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-purple-400/50"
+          >
+            <div className="text-center">
+              <div className="text-2xl mb-1">⚡ Speed Run</div>
+              <div className="text-sm opacity-80">Auto-dive - left/right movement only</div>
+            </div>
+          </button>
+        </div>
 
         <div className="mt-8 text-center text-gray-400 text-sm">
           <p>Use your bioluminescent lure to reveal hidden prey in the darkness</p>
-          <p>The deeper you go, the more dangerous it becomes...</p>
+          <p className="mb-2">The deeper you go, the more dangerous it becomes...</p>
+          <p className="text-xs">
+            <span className="text-blue-300">Explore:</span> Classic gameplay with full movement control<br/>
+            <span className="text-purple-300">Speed Run:</span> Race to the depths with automatic descent
+          </p>
         </div>
       </div>
     </div>

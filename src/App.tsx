@@ -38,6 +38,8 @@ function App() {
     slowdownTimer,
     triggerEcholocation,
     joystick,
+    gameMode,
+    gameModeConfig,
     
     // Setters
     setAnglerfishPos,
@@ -63,6 +65,8 @@ function App() {
     setSlowdownTimer,
     setTriggerEcholocation,
     setJoystick,
+    setGameMode,
+    setGameModeConfig,
     
     // Actions
     startGame
@@ -108,6 +112,7 @@ function App() {
     slowedDown,
     triggerEcholocation,
     hitPoints,
+    gameModeConfig,
     setTriggerEcholocation,
     setSurvivalTime,
     setLightBonusTimer,
@@ -192,6 +197,7 @@ function App() {
       <GameUI
         hunger={hunger}
         hitPoints={hitPoints}
+        gameMode={gameMode}
         depth={depth}
         lightBonusActive={lightBonusActive}
         lightBonusTimer={lightBonusTimer}
@@ -200,6 +206,7 @@ function App() {
       />
 
       <VirtualJoystick
+        gameMode={gameMode}
         joystick={joystick}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}

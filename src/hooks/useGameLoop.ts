@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { Position, JoystickState, SonarWave } from '../types/game';
+import { Position, JoystickState, SonarWave, GameModeConfig } from '../types/game';
 
 interface UseGameLoopProps {
   gameStarted: boolean;
@@ -15,6 +15,7 @@ interface UseGameLoopProps {
   slowedDown: boolean;
   triggerEcholocation: boolean;
   hitPoints: number;
+  gameModeConfig: GameModeConfig;
   setTriggerEcholocation: React.Dispatch<React.SetStateAction<boolean>>;
   setSurvivalTime: React.Dispatch<React.SetStateAction<number>>;
   setLightBonusTimer: React.Dispatch<React.SetStateAction<number>>;
@@ -52,6 +53,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     slowedDown,
     triggerEcholocation,
     hitPoints,
+    gameModeConfig,
     setTriggerEcholocation,
     setSurvivalTime,
     setLightBonusTimer,
@@ -137,13 +139,23 @@ export const useGameLoop = (props: UseGameLoopProps) => {
 
       const speedMultiplier = slowedDown ? 0.3 : 1;
       
+      // Horizontal movement (always allowed)
       if (keys.has('arrowleft') || keys.has('a')) newX -= 4 * speedMultiplier;
       if (keys.has('arrowright') || keys.has('d')) newX += 4 * speedMultiplier;
-      if (keys.has('arrowup') || keys.has('w')) newY -= 3 * speedMultiplier;
-      if (keys.has('arrowdown') || keys.has('s')) newY += 3 * speedMultiplier;
+      
+      // Vertical movement (only in explore mode)
+      if (gameModeConfig.allowVerticalMovement) {
+        if (keys.has('arrowup') || keys.has('w')) newY -= 3 * speedMultiplier;
+        if (keys.has('arrowdown') || keys.has('s')) newY += 3 * speedMultiplier;
+      }
+      
+      // Auto-scroll in speed run mode
+      if (gameModeConfig.autoScroll) {
+        newY += gameModeConfig.scrollSpeed;
+      }
 
       // Virtual joystick controls
-      if (joystick.active) {
+      if (joystick.active && gameModeConfig.allowVerticalMovement) {
         newX += joystick.deltaX * 5 * speedMultiplier;
         newY += joystick.deltaY * 4 * speedMultiplier;
       }
@@ -477,7 +489,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     }
   }, [
     keys, anglerfishPos, gameStarted, gameOver, cameraY, lightRadius, hitPoints,
-    sonarWaves, joystick, depth, lightBonusActive, slowedDown, triggerEcholocation,
+    sonarWaves, joystick, depth, lightBonusActive, slowedDown, triggerEcholocation, gameModeConfig,
     setTriggerEcholocation,
     setSurvivalTime, setLightBonusTimer, setLightBonusActive, setLightRadius, 
     setSlowdownTimer, setSlowedDown, setHunger, setHitPoints, setGameOver, setAnglerfishPos,

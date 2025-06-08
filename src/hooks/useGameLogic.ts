@@ -7,7 +7,9 @@ import {
   SonarWave, 
   Particle, 
   LightBonus, 
-  JoystickState 
+  JoystickState,
+  GameMode,
+  GameModeConfig
 } from '../types/game';
 
 export const useGameLogic = () => {
@@ -33,6 +35,13 @@ export const useGameLogic = () => {
   const [slowedDown, setSlowedDown] = useState(false);
   const [slowdownTimer, setSlowdownTimer] = useState(0);
   const [triggerEcholocation, setTriggerEcholocation] = useState(false);
+  const [gameMode, setGameMode] = useState<GameMode>('explore');
+  const [gameModeConfig, setGameModeConfig] = useState<GameModeConfig>({
+    mode: 'explore',
+    autoScroll: false,
+    allowVerticalMovement: true,
+    scrollSpeed: 0
+  });
   const [joystick, setJoystick] = useState<JoystickState>({
     active: false,
     centerX: 80,
@@ -43,7 +52,16 @@ export const useGameLogic = () => {
     deltaY: 0
   });
 
-  const startGame = useCallback(() => {
+  const startGame = useCallback((mode: GameMode = 'explore') => {
+    const config: GameModeConfig = {
+      mode,
+      autoScroll: mode === 'speedrun',
+      allowVerticalMovement: mode === 'explore',
+      scrollSpeed: mode === 'speedrun' ? 2 : 0
+    };
+    
+    setGameMode(mode);
+    setGameModeConfig(config);
     setGameStarted(true);
     setHunger(100);
     setHitPoints(3);
@@ -90,6 +108,8 @@ export const useGameLogic = () => {
     slowdownTimer,
     triggerEcholocation,
     joystick,
+    gameMode,
+    gameModeConfig,
     
     // Setters
     setAnglerfishPos,
@@ -115,6 +135,8 @@ export const useGameLogic = () => {
     setSlowdownTimer,
     setTriggerEcholocation,
     setJoystick,
+    setGameMode,
+    setGameModeConfig,
     
     // Actions
     startGame
