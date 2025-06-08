@@ -16,7 +16,7 @@ export const VirtualJoystick: React.FC<VirtualJoystickProps> = ({
   onTouchStart,
   onTouchMove,
   onTouchEnd,
-  onMouseDown
+  onMouseDown,
   onEcholocationPress
 }) => {
   return (

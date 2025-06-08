@@ -125,7 +125,7 @@ export const useJoystick = ({ joystick, setJoystick, onEcholocation }: UseJoysti
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
-    handleMouseDown
+    handleMouseDown,
     handleEcholocationPress
   };
 };
