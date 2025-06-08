@@ -710,12 +710,101 @@ function App() {
   if (!gameStarted) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 flex items-center justify-center relative overflow-hidden">
+        {/* Animated fish swimming in the background */}
+        {Array.from({ length: 12 }).map((_, i) => {
+          const animationDelay = Math.random() * 8;
+          const animationDuration = 15 + Math.random() * 10;
+          const startY = Math.random() * 100;
+          const fishType = Math.random() > 0.5 ? 'fish-1' : 'fish-2';
+          const size = 20 + Math.random() * 30;
+          const opacity = 0.3 + Math.random() * 0.4;
+          
+          return (
+            <div
+              key={i}
+              className="absolute pointer-events-none"
+              style={{
+                left: '-60px',
+                top: `${startY}%`,
+                animationDelay: `${animationDelay}s`,
+                animationDuration: `${animationDuration}s`,
+                animationIterationCount: 'infinite',
+                animationTimingFunction: 'linear',
+                opacity: opacity
+              }}
+            >
+              <div
+                className="animate-swim-across"
+                style={{
+                  animation: `swimAcross ${animationDuration}s linear infinite`,
+                  animationDelay: `${animationDelay}s`
+                }}
+              >
+                <img 
+                  src={`/${fishType}.svg`} 
+                  alt="Swimming Fish" 
+                  className="drop-shadow-lg"
+                  style={{
+                    width: `${size}px`,
+                    height: `${size * 0.8}px`,
+                    filter: `hue-rotate(${Math.random() * 360}deg) saturate(0.8) brightness(0.9) drop-shadow(0 0 ${size/8}px rgba(34, 211, 238, 0.4))`,
+                    transform: `scaleY(${0.8 + Math.sin(i) * 0.2}) ${Math.random() > 0.5 ? 'scaleX(-1)' : ''}`
+                  }}
+                />
+              </div>
+            </div>
+          );
+        })}
+        
+        {/* Mysterious deep-sea creatures appearing and fading */}
+        {Array.from({ length: 6 }).map((_, i) => {
+          const animationDelay = Math.random() * 12;
+          const animationDuration = 8 + Math.random() * 6;
+          const posX = 10 + Math.random() * 80;
+          const posY = 20 + Math.random() * 60;
+          
+          return (
+            <div
+              key={`creature-${i}`}
+              className="absolute pointer-events-none"
+              style={{
+                left: `${posX}%`,
+                top: `${posY}%`,
+                animationDelay: `${animationDelay}s`,
+                animationDuration: `${animationDuration}s`,
+                animationIterationCount: 'infinite',
+                animationTimingFunction: 'ease-in-out'
+              }}
+            >
+              <div
+                className="animate-fade-in-out"
+                style={{
+                  animation: `fadeInOut ${animationDuration}s ease-in-out infinite`,
+                  animationDelay: `${animationDelay}s`
+                }}
+              >
+                <img 
+                  src={`/${Math.random() > 0.5 ? 'fish-1' : 'fish-2'}.svg`} 
+                  alt="Deep Sea Creature" 
+                  className="drop-shadow-lg"
+                  style={{
+                    width: `${15 + Math.random() * 25}px`,
+                    height: `${12 + Math.random() * 20}px`,
+                    filter: `hue-rotate(${180 + Math.random() * 180}deg) saturate(1.2) brightness(0.7) drop-shadow(0 0 8px rgba(34, 211, 238, 0.3))`,
+                    transform: `rotate(${-15 + Math.random() * 30}deg) ${Math.random() > 0.5 ? 'scaleX(-1)' : ''}`
+                  }}
+                />
+              </div>
+            </div>
+          );
+        })}
+        
         {/* Abyss background effects */}
         <div className="absolute inset-0">
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
-              className="absolute bg-blue-900 opacity-10 rounded-full animate-pulse"
+              className="absolute bg-blue-900 opacity-5 rounded-full animate-pulse"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
@@ -729,17 +818,34 @@ function App() {
         </div>
 
         {/* Floating particles */}
-        {Array.from({ length: 20 }).map((_, i) => (
+        {Array.from({ length: 30 }).map((_, i) => (
           <div
             key={i}
-            className="absolute bg-gray-400 opacity-30 rounded-full animate-pulse"
+            className="absolute bg-gray-400 opacity-20 rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               width: `${Math.random() * 4 + 2}px`,
               height: `${Math.random() * 4 + 2}px`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${Math.random() * 3 + 2}s`
+              animation: `floatDown ${8 + Math.random() * 6}s linear infinite`,
+              animationDelay: `${Math.random() * 8}s`
+            }}
+          />
+        ))}
+        
+        {/* Bioluminescent plankton effects */}
+        {Array.from({ length: 15 }).map((_, i) => (
+          <div
+            key={`plankton-${i}`}
+            className="absolute bg-cyan-400 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              width: `${1 + Math.random() * 2}px`,
+              height: `${1 + Math.random() * 2}px`,
+              animation: `twinkle ${2 + Math.random() * 3}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 5}s`,
+              boxShadow: '0 0 4px rgba(34, 211, 238, 0.8)'
             }}
           />
         ))}
