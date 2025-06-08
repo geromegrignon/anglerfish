@@ -43,6 +43,7 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
     particles.filter(p => p.y >= viewportTop && p.y <= viewportBottom),
     [particles, viewportTop, viewportBottom]
   );
+  );
   
   const marineSnow = useMemo(() => 
     visibleParticles.filter(p => p.type === 'snow'),
@@ -52,6 +53,7 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
   const planktonParticles = useMemo(() => 
     visibleParticles.filter(p => p.type === 'plankton'),
     [visibleParticles]
+  );
   );
   
   const visiblePrey = useMemo(() => 
@@ -76,8 +78,8 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
 
   return (
     <>
-      {/* Marine snow particles - reduced count for mobile */}
-      {visibleParticles.slice(0, 30).map(particle => (
+      {/* Marine snow particles */}
+      {marineSnow.slice(0, 20).map(particle => (
         <div
           key={particle.id}
           className="absolute bg-white rounded-full pointer-events-none will-change-transform"
@@ -91,6 +93,47 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
           }}
         />
       ))}
+      
+      {/* Bioluminescent plankton particles */}
+      {planktonParticles.map(particle => {
+        const pulseIntensity = particle.pulsePhase ? 0.5 + Math.sin(particle.pulsePhase) * 0.5 : 1;
+        const glowSize = particle.size * 3;
+        
+        return (
+          <div
+            key={particle.id}
+            className="absolute rounded-full pointer-events-none will-change-transform"
+            style={{
+              left: `${particle.x - glowSize/2}px`,
+              top: `${particle.y - glowSize/2 - cameraY}px`,
+              width: `${glowSize}px`,
+              height: `${glowSize}px`,
+              background: `radial-gradient(circle, 
+                ${particle.color}${Math.floor(pulseIntensity * particle.opacity * 255).toString(16).padStart(2, '0')} 0%, 
+                ${particle.color}${Math.floor(pulseIntensity * particle.opacity * 128).toString(16).padStart(2, '0')} 30%, 
+                transparent 70%)`,
+              filter: `blur(${particle.size}px)`,
+              transform: `translate3d(0, 0, 0)`,
+              opacity: pulseIntensity * particle.opacity
+            }}
+          >
+            {/* Core particle */}
+            <div
+              className="absolute rounded-full"
+              style={{
+                left: '50%',
+                top: '50%',
+                width: `${particle.size}px`,
+                height: `${particle.size}px`,
+                backgroundColor: particle.color,
+                transform: 'translate(-50%, -50%)',
+                opacity: pulseIntensity,
+                filter: 'blur(0.5px)'
+              }}
+            />
+          </div>
+        );
+      })}
 
       {/* Bioluminescent waves */}
       {sonarWaves.map(wave => (
@@ -108,6 +151,54 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
           }}
         />
       ))}
+
+      {/* Bioluminescent plankton particles */}
+      {planktonParticles.slice(0, 40).map(particle => {
+        const pulseIntensity = 0.5 + Math.sin(particle.pulsePhase || 0) * 0.4;
+        const glowSize = particle.size * (1 + pulseIntensity * 0.5);
+        
+        return (
+          <div
+            key={particle.id}
+            className="absolute pointer-events-none will-change-transform"
+            style={{
+              left: `${particle.x - glowSize}px`,
+              top: `${particle.y - glowSize - cameraY}px`,
+              width: `${glowSize * 2}px`,
+              height: `${glowSize * 2}px`,
+              transform: `translate3d(0, 0, 0)`
+            }}
+          >
+            {/* Core particle */}
+            <div
+              className="absolute rounded-full"
+              style={{
+                left: '50%',
+                top: '50%',
+                width: `${particle.size}px`,
+                height: `${particle.size}px`,
+                backgroundColor: particle.color,
+                opacity: particle.opacity * pulseIntensity,
+                transform: 'translate(-50%, -50%)',
+                boxShadow: `0 0 ${particle.size * 2}px ${particle.color}`
+              }}
+            />
+            {/* Glow effect */}
+            <div
+              className="absolute rounded-full"
+              style={{
+                left: '50%',
+                top: '50%',
+                width: `${glowSize * 1.5}px`,
+                height: `${glowSize * 1.5}px`,
+                background: `radial-gradient(circle, ${particle.color}${Math.floor(pulseIntensity * 40).toString(16).padStart(2, '0')} 0%, transparent 70%)`,
+                transform: 'translate(-50%, -50%)',
+                filter: 'blur(2px)'
+              }}
+            />
+          </div>
+        );
+      })}
 
       {/* Anglerfish light glow */}
       <div
