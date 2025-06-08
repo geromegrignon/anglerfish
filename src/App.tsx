@@ -800,48 +800,6 @@ function App() {
         })}
         
 
-        {/* Bioluminescent plankton twinkling in the depths */}
-        {Array.from({ length: 25 }).map((_, i) => {
-          const animationDelay = Math.random() * 8;
-          const animationDuration = 3 + Math.random() * 4;
-          const posX = Math.random() * 100;
-          const posY = Math.random() * 100;
-          const size = 2 + Math.random() * 4;
-          
-          return (
-            <div
-              key={`plankton-${i}`}
-              className="absolute pointer-events-none"
-              style={{
-                left: `${posX}%`,
-                top: `${posY}%`,
-                animationDelay: `${animationDelay}s`,
-                animationDuration: `${animationDuration}s`,
-                animationIterationCount: 'infinite',
-                animationTimingFunction: 'ease-in-out'
-              }}
-            >
-              <div
-                className="animate-twinkle"
-                style={{
-                  animation: `twinkle ${animationDuration}s ease-in-out infinite`,
-                  animationDelay: `${animationDelay}s`
-                }}
-              >
-                <div
-                  className="bg-cyan-300 rounded-full"
-                  style={{
-                    width: `${size}px`,
-                    height: `${size}px`,
-                    boxShadow: `0 0 ${size * 2}px rgba(34, 211, 238, 0.8), 0 0 ${size * 4}px rgba(34, 211, 238, 0.4)`,
-                    filter: `hue-rotate(${Math.random() * 60 - 30}deg)`
-                  }}
-                />
-              </div>
-            </div>
-          );
-        })}
-
         <div className="text-center z-10">
           <h1 className="text-7xl font-bold text-cyan-400 mb-4 drop-shadow-lg animate-pulse">
             ABYSS
