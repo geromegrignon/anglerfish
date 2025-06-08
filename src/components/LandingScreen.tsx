@@ -86,9 +86,9 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
                 Controls
               </h3>
               <div className="space-y-2 text-sm text-gray-300">
-                <p><span className="text-blue-400 font-mono">WASD / Arrow Keys</span> - Move</p>
+                <p><span className="text-blue-400 font-mono">A/D / Left/Right</span> - Move horizontally</p>
                 <p><span className="text-blue-400 font-mono">Spacebar</span> - Bioluminescent pulse</p>
-                <p><span className="text-blue-400 font-mono">Touch/Drag</span> - Virtual joystick (mobile)</p>
+                <p><span className="text-blue-400 font-mono">Touch</span> - Left/Right buttons (mobile)</p>
               </div>
             </div>
 
@@ -102,41 +102,30 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
                 <p>• Hunt prey to maintain hunger</p>
                 <p>• Avoid explosive mines</p>
                 <p>• Escape net traps quickly</p>
-                <p>• Descend as deep as possible</p>
+                <p>• Auto-dive as deep as possible</p>
                 <p>• Collect light bonuses for better vision</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Game Mode Selection */}
-        <div className="space-y-4">
-          <h3 className="text-2xl font-bold text-cyan-300 text-center mb-6">Choose Your Hunt</h3>
-          
-          <button
-            onClick={() => onStartGame('explore')}
-            className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-blue-400/50 mb-3"
-          >
-            <div className="text-center">
-              <div className="text-2xl mb-1">🌊 Explore Mode</div>
-              <div className="text-sm opacity-80">Free exploration - move in all directions</div>
-            </div>
-          </button>
-          
-          <button
-            onClick={() => onStartGame('speedrun')}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-purple-400/50"
-          >
-            <div className="text-center">
-              <div className="text-2xl mb-1">⚡ Speed Run</div>
-              <div className="text-sm opacity-80">Auto-dive - left/right movement only</div>
-            </div>
-          </button>
-        </div>
+        {/* Start Game Button */}
+        <button
+          onClick={() => onStartGame('speedrun')}
+          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-purple-400/50 max-w-md"
+        >
+          <div className="text-center">
+            <div className="text-3xl mb-2">⚡ START HUNT</div>
+            <div className="text-sm opacity-80">Auto-dive into the abyss</div>
+          </div>
+        </button>
 
         <div className="mt-8 text-center text-gray-400 text-sm">
           <p>Use your bioluminescent lure to reveal hidden prey in the darkness</p>
-          <p>The deeper you go, the more dangerous it becomes...</p>
+          <p className="mb-2">The deeper you go, the more dangerous it becomes...</p>
+          <p className="text-xs">
+            <span className="text-purple-300">Speed Run:</span> Race to the depths with automatic descent and left/right movement
+          </p>
         </div>
       </div>
     </div>
