@@ -28,18 +28,10 @@ export const GameUI: React.FC<GameUIProps> = ({
             style={{ width: `${hunger}%` }}
           />
         </div>
-      </div>
-
-      {/* Depth indicator */}
-      <div className="absolute top-16 left-4 z-20">
-        <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-blue-500/30">
-          <div className="flex items-center mb-1">
-            <Circle className="w-4 h-4 text-blue-400 mr-2" />
-            <span className="text-blue-300 text-sm font-semibold">Depth</span>
-          </div>
-          <div className="text-lg font-bold text-cyan-300">
-            {Math.floor(depth).toLocaleString()}m
-          </div>
+        
+        {/* Depth indicator - directly under hunger bar */}
+        <div className="text-lg font-bold text-cyan-300 mt-2">
+          {Math.floor(depth).toLocaleString()}m
         </div>
       </div>
 
