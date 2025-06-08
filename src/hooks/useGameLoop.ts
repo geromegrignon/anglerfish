@@ -94,6 +94,16 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     frameCountRef.current++;
     const shouldUpdateExpensive = frameCountRef.current % 2 === 0; // Update expensive operations every other frame
 
+    // Decrease hunger over time - ALWAYS happens regardless of movement
+    const hungerDecayRate = 0.05 + (depth - 2000) * 0.000016;
+    setHunger(prev => {
+      const newHunger = Math.max(0, prev - hungerDecayRate);
+      if (newHunger <= 0) {
+        setGameOver(true);
+      }
+      return newHunger;
+    });
+    
     // Update survival time
     setSurvivalTime(prev => prev + 16);
     
@@ -121,16 +131,6 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         return newTimer;
       });
     }
-    
-    // Decrease hunger over time
-    const hungerDecayRate = 0.05 + (depth - 2000) * 0.000016;
-    setHunger(prev => {
-      const newHunger = Math.max(0, prev - hungerDecayRate);
-      if (newHunger <= 0) {
-        setGameOver(true);
-      }
-      return newHunger;
-    });
     
     // Move anglerfish based on keys
     setAnglerfishPos(prev => {
