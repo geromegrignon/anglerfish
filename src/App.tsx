@@ -47,9 +47,12 @@ interface Particle {
   opacity: number;
 }
 
-interface GlowEffect {
-  radius: number;
-  intensity: number;
+interface LightBonus {
+  id: number;
+  x: number;
+  y: number;
+  collected: boolean;
+  pulsePhase: number;
 }
 
 interface JoystickState {
@@ -77,7 +80,10 @@ function App() {
   const [particles, setParticles] = useState<Particle[]>([]);
   const [depth, setDepth] = useState(2000);
   const [cameraY, setCameraY] = useState(0);
-  const [glowEffect, setGlowEffect] = useState<GlowEffect>({ radius: 60, intensity: 0.3 });
+  const [lightRadius, setLightRadius] = useState(40); // Base light radius
+  const [lightBonusActive, setLightBonusActive] = useState(false);
+  const [lightBonusTimer, setLightBonusTimer] = useState(0);
+  const [lightBonuses, setLightBonuses] = useState<LightBonus[]>([]);
   const [joystick, setJoystick] = useState<JoystickState>({
     active: false,
     centerX: 80,
@@ -128,20 +134,20 @@ function App() {
     setMines(newMines);
   }, []);
 
-  // Update glow effect based on hunger level
+  // Initialize light bonuses
   useEffect(() => {
-    const baseRadius = 60;
-    const maxRadius = 120;
-    const radiusIncrease = Math.min(60, hunger * 0.6); // Grows with hunger
-    const newRadius = baseRadius + radiusIncrease;
-    
-    const baseIntensity = 0.3;
-    const maxIntensity = 0.7;
-    const intensityIncrease = Math.min(0.4, hunger * 0.004);
-    const newIntensity = baseIntensity + intensityIncrease;
-    
-    setGlowEffect({ radius: newRadius, intensity: newIntensity });
-  }, [hunger]);
+    const newLightBonuses: LightBonus[] = [];
+    for (let i = 0; i < 30; i++) {
+      newLightBonuses.push({
+        id: i,
+        x: Math.random() * 1400 + 200,
+        y: Math.random() * 4000 + 500,
+        collected: false,
+        pulsePhase: Math.random() * Math.PI * 2
+      });
+    }
+    setLightBonuses(newLightBonuses);
+  }, []);
 
   // Initialize floating particles (marine snow)
   useEffect(() => {
@@ -304,6 +310,19 @@ function App() {
       // Update survival time
       setSurvivalTime(prev => prev + 16);
       
+      // Update light bonus timer
+      if (lightBonusActive) {
+        setLightBonusTimer(prev => {
+          const newTimer = prev - 16;
+          if (newTimer <= 0) {
+            setLightBonusActive(false);
+            setLightRadius(40); // Reset to base radius
+            return 0;
+          }
+          return newTimer;
+        });
+      }
+      
       // Decrease hunger over time (faster at deeper levels)
       const hungerDecayRate = 0.025 + (depth - 2000) * 0.000008; // Much faster hunger depletion
       setHunger(prev => {
@@ -389,7 +408,7 @@ function App() {
           Math.pow(lureY - preyItem.y, 2)
         );
         
-        if (glowDistance <= glowEffect.radius) {
+        if (glowDistance <= lightRadius) {
           newVisible = true;
           newTimer = Math.max(newTimer, 2000); // Keep visible while in glow
         }
@@ -438,6 +457,31 @@ function App() {
             });
           }
           return [...prev, ...newPreyItems];
+        }
+        return prev;
+      });
+
+      // Update light bonus pulse phases
+      setLightBonuses(prev => prev.map(bonus => ({
+        ...bonus,
+        pulsePhase: bonus.pulsePhase + 0.08
+      })));
+
+      // Spawn new light bonuses as we go deeper
+      setLightBonuses(prev => {
+        const deepestBonus = Math.max(...prev.map(b => b.y));
+        if (anglerfishPos.y > deepestBonus - 800 && prev.length < 60) {
+          const newBonuses = [];
+          for (let i = 0; i < 3; i++) {
+            newBonuses.push({
+              id: Date.now() + i + 2000,
+              x: Math.random() * 1400 + 200,
+              y: deepestBonus + Math.random() * 800 + 400,
+              collected: false,
+              pulsePhase: Math.random() * Math.PI * 2
+            });
+          }
+          return [...prev, ...newBonuses];
         }
         return prev;
       });
@@ -524,6 +568,24 @@ function App() {
         return preyItem;
       }));
 
+      // Check collisions with light bonuses
+      setLightBonuses(prev => prev.map(bonus => {
+        if (!bonus.collected) {
+          const distance = Math.sqrt(
+            Math.pow(anglerfishPos.x + 40 - bonus.x, 2) +
+            Math.pow(anglerfishPos.y + 25 - bonus.y, 2)
+          );
+          if (distance < 30) {
+            // Activate light bonus
+            setLightBonusActive(true);
+            setLightBonusTimer(8000); // 8 seconds of enhanced light
+            setLightRadius(120); // Triple the light radius
+            return { ...bonus, collected: true };
+          }
+        }
+        return bonus;
+      }));
+
       // Check collisions with mines
       setMines(prev => prev.map(mine => {
         if (!mine.exploded) {
@@ -557,7 +619,7 @@ function App() {
 
     const interval = setInterval(gameLoop, 16);
     return () => clearInterval(interval);
-  }, [keys, anglerfishPos, gameStarted, gameOver, cameraY, glowEffect.radius, sonarWaves, joystick, depth]);
+  }, [keys, anglerfishPos, gameStarted, gameOver, cameraY, lightRadius, sonarWaves, joystick, depth, lightBonusActive]);
 
   const startGame = () => {
     setGameStarted(true);
@@ -568,10 +630,15 @@ function App() {
     setAnglerfishPos({ x: 100, y: 300 });
     setCameraY(0);
     setDepth(2000);
+    setLightRadius(40);
+    setLightBonusActive(false);
+    setLightBonusTimer(0);
     // Reset mines
     setMines(prev => prev.map(mine => ({ ...mine, exploded: false })));
     // Reset prey
     setPrey(prev => prev.map(preyItem => ({ ...preyItem, collected: false })));
+    // Reset light bonuses
+    setLightBonuses(prev => prev.map(bonus => ({ ...bonus, collected: false })));
   };
 
   // Game Over Screen
@@ -774,14 +841,16 @@ function App() {
             <div
               className="absolute pointer-events-none"
               style={{
-                left: `${40 - glowEffect.radius}px`, // Adjusted for SVG lure position
-                top: `${10 - glowEffect.radius}px`, // Adjusted for SVG lure position
-                width: `${glowEffect.radius * 2}px`,
-                height: `${glowEffect.radius * 2}px`,
-                background: `radial-gradient(circle, rgba(34, 211, 238, ${glowEffect.intensity}) 0%, rgba(34, 211, 238, ${glowEffect.intensity * 0.7}) 30%, rgba(34, 211, 238, ${glowEffect.intensity * 0.4}) 60%, transparent 100%)`,
+                left: `${40 - lightRadius}px`, // Adjusted for SVG lure position
+                top: `${10 - lightRadius}px`, // Adjusted for SVG lure position
+                width: `${lightRadius * 2}px`,
+                height: `${lightRadius * 2}px`,
+                background: lightBonusActive 
+                  ? `radial-gradient(circle, rgba(255, 215, 0, 0.6) 0%, rgba(255, 215, 0, 0.4) 30%, rgba(34, 211, 238, 0.3) 60%, transparent 100%)`
+                  : `radial-gradient(circle, rgba(34, 211, 238, 0.4) 0%, rgba(34, 211, 238, 0.3) 30%, rgba(34, 211, 238, 0.2) 60%, transparent 100%)`,
                 borderRadius: '50%',
                 filter: 'blur(2px)',
-                animation: 'pulse 2s ease-in-out infinite'
+                animation: lightBonusActive ? 'pulse 1s ease-in-out infinite' : 'pulse 2s ease-in-out infinite'
               }}
             />
             
@@ -789,14 +858,16 @@ function App() {
             <div
               className="absolute pointer-events-none"
               style={{
-                left: `${40 - glowEffect.radius * 0.6}px`,
-                top: `${10 - glowEffect.radius * 0.6}px`,
-                width: `${glowEffect.radius * 1.2}px`,
-                height: `${glowEffect.radius * 1.2}px`,
-                background: `radial-gradient(circle, rgba(0, 255, 255, ${glowEffect.intensity * 0.8}) 0%, rgba(0, 255, 255, ${glowEffect.intensity * 0.3}) 50%, transparent 70%)`,
+                left: `${40 - lightRadius * 0.6}px`,
+                top: `${10 - lightRadius * 0.6}px`,
+                width: `${lightRadius * 1.2}px`,
+                height: `${lightRadius * 1.2}px`,
+                background: lightBonusActive
+                  ? `radial-gradient(circle, rgba(255, 255, 0, 0.5) 0%, rgba(255, 215, 0, 0.2) 50%, transparent 70%)`
+                  : `radial-gradient(circle, rgba(0, 255, 255, 0.3) 0%, rgba(0, 255, 255, 0.1) 50%, transparent 70%)`,
                 borderRadius: '50%',
                 filter: 'blur(4px)',
-                animation: 'pulse 3s ease-in-out infinite reverse'
+                animation: lightBonusActive ? 'pulse 1.5s ease-in-out infinite reverse' : 'pulse 3s ease-in-out infinite reverse'
               }}
             />
             
@@ -806,7 +877,9 @@ function App() {
               alt="Anglerfish" 
               className="w-20 h-16 drop-shadow-lg"
               style={{
-                filter: 'drop-shadow(0 0 8px rgba(34, 211, 238, 0.3))'
+                filter: lightBonusActive 
+                  ? 'drop-shadow(0 0 12px rgba(255, 215, 0, 0.6))' 
+                  : 'drop-shadow(0 0 8px rgba(34, 211, 238, 0.3))'
               }}
             />
           </div>
@@ -876,6 +949,47 @@ function App() {
                   }}
                 />
               )}
+            </div>
+          )
+        ))}
+
+        {/* Light Bonus Items */}
+        {lightBonuses.map(bonus => (
+          !bonus.collected && (
+            <div
+              key={bonus.id}
+              className="absolute z-5"
+              style={{
+                left: `${bonus.x}px`,
+                top: `${bonus.y}px`,
+                transform: `scale(${1 + Math.sin(bonus.pulsePhase) * 0.3})`
+              }}
+            >
+              {/* Bonus glow effect */}
+              <div
+                className="absolute pointer-events-none"
+                style={{
+                  left: '-15px',
+                  top: '-15px',
+                  width: '30px',
+                  height: '30px',
+                  background: `radial-gradient(circle, rgba(255, 215, 0, ${0.4 + Math.sin(bonus.pulsePhase) * 0.3}) 0%, rgba(255, 215, 0, ${0.2 + Math.sin(bonus.pulsePhase) * 0.2}) 50%, transparent 70%)`,
+                  borderRadius: '50%',
+                  filter: 'blur(2px)'
+                }}
+              />
+              
+              {/* Light bonus icon */}
+              <div className="relative">
+                <Zap className="w-5 h-5 text-yellow-400 drop-shadow-lg" />
+                <div 
+                  className="absolute -top-1 -left-1 w-7 h-7 border border-yellow-300 rounded-full opacity-60"
+                  style={{
+                    opacity: 0.4 + Math.sin(bonus.pulsePhase) * 0.4,
+                    boxShadow: `0 0 ${6 + Math.sin(bonus.pulsePhase) * 3}px rgba(255, 215, 0, 0.8)`
+                  }}
+                />
+              </div>
             </div>
           )
         ))}
@@ -955,7 +1069,12 @@ function App() {
         <div className="bg-black bg-opacity-70 text-cyan-400 px-4 py-2 rounded-lg border border-cyan-600">
           <div className="text-sm text-gray-400">Depth: {Math.floor(depth)}m</div>
           <div className="text-sm text-yellow-400">Max: {Math.floor(maxDepthReached)}m</div>
-          <div className="text-xs text-cyan-300">Light: {Math.floor(glowEffect.radius)}px</div>
+          <div className="text-xs text-cyan-300">Light: {Math.floor(lightRadius)}px</div>
+          {lightBonusActive && (
+            <div className="text-xs text-yellow-300 animate-pulse">
+              ⚡ Boost: {Math.ceil(lightBonusTimer / 1000)}s
+            </div>
+          )}
           <div className="text-xs text-gray-400">
             Time: {Math.floor(survivalTime / 60000)}:{String(Math.floor((survivalTime % 60000) / 1000)).padStart(2, '0')}
           </div>
@@ -969,9 +1088,9 @@ function App() {
           <div>SPACE: Bioluminescence</div>
           <div className="text-cyan-300">Touch: Use joystick</div>
           <div className="text-green-400">🐟 Eat fish: Restore hunger</div>
+          <div className="text-yellow-400">⚡ Light boost: +8s vision</div>
           <div className="text-red-400">💣 Mines: Drain hunger (-30)</div>
           <div className="text-orange-400">⚠️ Deeper = Faster hunger loss</div>
-          <div className="text-yellow-400">💡 Light grows with hunger</div>
           <div className="text-cyan-400">🎯 Score = Maximum depth</div>
         </div>
       </div>
