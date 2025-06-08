@@ -4,9 +4,10 @@ import { JoystickState } from '../types/game';
 interface UseJoystickProps {
   joystick: JoystickState;
   setJoystick: React.Dispatch<React.SetStateAction<JoystickState>>;
+  onEcholocation: () => void;
 }
 
-export const useJoystick = ({ joystick, setJoystick }: UseJoystickProps) => {
+export const useJoystick = ({ joystick, setJoystick, onEcholocation }: UseJoystickProps) => {
   // Update joystick center position on window resize
   useEffect(() => {
     const handleResize = () => {
@@ -105,6 +106,9 @@ export const useJoystick = ({ joystick, setJoystick }: UseJoystickProps) => {
     handleJoystickEnd();
   }, [handleJoystickEnd]);
 
+  const handleEcholocationPress = useCallback(() => {
+    onEcholocation();
+  }, [onEcholocation]);
   // Add mouse event listeners when joystick is active
   useEffect(() => {
     if (joystick.active) {
@@ -122,5 +126,6 @@ export const useJoystick = ({ joystick, setJoystick }: UseJoystickProps) => {
     handleTouchMove,
     handleTouchEnd,
     handleMouseDown
+    handleEcholocationPress
   };
 };

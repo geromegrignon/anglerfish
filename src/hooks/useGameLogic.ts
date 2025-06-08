@@ -31,6 +31,7 @@ export const useGameLogic = () => {
   const [lightBonuses, setLightBonuses] = useState<LightBonus[]>([]);
   const [slowedDown, setSlowedDown] = useState(false);
   const [slowdownTimer, setSlowdownTimer] = useState(0);
+  const [triggerEcholocation, setTriggerEcholocation] = useState(false);
   const [joystick, setJoystick] = useState<JoystickState>({
     active: false,
     centerX: 80,
@@ -55,6 +56,7 @@ export const useGameLogic = () => {
     setLightBonusTimer(0);
     setSlowedDown(false);
     setSlowdownTimer(0);
+    setTriggerEcholocation(false);
     setMines(prev => prev.map(mine => ({ ...mine, exploded: false })));
     setPrey(prev => prev.map(preyItem => ({ ...preyItem, collected: false })));
     setLightBonuses(prev => prev.map(bonus => ({ ...bonus, collected: false })));
@@ -83,6 +85,7 @@ export const useGameLogic = () => {
     lightBonuses,
     slowedDown,
     slowdownTimer,
+    triggerEcholocation,
     joystick,
     
     // Setters
@@ -106,6 +109,7 @@ export const useGameLogic = () => {
     setLightBonuses,
     setSlowedDown,
     setSlowdownTimer,
+    setTriggerEcholocation,
     setJoystick,
     
     // Actions

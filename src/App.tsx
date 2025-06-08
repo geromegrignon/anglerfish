@@ -35,6 +35,7 @@ function App() {
     lightBonuses,
     slowedDown,
     slowdownTimer,
+    triggerEcholocation,
     joystick,
     
     // Setters
@@ -58,6 +59,7 @@ function App() {
     setLightBonuses,
     setSlowedDown,
     setSlowdownTimer,
+    setTriggerEcholocation,
     setJoystick,
     
     // Actions
@@ -81,8 +83,13 @@ function App() {
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
-    handleMouseDown
-  } = useJoystick({ joystick, setJoystick });
+    handleMouseDown,
+    handleEcholocationPress
+  } = useJoystick({ 
+    joystick, 
+    setJoystick, 
+    onEcholocation: () => setTriggerEcholocation(true) 
+  });
 
   // Main game loop
   useGameLoop({
@@ -97,6 +104,8 @@ function App() {
     depth,
     lightBonusActive,
     slowedDown,
+    triggerEcholocation,
+    setTriggerEcholocation,
     setSurvivalTime,
     setLightBonusTimer,
     setLightBonusActive,
@@ -190,6 +199,7 @@ function App() {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onMouseDown={handleMouseDown}
+        onEcholocationPress={handleEcholocationPress}
       />
     </div>
   );

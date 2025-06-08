@@ -13,6 +13,8 @@ interface UseGameLoopProps {
   depth: number;
   lightBonusActive: boolean;
   slowedDown: boolean;
+  triggerEcholocation: boolean;
+  setTriggerEcholocation: React.Dispatch<React.SetStateAction<boolean>>;
   setSurvivalTime: React.Dispatch<React.SetStateAction<number>>;
   setLightBonusTimer: React.Dispatch<React.SetStateAction<number>>;
   setLightBonusActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -46,6 +48,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     depth,
     lightBonusActive,
     slowedDown,
+    triggerEcholocation,
+    setTriggerEcholocation,
     setSurvivalTime,
     setLightBonusTimer,
     setLightBonusActive,
@@ -407,8 +411,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         return mine;
       }));
 
-      // Trigger bioluminescence
-      if (keys.has(' ') || joystick.active) {
+      // Trigger bioluminescence (keyboard spacebar or mobile button)
+      if (keys.has(' ') || triggerEcholocation) {
         const lureX = anglerfishPos.x + 40;
         const lureY = anglerfishPos.y + 10;
         const newWave: SonarWave = {
@@ -419,6 +423,11 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           opacity: 1
         };
         setSonarWaves(prev => [...prev, newWave]);
+        
+        // Reset trigger for mobile button
+        if (triggerEcholocation) {
+          setTriggerEcholocation(false);
+        }
       }
     };
 
@@ -426,7 +435,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     return () => clearInterval(interval);
   }, [
     keys, anglerfishPos, gameStarted, gameOver, cameraY, lightRadius, 
-    sonarWaves, joystick, depth, lightBonusActive, slowedDown,
+    sonarWaves, joystick, depth, lightBonusActive, slowedDown, triggerEcholocation,
+    setTriggerEcholocation,
     setSurvivalTime, setLightBonusTimer, setLightBonusActive, setLightRadius,
     setSlowdownTimer, setSlowedDown, setHunger, setGameOver, setAnglerfishPos,
     setCameraY, setDepth, setMaxDepthReached, setParticles, setSonarWaves,
