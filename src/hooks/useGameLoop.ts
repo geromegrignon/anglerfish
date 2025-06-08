@@ -166,28 +166,61 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         const viewportTop = cameraY - 200;
         const viewportBottom = cameraY + window.innerHeight + 200;
         
-        return prev.map(particle => ({
-          ...particle,
-          y: particle.y + particle.speed,
-          x: particle.x + Math.sin(Date.now() * 0.001 + particle.id) * 0.3
-        })).filter(particle => 
+        return prev.map(particle => {
+          let newParticle = { ...particle };
+          
+          if (particle.type === 'snow') {
+            // Marine snow movement
+            newParticle.y = particle.y + particle.speed;
+            newParticle.x = particle.x + Math.sin(Date.now() * 0.001 + particle.id) * 0.3;
+          } else if (particle.type === 'plankton') {
+            // Plankton movement - more organic, slower
+            newParticle.y = particle.y + particle.speed * 0.7;
+            newParticle.x = particle.x + Math.sin(Date.now() * 0.0008 + particle.id) * 0.8;
+            // Update pulse phase for bioluminescence
+            newParticle.pulsePhase = (particle.pulsePhase || 0) + 0.05;
+          }
+          
+          return newParticle;
+        }).filter(particle => 
           particle.y >= viewportTop && particle.y <= viewportBottom
         );
       });
 
-      // Add new particles (reduced for mobile)
+      // Add new particles
       setParticles(prev => {
-        if (Math.random() < 0.1 && prev.length < 40) {
-          return [...prev, {
-            id: Date.now(),
+        const newParticles = [];
+        
+        // Add marine snow
+        if (Math.random() < 0.08 && prev.filter(p => p.type === 'snow').length < 25) {
+          newParticles.push({
+            id: Date.now() + Math.random(),
             x: Math.random() * window.innerWidth,
             y: cameraY - 100,
             speed: Math.random() * 1 + 0.5,
             size: Math.random() * 3 + 1,
-            opacity: Math.random() * 0.6 + 0.2
-          }];
+            opacity: Math.random() * 0.6 + 0.2,
+            type: 'snow' as const
+          });
         }
-        return prev;
+        
+        // Add bioluminescent plankton
+        if (Math.random() < 0.12 && prev.filter(p => p.type === 'plankton').length < 50) {
+          const colors = ['#00FFFF', '#00CED1', '#40E0D0', '#48D1CC', '#20B2AA', '#87CEEB', '#7FFFD4'];
+          newParticles.push({
+            id: Date.now() + Math.random() + 1000,
+            x: Math.random() * window.innerWidth,
+            y: cameraY - 150 + Math.random() * 100,
+            speed: Math.random() * 0.8 + 0.3,
+            size: Math.random() * 2 + 1,
+            opacity: Math.random() * 0.4 + 0.3,
+            type: 'plankton' as const,
+            pulsePhase: Math.random() * Math.PI * 2,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+        
+        return newParticles.length > 0 ? [...prev, ...newParticles] : prev;
       });
     }
 
