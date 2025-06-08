@@ -710,25 +710,38 @@ function App() {
   if (!gameStarted) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 flex items-center justify-center relative overflow-hidden">
-        {/* Abyss background effects */}
+        {/* Animated fish swimming across screen */}
         <div className="absolute inset-0">
-          {Array.from({ length: 8 }).map((_, i) => (
+          {Array.from({ length: 12 }).map((_, i) => (
             <div
               key={i}
-              className="absolute bg-blue-900 opacity-10 rounded-full animate-pulse"
+              className="absolute opacity-60 animate-pulse"
               style={{
-                left: `${Math.random() * 100}%`,
+                left: '-100px',
                 top: `${Math.random() * 100}%`,
-                width: `${Math.random() * 200 + 100}px`,
-                height: `${Math.random() * 200 + 100}px`,
-                animationDelay: `${Math.random() * 4}s`,
-                animationDuration: `${Math.random() * 4 + 3}s`
+                animationDelay: `${Math.random() * 8}s`,
+                animationDuration: `${15 + Math.random() * 10}s`,
+                animationName: 'swimAcross',
+                animationIterationCount: 'infinite',
+                animationTimingFunction: 'linear'
               }}
-            />
+            >
+              <img 
+                src={`/${i % 2 === 0 ? 'fish-1' : 'fish-2'}.svg`}
+                alt="Swimming Fish"
+                className={`${
+                  i % 3 === 0 ? 'w-8 h-8' : i % 3 === 1 ? 'w-6 h-6' : 'w-4 h-4'
+                }`}
+                style={{
+                  filter: `hue-rotate(${i * 30}deg) saturate(0.8) brightness(0.7)`,
+                  transform: i % 2 === 0 ? 'scaleX(-1)' : 'scaleX(1)'
+                }}
+              />
+            </div>
           ))}
         </div>
 
-        {/* Floating particles */}
+        {/* Floating particles (marine snow) */}
         {Array.from({ length: 20 }).map((_, i) => (
           <div
             key={i}
