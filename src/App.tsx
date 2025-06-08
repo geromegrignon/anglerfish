@@ -17,6 +17,7 @@ function App() {
     // State
     anglerfishPos,
     hunger,
+    hitPoints,
     maxDepthReached,
     gameOver,
     survivalTime,
@@ -41,6 +42,7 @@ function App() {
     // Setters
     setAnglerfishPos,
     setHunger,
+    setHitPoints,
     setMaxDepthReached,
     setGameOver,
     setSurvivalTime,
@@ -105,6 +107,7 @@ function App() {
     lightBonusActive,
     slowedDown,
     triggerEcholocation,
+    hitPoints,
     setTriggerEcholocation,
     setSurvivalTime,
     setLightBonusTimer,
@@ -113,6 +116,7 @@ function App() {
     setSlowdownTimer,
     setSlowedDown,
     setHunger,
+    setHitPoints,
     setGameOver,
     setAnglerfishPos,
     setCameraY,
@@ -187,6 +191,7 @@ function App() {
 
       <GameUI
         hunger={hunger}
+        hitPoints={hitPoints}
         depth={depth}
         lightBonusActive={lightBonusActive}
         lightBonusTimer={lightBonusTimer}

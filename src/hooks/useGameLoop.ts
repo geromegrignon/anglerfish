@@ -14,6 +14,7 @@ interface UseGameLoopProps {
   lightBonusActive: boolean;
   slowedDown: boolean;
   triggerEcholocation: boolean;
+  hitPoints: number;
   setTriggerEcholocation: React.Dispatch<React.SetStateAction<boolean>>;
   setSurvivalTime: React.Dispatch<React.SetStateAction<number>>;
   setLightBonusTimer: React.Dispatch<React.SetStateAction<number>>;
@@ -22,6 +23,7 @@ interface UseGameLoopProps {
   setSlowdownTimer: React.Dispatch<React.SetStateAction<number>>;
   setSlowedDown: React.Dispatch<React.SetStateAction<boolean>>;
   setHunger: React.Dispatch<React.SetStateAction<number>>;
+  setHitPoints: React.Dispatch<React.SetStateAction<number>>;
   setGameOver: React.Dispatch<React.SetStateAction<boolean>>;
   setAnglerfishPos: React.Dispatch<React.SetStateAction<Position>>;
   setCameraY: React.Dispatch<React.SetStateAction<number>>;
@@ -49,6 +51,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     lightBonusActive,
     slowedDown,
     triggerEcholocation,
+    hitPoints,
     setTriggerEcholocation,
     setSurvivalTime,
     setLightBonusTimer,
@@ -57,6 +60,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setSlowdownTimer,
     setSlowedDown,
     setHunger,
+    setHitPoints,
     setGameOver,
     setAnglerfishPos,
     setCameraY,
@@ -440,7 +444,13 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           Math.pow(anglerfishPos.y + 25 - mine.y, 2)
         );
         if (distance < 45) {
-          setHunger(h => Math.max(0, h - 30));
+          setHitPoints(hp => {
+            const newHp = Math.max(0, hp - 1);
+            if (newHp <= 0) {
+              setGameOver(true);
+            }
+            return newHp;
+          });
           return { ...mine, exploded: true };
         }
       }
@@ -466,11 +476,11 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       }
     }
   }, [
-    keys, anglerfishPos, gameStarted, gameOver, cameraY, lightRadius, 
+    keys, anglerfishPos, gameStarted, gameOver, cameraY, lightRadius, hitPoints,
     sonarWaves, joystick, depth, lightBonusActive, slowedDown, triggerEcholocation,
     setTriggerEcholocation,
-    setSurvivalTime, setLightBonusTimer, setLightBonusActive, setLightRadius,
-    setSlowdownTimer, setSlowedDown, setHunger, setGameOver, setAnglerfishPos,
+    setSurvivalTime, setLightBonusTimer, setLightBonusActive, setLightRadius, 
+    setSlowdownTimer, setSlowedDown, setHunger, setHitPoints, setGameOver, setAnglerfishPos,
     setCameraY, setDepth, setMaxDepthReached, setParticles, setSonarWaves,
     setPrey, setLightBonuses, setMines, setNetTraps
   ]);

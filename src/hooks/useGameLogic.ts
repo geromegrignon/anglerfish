@@ -13,6 +13,7 @@ import {
 export const useGameLogic = () => {
   const [anglerfishPos, setAnglerfishPos] = useState<Position>({ x: 100, y: 300 });
   const [hunger, setHunger] = useState(100);
+  const [hitPoints, setHitPoints] = useState(3);
   const [maxDepthReached, setMaxDepthReached] = useState(2000);
   const [gameOver, setGameOver] = useState(false);
   const [survivalTime, setSurvivalTime] = useState(0);
@@ -45,6 +46,7 @@ export const useGameLogic = () => {
   const startGame = useCallback(() => {
     setGameStarted(true);
     setHunger(100);
+    setHitPoints(3);
     setMaxDepthReached(2000);
     setGameOver(false);
     setSurvivalTime(0);
@@ -67,6 +69,7 @@ export const useGameLogic = () => {
     // State
     anglerfishPos,
     hunger,
+    hitPoints,
     maxDepthReached,
     gameOver,
     survivalTime,
@@ -91,6 +94,7 @@ export const useGameLogic = () => {
     // Setters
     setAnglerfishPos,
     setHunger,
+    setHitPoints,
     setMaxDepthReached,
     setGameOver,
     setSurvivalTime,

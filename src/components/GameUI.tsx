@@ -1,8 +1,9 @@
 import React from 'react';
-import { Circle, Zap } from 'lucide-react';
+import { Circle, Zap, Heart } from 'lucide-react';
 
 interface GameUIProps {
   hunger: number;
+  hitPoints: number;
   depth: number;
   lightBonusActive: boolean;
   lightBonusTimer: number;
@@ -12,6 +13,7 @@ interface GameUIProps {
 
 export const GameUI: React.FC<GameUIProps> = ({
   hunger,
+  hitPoints,
   depth,
   lightBonusActive,
   lightBonusTimer,
@@ -32,6 +34,20 @@ export const GameUI: React.FC<GameUIProps> = ({
         {/* Depth indicator - directly under hunger bar */}
         <div className="text-lg font-bold text-cyan-300 mt-2">
           {Math.floor(depth).toLocaleString()}m
+        </div>
+        
+        {/* Hit Points - below hunger bar, opposite side from depth */}
+        <div className="flex items-center mt-2 justify-end">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <Heart
+              key={index}
+              className={`w-6 h-6 ml-1 ${
+                index < hitPoints 
+                  ? 'text-red-500 fill-red-500' 
+                  : 'text-gray-600 fill-gray-600'
+              }`}
+            />
+          ))}
         </div>
       </div>
 
