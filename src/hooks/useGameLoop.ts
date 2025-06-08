@@ -286,9 +286,12 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       // Spawn new mines as we go deeper
       setMines(prev => {
         const deepestMine = Math.max(...prev.map(m => m.y));
-        if (anglerfishPos.y > deepestMine - 800 && prev.length < 80) { // Reduced max count
+        const isMobile = window.innerWidth < 768;
+        const maxMines = isMobile ? 8 : 80; // Divide by 10 on mobile
+        const spawnCount = isMobile ? 1 : 6; // Reduce spawn count on mobile
+        if (anglerfishPos.y > deepestMine - 800 && prev.length < maxMines) {
           const newMines = [];
-          for (let i = 0; i < 6; i++) { // Reduced spawn count
+          for (let i = 0; i < spawnCount; i++) {
             newMines.push({
               id: Date.now() + i + 1000,
               x: Math.random() * 1400 + 200,

@@ -39,7 +39,9 @@ export const useGameInitialization = ({
   // Initialize mines (reduced count)
   useEffect(() => {
     const newMines: Mine[] = [];
-    for (let i = 0; i < 35; i++) { // Reduced from 50
+    const isMobile = window.innerWidth < 768;
+    const mineCount = isMobile ? 4 : 35; // Divide by ~10 on mobile
+    for (let i = 0; i < mineCount; i++) {
       newMines.push({
         id: i,
         x: Math.random() * 1400 + 200,
