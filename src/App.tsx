@@ -226,25 +226,26 @@ function App() {
       {depthMilestones.map(milestone => (
         <div
           key={milestone.id}
-          className="fixed inset-0 flex items-center justify-center pointer-events-none z-50"
+          className="fixed inset-0 flex items-center justify-center pointer-events-none"
           style={{
+            zIndex: 9999,
             opacity: milestone.opacity,
             transform: `scale(${milestone.scale})`,
-            background: 'rgba(0, 0, 0, 0.7)',
+            background: 'rgba(0, 0, 0, 0.8)',
             backdropFilter: 'blur(4px)'
           }}
         >
-          <div className="text-center bg-black/60 backdrop-blur-sm border-2 border-cyan-400/50 rounded-2xl p-8 mx-4 max-w-2xl">
-            <div className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-300 to-purple-400 mb-3 drop-shadow-2xl animate-pulse">
+          <div className="text-center bg-black/80 backdrop-blur-sm border-4 border-cyan-400 rounded-2xl p-8 mx-4 max-w-2xl shadow-2xl">
+            <div className="text-4xl md:text-6xl font-bold text-cyan-300 mb-4 drop-shadow-2xl animate-pulse">
               ENTERING THE
             </div>
-            <div className="text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-300 to-red-400 drop-shadow-2xl mb-2">
+            <div className="text-3xl md:text-5xl font-bold text-yellow-300 drop-shadow-2xl mb-3">
               {milestone.zoneName.toUpperCase()}
             </div>
-            <div className="text-lg md:text-xl text-cyan-300 drop-shadow-lg font-semibold">
+            <div className="text-xl md:text-2xl text-white drop-shadow-lg font-bold">
               {milestone.depth.toLocaleString()}m
             </div>
-            <div className="mt-4 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent rounded-full opacity-60"></div>
+            <div className="mt-6 w-full h-2 bg-gradient-to-r from-transparent via-cyan-400 to-transparent rounded-full"></div>
           </div>
         </div>
       ))}
