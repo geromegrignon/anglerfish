@@ -9,7 +9,8 @@ import {
   LightBonus, 
   JoystickState,
   GameMode,
-  GameModeConfig
+  GameModeConfig,
+  DepthMilestone
 } from '../types/game';
 
 export const useGameLogic = () => {
@@ -42,6 +43,8 @@ export const useGameLogic = () => {
     allowVerticalMovement: false,
     scrollSpeed: 2
   });
+  const [depthMilestones, setDepthMilestones] = useState<DepthMilestone[]>([]);
+  const [lastMilestoneDepth, setLastMilestoneDepth] = useState(2000);
   const [joystick, setJoystick] = useState<JoystickState>({
     active: false,
     centerX: 80,
@@ -77,6 +80,8 @@ export const useGameLogic = () => {
     setSlowedDown(false);
     setSlowdownTimer(0);
     setTriggerEcholocation(false);
+    setDepthMilestones([]);
+    setLastMilestoneDepth(2000);
     setMines(prev => prev.map(mine => ({ ...mine, exploded: false })));
     setPrey(prev => prev.map(preyItem => ({ ...preyItem, collected: false })));
     setLightBonuses(prev => prev.map(bonus => ({ ...bonus, collected: false })));
@@ -110,6 +115,8 @@ export const useGameLogic = () => {
     joystick,
     gameMode,
     gameModeConfig,
+    depthMilestones,
+    lastMilestoneDepth,
     
     // Setters
     setAnglerfishPos,
@@ -137,6 +144,8 @@ export const useGameLogic = () => {
     setJoystick,
     setGameMode,
     setGameModeConfig,
+    setDepthMilestones,
+    setLastMilestoneDepth,
     
     // Actions
     startGame

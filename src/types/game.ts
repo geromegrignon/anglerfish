@@ -78,3 +78,12 @@ export interface GameModeConfig {
   allowVerticalMovement: boolean;
   scrollSpeed: number;
 }
+
+export interface DepthMilestone {
+  id: number;
+  depth: number;
+  zoneName: string;
+  opacity: number;
+  scale: number;
+  duration: number;
+}

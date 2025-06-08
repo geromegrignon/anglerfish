@@ -67,6 +67,7 @@ function App() {
     setJoystick,
     setGameMode,
     setGameModeConfig,
+    depthMilestones,
     
     // Actions
     startGame
@@ -113,6 +114,7 @@ function App() {
     triggerEcholocation,
     hitPoints,
     gameModeConfig,
+    depthMilestones,
     setTriggerEcholocation,
     setSurvivalTime,
     setLightBonusTimer,
@@ -132,7 +134,9 @@ function App() {
     setPrey,
     setLightBonuses,
     setMines,
-    setNetTraps
+    setNetTraps,
+    setDepthMilestones,
+    setLastMilestoneDepth
   });
 
   // Game Over Screen
@@ -214,6 +218,30 @@ function App() {
         onMouseDown={handleMouseDown}
         onEcholocationPress={handleEcholocationPress}
       />
+
+      {/* Depth Milestone Animations */}
+      {depthMilestones.map(milestone => (
+        <div
+          key={milestone.id}
+          className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
+          style={{
+            opacity: milestone.opacity,
+            transform: `scale(${milestone.scale})`
+          }}
+        >
+          <div className="text-center">
+            <div className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-300 to-purple-400 mb-2 drop-shadow-2xl">
+              ENTERING THE
+            </div>
+            <div className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-300 to-red-400 drop-shadow-2xl">
+              {milestone.zoneName.toUpperCase()}
+            </div>
+            <div className="text-xl md:text-2xl text-cyan-300 mt-2 drop-shadow-lg">
+              {milestone.depth.toLocaleString()}m
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
