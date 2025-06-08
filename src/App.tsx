@@ -148,6 +148,7 @@ function App() {
       ref={canvasRef}
       className="relative w-full h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 overflow-hidden"
       style={{
+        touchAction: 'none',
         background: `linear-gradient(to bottom, 
           rgb(17, 24, 39) 0%, 
           rgb(0, 0, 0) 30%, 
