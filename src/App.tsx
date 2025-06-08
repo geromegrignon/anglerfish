@@ -305,7 +305,7 @@ function App() {
       setSurvivalTime(prev => prev + 16);
       
       // Decrease hunger over time (faster at deeper levels)
-      const hungerDecayRate = 0.008 + (depth - 2000) * 0.000002; // Hunger depletes faster as you go deeper
+      const hungerDecayRate = 0.025 + (depth - 2000) * 0.000008; // Much faster hunger depletion
       setHunger(prev => {
         const newHunger = Math.max(0, prev - hungerDecayRate);
         if (newHunger <= 0) {
