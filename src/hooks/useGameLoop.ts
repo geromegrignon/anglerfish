@@ -243,6 +243,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       // Spawn new prey as we go deeper
       setPrey(prev => {
         const deepestPrey = Math.max(...prev.map(p => p.y));
+        const screenWidth = window.innerWidth;
+        const spawnWidth = screenWidth - 120; // 60px margin on each side
         if (anglerfishPos.y > deepestPrey - 500 && prev.length < 300) { // Reduced max count
           const types = ['small', 'small', 'small', 'medium', 'medium', 'large'];
           const fishSvgs = ['fish-1', 'fish-2'];
@@ -250,7 +252,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           for (let i = 0; i < 15; i++) { // Reduced spawn count
             newPreyItems.push({
               id: Date.now() + i,
-              x: Math.random() * 1400 + 200,
+              x: Math.random() * spawnWidth + 60,
               y: deepestPrey + Math.random() * 500 + 200,
               collected: false,
               visible: false,
@@ -267,12 +269,14 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       // Spawn new light bonuses as we go deeper
       setLightBonuses(prev => {
         const deepestBonus = Math.max(...prev.map(b => b.y));
+        const screenWidth = window.innerWidth;
+        const spawnWidth = screenWidth - 120; // 60px margin on each side
         if (anglerfishPos.y > deepestBonus - 200 && prev.length < 15) {
           const newBonuses = [];
           if (Math.random() < 0.3) {
             newBonuses.push({
               id: Date.now() + 2000,
-              x: Math.random() * 1400 + 200,
+              x: Math.random() * spawnWidth + 60,
               y: deepestBonus + 800 + Math.random() * 400,
               collected: false,
               pulsePhase: Math.random() * Math.PI * 2
@@ -286,6 +290,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       // Spawn new mines as we go deeper
       setMines(prev => {
         const deepestMine = Math.max(...prev.map(m => m.y));
+        const screenWidth = window.innerWidth;
+        const spawnWidth = screenWidth - 120; // 60px margin on each side
         const isMobile = window.innerWidth < 768;
         const maxMines = isMobile ? 8 : 80; // Divide by 10 on mobile
         const spawnCount = isMobile ? 1 : 6; // Reduce spawn count on mobile
@@ -294,7 +300,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           for (let i = 0; i < spawnCount; i++) {
             newMines.push({
               id: Date.now() + i + 1000,
-              x: Math.random() * 1400 + 200,
+              x: Math.random() * spawnWidth + 60,
               y: deepestMine + Math.random() * 600 + 300,
               exploded: false,
               pulsePhase: Math.random() * Math.PI * 2,
@@ -313,12 +319,14 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       // Spawn new net traps as we go deeper
       setNetTraps(prev => {
         const deepestTrap = Math.max(...prev.map(t => t.y));
+        const screenWidth = window.innerWidth;
+        const spawnWidth = screenWidth - 120; // 60px margin on each side
         if (anglerfishPos.y > deepestTrap - 600 && prev.length < 50) { // Reduced max count
           const newTraps = [];
           for (let i = 0; i < 4; i++) { // Reduced spawn count
             newTraps.push({
               id: Date.now() + i + 3000,
-              x: Math.random() * 1400 + 200,
+              x: Math.random() * spawnWidth + 60,
               y: deepestTrap + Math.random() * 800 + 400,
               triggered: false,
               pulsePhase: Math.random() * Math.PI * 2
@@ -368,7 +376,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           newMine.velocityY *= -1;
         }
         
-        newMine.x = Math.max(100, Math.min(window.innerWidth - 100, newMine.x));
+        newMine.x = Math.max(60, Math.min(window.innerWidth - 60, newMine.x));
         newMine.y = Math.max(500, newMine.y);
       }
       

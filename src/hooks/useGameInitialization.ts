@@ -19,12 +19,14 @@ export const useGameInitialization = ({
   // Initialize prey (reduced count for mobile performance)
   useEffect(() => {
     const newPrey: Prey[] = [];
+    const screenWidth = window.innerWidth;
+    const spawnWidth = screenWidth - 120; // 60px margin on each side
     for (let i = 0; i < 150; i++) { // Reduced from 200
       const types: ('small' | 'medium' | 'large')[] = ['small', 'small', 'small', 'medium', 'medium', 'large'];
       const fishSvgs: ('fish-1' | 'fish-2')[] = ['fish-1', 'fish-2'];
       newPrey.push({
         id: i,
-        x: Math.random() * 1400 + 200,
+        x: Math.random() * spawnWidth + 60,
         y: Math.random() * 3000 + 100, // Reduced initial spawn area
         collected: false,
         visible: false,
@@ -39,12 +41,14 @@ export const useGameInitialization = ({
   // Initialize mines (reduced count)
   useEffect(() => {
     const newMines: Mine[] = [];
+    const screenWidth = window.innerWidth;
+    const spawnWidth = screenWidth - 120; // 60px margin on each side
     const isMobile = window.innerWidth < 768;
     const mineCount = isMobile ? 4 : 35; // Divide by ~10 on mobile
     for (let i = 0; i < mineCount; i++) {
       newMines.push({
         id: i,
-        x: Math.random() * 1400 + 200,
+        x: Math.random() * spawnWidth + 60,
         y: Math.random() * 3000 + 500, // Reduced initial spawn area
         exploded: false,
         pulsePhase: Math.random() * Math.PI * 2,
@@ -61,10 +65,12 @@ export const useGameInitialization = ({
   // Initialize net traps (reduced count)
   useEffect(() => {
     const newNetTraps: NetTrap[] = [];
+    const screenWidth = window.innerWidth;
+    const spawnWidth = screenWidth - 120; // 60px margin on each side
     for (let i = 0; i < 20; i++) { // Reduced from 30
       newNetTraps.push({
         id: i,
-        x: Math.random() * 1400 + 200,
+        x: Math.random() * spawnWidth + 60,
         y: Math.random() * 3000 + 1000, // Reduced initial spawn area
         triggered: false,
         pulsePhase: Math.random() * Math.PI * 2
@@ -76,10 +82,12 @@ export const useGameInitialization = ({
   // Initialize light bonuses
   useEffect(() => {
     const newLightBonuses: LightBonus[] = [];
+    const screenWidth = window.innerWidth;
+    const spawnWidth = screenWidth - 120; // 60px margin on each side
     for (let i = 0; i < 5; i++) {
       newLightBonuses.push({
         id: i,
-        x: Math.random() * 1400 + 200,
+        x: Math.random() * spawnWidth + 60,
         y: 2000 + i * 800 + Math.random() * 400, // Reduced spacing
         collected: false,
         pulsePhase: Math.random() * Math.PI * 2
