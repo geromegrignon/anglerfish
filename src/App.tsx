@@ -40,7 +40,6 @@ function App() {
     joystick,
     gameMode,
     gameModeConfig,
-    lastMilestoneDepth,
     
     // Setters
     setAnglerfishPos,
@@ -68,9 +67,6 @@ function App() {
     setJoystick,
     setGameMode,
     setGameModeConfig,
-    setDepthMilestones,
-    setLastMilestoneDepth,
-    depthMilestones,
     
     // Actions
     startGame
@@ -117,7 +113,6 @@ function App() {
     triggerEcholocation,
     hitPoints,
     gameModeConfig,
-    depthMilestones,
     setTriggerEcholocation,
     setSurvivalTime,
     setLightBonusTimer,
@@ -137,9 +132,7 @@ function App() {
     setPrey,
     setLightBonuses,
     setMines,
-    setNetTraps,
-    setDepthMilestones,
-    setLastMilestoneDepth
+    setNetTraps
   });
 
   // Game Over Screen
@@ -221,37 +214,6 @@ function App() {
         onMouseDown={handleMouseDown}
         onEcholocationPress={handleEcholocationPress}
       />
-
-      {/* Depth Milestone Animations */}
-      {depthMilestones.map(milestone => (
-        <div
-          key={milestone.id}
-          className="fixed inset-0 flex items-center justify-center pointer-events-none bg-black/60"
-          style={{
-            zIndex: 9999,
-            opacity: milestone.opacity
-          }}
-        >
-          <div 
-            className="text-center bg-black/90 backdrop-blur-sm border-4 border-cyan-400 rounded-2xl p-8 mx-4 max-w-2xl shadow-2xl"
-            style={{
-              transform: `scale(${milestone.scale})`,
-              boxShadow: '0 0 50px rgba(34, 211, 238, 0.5)'
-            }}
-          >
-            <div className="text-4xl md:text-6xl font-bold text-cyan-300 mb-4 drop-shadow-2xl">
-              ENTERING THE
-            </div>
-            <div className="text-3xl md:text-5xl font-bold text-yellow-300 drop-shadow-2xl mb-3">
-              {milestone.zoneName.toUpperCase()}
-            </div>
-            <div className="text-xl md:text-2xl text-white drop-shadow-lg font-bold">
-              {milestone.depth.toLocaleString()}m
-            </div>
-            <div className="mt-6 w-full h-2 bg-gradient-to-r from-transparent via-cyan-400 to-transparent rounded-full animate-pulse"></div>
-          </div>
-        </div>
-      ))}
     </div>
   );
 }

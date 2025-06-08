@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { Position, JoystickState, SonarWave, GameModeConfig, DepthMilestone } from '../types/game';
+import { Position, JoystickState, SonarWave, GameModeConfig } from '../types/game';
 
 interface UseGameLoopProps {
   gameStarted: boolean;
@@ -16,8 +16,6 @@ interface UseGameLoopProps {
   triggerEcholocation: boolean;
   hitPoints: number;
   gameModeConfig: GameModeConfig;
-  depthMilestones: DepthMilestone[];
-  lastMilestoneDepth: number;
   setTriggerEcholocation: React.Dispatch<React.SetStateAction<boolean>>;
   setSurvivalTime: React.Dispatch<React.SetStateAction<number>>;
   setLightBonusTimer: React.Dispatch<React.SetStateAction<number>>;
@@ -38,8 +36,6 @@ interface UseGameLoopProps {
   setLightBonuses: React.Dispatch<React.SetStateAction<any[]>>;
   setMines: React.Dispatch<React.SetStateAction<any[]>>;
   setNetTraps: React.Dispatch<React.SetStateAction<any[]>>;
-  setDepthMilestones: React.Dispatch<React.SetStateAction<DepthMilestone[]>>;
-  setLastMilestoneDepth: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const useGameLoop = (props: UseGameLoopProps) => {
@@ -58,8 +54,6 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     triggerEcholocation,
     hitPoints,
     gameModeConfig,
-    depthMilestones,
-    lastMilestoneDepth,
     setTriggerEcholocation,
     setSurvivalTime,
     setLightBonusTimer,
@@ -79,22 +73,11 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setPrey,
     setLightBonuses,
     setMines,
-    setNetTraps,
-    setDepthMilestones,
-    setLastMilestoneDepth
+    setNetTraps
   } = props;
 
   const frameCountRef = useRef(0);
   const lastTimeRef = useRef(0);
-
-  // Zone names for different depths
-  const zoneNames = [
-    "Twilight Zone", "Midnight Zone", "Abyssal Plains", "Hadal Depths", 
-    "Leviathan's Domain", "Void Trenches", "Phantom Reaches", "Stygian Abyss",
-    "Kraken's Lair", "Bone Gardens", "Cursed Waters", "Forgotten Depths",
-    "Nightmare Realm", "Soul Crusher", "Death's Embrace", "The Final Descent",
-    "Primordial Darkness", "Ancient Terror", "Eldritch Depths", "Cosmic Void"
-  ];
 
   // Optimized game loop with frame skipping for mobile
   const gameLoop = useCallback((currentTime: number) => {
@@ -176,56 +159,6 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     const currentDepth = 2000 + Math.max(0, anglerfishPos.y - 300);
     setDepth(currentDepth);
     setMaxDepthReached(prev => Math.max(prev, currentDepth));
-
-    // Check for depth milestones (every 1000m)
-    const currentMilestone = Math.floor(currentDepth / 1000) * 1000;
-    if (currentMilestone > lastMilestoneDepth && currentMilestone >= 2500 && currentMilestone % 1000 === 0) {
-      const zoneIndex = Math.floor((currentMilestone - 3000) / 1000);
-      const zoneName = zoneNames[zoneIndex % zoneNames.length];
-      
-      const newMilestone: DepthMilestone = {
-        id: Date.now(),
-        depth: currentMilestone,
-        zoneName,
-        opacity: 1,
-        scale: 0.8,
-        duration: 5000 // 5 seconds
-      };
-      
-      setDepthMilestones(prev => [...prev, newMilestone]);
-      setLastMilestoneDepth(currentMilestone);
-      
-      // Debug log to verify milestone creation
-      console.log(`Milestone created: ${zoneName} at ${currentMilestone}m`);
-    }
-
-    // Update milestone animations
-    setDepthMilestones(prev => prev.map(milestone => {
-      const progress = (5000 - milestone.duration) / 5000;
-      let newOpacity = milestone.opacity;
-      let newScale = milestone.scale;
-      
-      if (progress < 0.15) {
-        // Fade in and scale up
-        newOpacity = progress / 0.15;
-        newScale = 0.8 + (progress / 0.15) * 0.2;
-      } else if (progress > 0.85) {
-        // Fade out
-        const fadeProgress = (progress - 0.85) / 0.15;
-        newOpacity = 1 - fadeProgress;
-      } else {
-        // Fully visible
-        newOpacity = 1;
-        newScale = 1;
-      }
-      
-      return {
-        ...milestone,
-        opacity: newOpacity,
-        scale: newScale,
-        duration: milestone.duration - 16
-      };
-    }).filter(milestone => milestone.duration > 0));
 
     // Update particles (marine snow) - less frequently on mobile
     if (shouldUpdateExpensive) {
@@ -543,12 +476,11 @@ export const useGameLoop = (props: UseGameLoopProps) => {
   }, [
     keys, anglerfishPos, gameStarted, gameOver, cameraY, lightRadius, hitPoints,
     sonarWaves, joystick, depth, lightBonusActive, slowedDown, triggerEcholocation, gameModeConfig,
-    depthMilestones, lastMilestoneDepth,
     setTriggerEcholocation,
     setSurvivalTime, setLightBonusTimer, setLightBonusActive, setLightRadius, 
     setSlowdownTimer, setSlowedDown, setHunger, setHitPoints, setGameOver, setAnglerfishPos,
     setCameraY, setDepth, setMaxDepthReached, setParticles, setSonarWaves,
-    setPrey, setLightBonuses, setMines, setNetTraps, setDepthMilestones, setLastMilestoneDepth
+    setPrey, setLightBonuses, setMines, setNetTraps
   ]);
 
   useEffect(() => {
