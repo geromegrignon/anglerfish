@@ -103,7 +103,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       }
       
       // Decrease hunger over time
-      const hungerDecayRate = 0.025 + (depth - 2000) * 0.000008;
+      const hungerDecayRate = 0.05 + (depth - 2000) * 0.000016;
       setHunger(prev => {
         const newHunger = Math.max(0, prev - hungerDecayRate);
         if (newHunger <= 0) {
