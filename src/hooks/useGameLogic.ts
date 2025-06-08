@@ -9,7 +9,8 @@ import {
   LightBonus, 
   JoystickState,
   GameMode,
-  GameModeConfig
+  GameModeConfig,
+  DeathCause
 } from '../types/game';
 
 export const useGameLogic = () => {
@@ -42,6 +43,7 @@ export const useGameLogic = () => {
     allowVerticalMovement: false,
     scrollSpeed: 2
   });
+  const [deathCause, setDeathCause] = useState<DeathCause>(null);
   const [joystick, setJoystick] = useState<JoystickState>({
     active: false,
     centerX: 80,
@@ -77,6 +79,7 @@ export const useGameLogic = () => {
     setSlowedDown(false);
     setSlowdownTimer(0);
     setTriggerEcholocation(false);
+    setDeathCause(null);
     setMines(prev => prev.map(mine => ({ ...mine, exploded: false })));
     setPrey(prev => prev.map(preyItem => ({ ...preyItem, collected: false })));
     setLightBonuses(prev => prev.map(bonus => ({ ...bonus, collected: false })));
@@ -110,6 +113,7 @@ export const useGameLogic = () => {
     joystick,
     gameMode,
     gameModeConfig,
+    deathCause,
     
     // Setters
     setAnglerfishPos,
@@ -137,6 +141,7 @@ export const useGameLogic = () => {
     setJoystick,
     setGameMode,
     setGameModeConfig,
+    setDeathCause,
     
     // Actions
     startGame

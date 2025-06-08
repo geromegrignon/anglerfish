@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { Position, JoystickState, SonarWave, GameModeConfig } from '../types/game';
+import { Position, JoystickState, SonarWave, GameModeConfig, DeathCause } from '../types/game';
 
 interface UseGameLoopProps {
   gameStarted: boolean;
@@ -16,6 +16,7 @@ interface UseGameLoopProps {
   triggerEcholocation: boolean;
   hitPoints: number;
   gameModeConfig: GameModeConfig;
+  setDeathCause: React.Dispatch<React.SetStateAction<DeathCause>>;
   setTriggerEcholocation: React.Dispatch<React.SetStateAction<boolean>>;
   setSurvivalTime: React.Dispatch<React.SetStateAction<number>>;
   setLightBonusTimer: React.Dispatch<React.SetStateAction<number>>;
@@ -54,6 +55,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     triggerEcholocation,
     hitPoints,
     gameModeConfig,
+    setDeathCause,
     setTriggerEcholocation,
     setSurvivalTime,
     setLightBonusTimer,
@@ -102,6 +104,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setHunger(prev => {
       const newHunger = Math.max(0, prev - hungerDecayRate);
       if (newHunger <= 0) {
+        setDeathCause('starvation');
         setGameOver(true);
       }
       return newHunger;
@@ -478,6 +481,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           setHitPoints(hp => {
             const newHp = Math.max(0, hp - 1);
             if (newHp <= 0) {
+              setDeathCause('mines');
               setGameOver(true);
             }
             return newHp;
@@ -509,6 +513,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
   }, [
     keys, anglerfishPos, gameStarted, gameOver, cameraY, lightRadius, hitPoints,
     sonarWaves, joystick, depth, lightBonusActive, slowedDown, triggerEcholocation, gameModeConfig,
+    setDeathCause,
     setTriggerEcholocation,
     setSurvivalTime, setLightBonusTimer, setLightBonusActive, setLightRadius, 
     setSlowdownTimer, setSlowedDown, setHunger, setHitPoints, setGameOver, setAnglerfishPos,

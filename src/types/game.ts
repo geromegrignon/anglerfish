@@ -75,6 +75,8 @@ export interface JoystickState {
 
 export type GameMode = 'speedrun';
 
+export type DeathCause = 'starvation' | 'mines' | null;
+
 export interface GameModeConfig {
   mode: GameMode;
   autoScroll: boolean;

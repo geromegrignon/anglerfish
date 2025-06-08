@@ -40,6 +40,7 @@ function App() {
     joystick,
     gameMode,
     gameModeConfig,
+    deathCause,
     
     // Setters
     setAnglerfishPos,
@@ -67,6 +68,7 @@ function App() {
     setJoystick,
     setGameMode,
     setGameModeConfig,
+    setDeathCause,
     
     // Actions
     startGame
@@ -113,6 +115,7 @@ function App() {
     triggerEcholocation,
     hitPoints,
     gameModeConfig,
+    setDeathCause,
     setTriggerEcholocation,
     setSurvivalTime,
     setLightBonusTimer,
@@ -141,6 +144,7 @@ function App() {
       <GameOverScreen
         maxDepthReached={maxDepthReached}
         survivalTime={survivalTime}
+       deathCause={deathCause}
         onRestart={startGame}
       />
     );
