@@ -30,6 +30,14 @@ interface Mine {
   changeDirectionTimer: number;
 }
 
+interface NetTrap {
+  id: number;
+  x: number;
+  y: number;
+  triggered: boolean;
+  pulsePhase: number;
+}
+
 interface SonarWave {
   id: number;
   x: number;
@@ -74,6 +82,7 @@ function App() {
   const [survivalTime, setSurvivalTime] = useState(0);
   const [prey, setPrey] = useState<Prey[]>([]);
   const [mines, setMines] = useState<Mine[]>([]);
+  const [netTraps, setNetTraps] = useState<NetTrap[]>([]);
   const [sonarWaves, setSonarWaves] = useState<SonarWave[]>([]);
   const [keys, setKeys] = useState<Set<string>>(new Set());
   const [gameStarted, setGameStarted] = useState(false);
@@ -84,6 +93,8 @@ function App() {
   const [lightBonusActive, setLightBonusActive] = useState(false);
   const [lightBonusTimer, setLightBonusTimer] = useState(0);
   const [lightBonuses, setLightBonuses] = useState<LightBonus[]>([]);
+  const [slowedDown, setSlowedDown] = useState(false);
+  const [slowdownTimer, setSlowdownTimer] = useState(0);
   const [joystick, setJoystick] = useState<JoystickState>({
     active: false,
     centerX: 80,
@@ -132,6 +143,21 @@ function App() {
       });
     }
     setMines(newMines);
+  }, []);
+
+  // Initialize net traps
+  useEffect(() => {
+    const newNetTraps: NetTrap[] = [];
+    for (let i = 0; i < 30; i++) {
+      newNetTraps.push({
+        id: i,
+        x: Math.random() * 1400 + 200,
+        y: Math.random() * 4000 + 1000, // Start net traps deeper
+        triggered: false,
+        pulsePhase: Math.random() * Math.PI * 2
+      });
+    }
+    setNetTraps(newNetTraps);
   }, []);
 
   // Initialize light bonuses
@@ -323,6 +349,18 @@ function App() {
         });
       }
       
+      // Update slowdown timer
+      if (slowedDown) {
+        setSlowdownTimer(prev => {
+          const newTimer = prev - 16;
+          if (newTimer <= 0) {
+            setSlowedDown(false);
+            return 0;
+          }
+          return newTimer;
+        });
+      }
+      
       // Decrease hunger over time (faster at deeper levels)
       const hungerDecayRate = 0.025 + (depth - 2000) * 0.000008; // Much faster hunger depletion
       setHunger(prev => {
@@ -338,15 +376,18 @@ function App() {
         let newX = prev.x;
         let newY = prev.y;
 
-        if (keys.has('arrowleft') || keys.has('a')) newX -= 4;
-        if (keys.has('arrowright') || keys.has('d')) newX += 4;
-        if (keys.has('arrowup') || keys.has('w')) newY -= 3;
-        if (keys.has('arrowdown') || keys.has('s')) newY += 3;
+        // Apply slowdown effect when caught in net
+        const speedMultiplier = slowedDown ? 0.3 : 1; // 70% speed reduction
+        
+        if (keys.has('arrowleft') || keys.has('a')) newX -= 4 * speedMultiplier;
+        if (keys.has('arrowright') || keys.has('d')) newX += 4 * speedMultiplier;
+        if (keys.has('arrowup') || keys.has('w')) newY -= 3 * speedMultiplier;
+        if (keys.has('arrowdown') || keys.has('s')) newY += 3 * speedMultiplier;
 
         // Virtual joystick controls
         if (joystick.active) {
-          newX += joystick.deltaX * 5; // Adjust speed multiplier as needed
-          newY += joystick.deltaY * 4;
+          newX += joystick.deltaX * 5 * speedMultiplier;
+          newY += joystick.deltaY * 4 * speedMultiplier;
         }
 
         // Boundaries
@@ -511,6 +552,31 @@ function App() {
         return prev;
       });
 
+      // Spawn new net traps as we go deeper
+      setNetTraps(prev => {
+        const deepestTrap = Math.max(...prev.map(t => t.y));
+        if (anglerfishPos.y > deepestTrap - 600 && prev.length < 60) {
+          const newTraps = [];
+          for (let i = 0; i < 5; i++) {
+            newTraps.push({
+              id: Date.now() + i + 3000,
+              x: Math.random() * 1400 + 200,
+              y: deepestTrap + Math.random() * 800 + 400,
+              triggered: false,
+              pulsePhase: Math.random() * Math.PI * 2
+            });
+          }
+          return [...prev, ...newTraps];
+        }
+        return prev;
+      });
+
+      // Update net trap pulse phases
+      setNetTraps(prev => prev.map(trap => ({
+        ...trap,
+        pulsePhase: trap.pulsePhase + 0.03
+      })));
+
       // Update mine pulse phases and movement
       setMines(prev => prev.map(mine => {
         let newMine = { ...mine };
@@ -587,6 +653,23 @@ function App() {
         return bonus;
       }));
 
+      // Check collisions with net traps
+      setNetTraps(prev => prev.map(trap => {
+        if (!trap.triggered) {
+          const distance = Math.sqrt(
+            Math.pow(anglerfishPos.x + 40 - trap.x, 2) +
+            Math.pow(anglerfishPos.y + 25 - trap.y, 2)
+          );
+          if (distance < 40) {
+            // Trigger slowdown effect
+            setSlowedDown(true);
+            setSlowdownTimer(4000); // 4 seconds of slowdown
+            return { ...trap, triggered: true };
+          }
+        }
+        return trap;
+      }));
+
       // Check collisions with mines
       setMines(prev => prev.map(mine => {
         if (!mine.exploded) {
@@ -620,7 +703,7 @@ function App() {
 
     const interval = setInterval(gameLoop, 16);
     return () => clearInterval(interval);
-  }, [keys, anglerfishPos, gameStarted, gameOver, cameraY, lightRadius, sonarWaves, joystick, depth, lightBonusActive]);
+  }, [keys, anglerfishPos, gameStarted, gameOver, cameraY, lightRadius, sonarWaves, joystick, depth, lightBonusActive, slowedDown]);
 
   const startGame = () => {
     setGameStarted(true);
@@ -634,12 +717,16 @@ function App() {
     setLightRadius(40);
     setLightBonusActive(false);
     setLightBonusTimer(0);
+    setSlowedDown(false);
+    setSlowdownTimer(0);
     // Reset mines
     setMines(prev => prev.map(mine => ({ ...mine, exploded: false })));
     // Reset prey
     setPrey(prev => prev.map(preyItem => ({ ...preyItem, collected: false })));
     // Reset light bonuses
     setLightBonuses(prev => prev.map(bonus => ({ ...bonus, collected: false })));
+    // Reset net traps
+    setNetTraps(prev => prev.map(trap => ({ ...trap, triggered: false })));
   };
 
   // Game Over Screen
@@ -1124,6 +1211,63 @@ function App() {
           )
         ))}
 
+        {/* Net Traps */}
+        {netTraps.map(trap => (
+          <div
+            key={trap.id}
+            className="absolute z-5"
+            style={{
+              left: `${trap.x}px`,
+              top: `${trap.y}px`,
+              transform: `scale(${0.9 + Math.sin(trap.pulsePhase) * 0.1})`,
+              opacity: trap.triggered ? 0.3 : 0.8
+            }}
+          >
+            {/* Net trap glow */}
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: '-25px',
+                top: '-25px',
+                width: '50px',
+                height: '50px',
+                background: trap.triggered 
+                  ? `radial-gradient(circle, rgba(147, 51, 234, ${0.2 + Math.sin(trap.pulsePhase) * 0.1}) 0%, rgba(147, 51, 234, ${0.1}) 50%, transparent 70%)`
+                  : `radial-gradient(circle, rgba(147, 51, 234, ${0.3 + Math.sin(trap.pulsePhase) * 0.2}) 0%, rgba(147, 51, 234, ${0.15 + Math.sin(trap.pulsePhase) * 0.1}) 50%, transparent 70%)`,
+                borderRadius: '50%',
+                filter: 'blur(2px)'
+              }}
+            />
+            
+            {/* Net trap visual */}
+            <div className="relative">
+              {/* Net pattern using CSS */}
+              <div 
+                className={`w-8 h-8 border-2 ${trap.triggered ? 'border-purple-600' : 'border-purple-400'} rounded-lg relative`}
+                style={{
+                  background: trap.triggered 
+                    ? 'linear-gradient(45deg, transparent 30%, rgba(147, 51, 234, 0.2) 30%, rgba(147, 51, 234, 0.2) 70%, transparent 70%), linear-gradient(-45deg, transparent 30%, rgba(147, 51, 234, 0.2) 30%, rgba(147, 51, 234, 0.2) 70%, transparent 70%)'
+                    : 'linear-gradient(45deg, transparent 30%, rgba(147, 51, 234, 0.4) 30%, rgba(147, 51, 234, 0.4) 70%, transparent 70%), linear-gradient(-45deg, transparent 30%, rgba(147, 51, 234, 0.4) 30%, rgba(147, 51, 234, 0.4) 70%, transparent 70%)',
+                  backgroundSize: '8px 8px',
+                  boxShadow: trap.triggered 
+                    ? `0 0 ${6 + Math.sin(trap.pulsePhase) * 2}px rgba(147, 51, 234, 0.4)`
+                    : `0 0 ${8 + Math.sin(trap.pulsePhase) * 4}px rgba(147, 51, 234, 0.6)`
+                }}
+              >
+                {/* Cross pattern for net effect */}
+                <div className="absolute inset-0">
+                  <div className={`absolute top-1/2 left-0 right-0 h-0.5 ${trap.triggered ? 'bg-purple-600' : 'bg-purple-400'} transform -translate-y-1/2`} />
+                  <div className={`absolute left-1/2 top-0 bottom-0 w-0.5 ${trap.triggered ? 'bg-purple-600' : 'bg-purple-400'} transform -translate-x-1/2`} />
+                  <div className={`absolute top-1/4 left-0 right-0 h-0.5 ${trap.triggered ? 'bg-purple-600' : 'bg-purple-400'} opacity-60`} />
+                  <div className={`absolute top-3/4 left-0 right-0 h-0.5 ${trap.triggered ? 'bg-purple-600' : 'bg-purple-400'} opacity-60`} />
+                  <div className={`absolute left-1/4 top-0 bottom-0 w-0.5 ${trap.triggered ? 'bg-purple-600' : 'bg-purple-400'} opacity-60`} />
+                  <div className={`absolute left-3/4 top-0 bottom-0 w-0.5 ${trap.triggered ? 'bg-purple-600' : 'bg-purple-400'} opacity-60`} />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
         {/* Abyss ambiance */}
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent opacity-60" />
       </div>
@@ -1189,6 +1333,12 @@ function App() {
                   <span className="text-xs font-mono text-yellow-200">{Math.ceil(lightBonusTimer / 1000)}s</span>
                 </div>
               )}
+              {slowedDown && (
+                <div className="flex items-center justify-between animate-pulse">
+                  <span className="text-xs text-red-300 font-medium">🕸️ Trapped</span>
+                  <span className="text-xs font-mono text-red-200">{Math.ceil(slowdownTimer / 1000)}s</span>
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-400">Survival</span>
                 <span className="text-xs font-mono text-gray-300">
@@ -1237,6 +1387,10 @@ function App() {
                 <span className="text-red-300 text-xs">Mines: Drain hunger (-30)</span>
               </div>
               <div className="flex items-center space-x-2">
+                <span className="text-purple-400">🕸️</span>
+                <span className="text-purple-300 text-xs">Net traps: Slow movement</span>
+              </div>
+              <div className="flex items-center space-x-2">
                 <span className="text-orange-400">⚠️</span>
                 <span className="text-orange-300 text-xs">Deeper = Faster hunger loss</span>
               </div>
@@ -1249,6 +1403,11 @@ function App() {
           {lightBonusActive && (
             <div className="text-xs text-yellow-300 animate-pulse">
               ⚡ Boost: {Math.ceil(lightBonusTimer / 1000)}s
+            </div>
+          )}
+          {slowedDown && (
+            <div className="text-xs text-red-300 animate-pulse">
+              🕸️ Trapped: {Math.ceil(slowdownTimer / 1000)}s
             </div>
           )}
           <div className="text-xs text-gray-400">
