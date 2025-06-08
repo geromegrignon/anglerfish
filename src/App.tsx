@@ -52,6 +52,16 @@ interface GlowEffect {
   intensity: number;
 }
 
+interface JoystickState {
+  active: boolean;
+  centerX: number;
+  centerY: number;
+  knobX: number;
+  knobY: number;
+  deltaX: number;
+  deltaY: number;
+}
+
 function App() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [anglerfishPos, setAnglerfishPos] = useState<Position>({ x: 100, y: 300 });
@@ -65,6 +75,15 @@ function App() {
   const [depth, setDepth] = useState(2000);
   const [cameraY, setCameraY] = useState(0);
   const [glowEffect, setGlowEffect] = useState<GlowEffect>({ radius: 60, intensity: 0.3 });
+  const [joystick, setJoystick] = useState<JoystickState>({
+    active: false,
+    centerX: 80,
+    centerY: window.innerHeight - 120,
+    knobX: 80,
+    knobY: window.innerHeight - 120,
+    deltaX: 0,
+    deltaY: 0
+  });
 
   // Initialize prey
   useEffect(() => {
@@ -137,6 +156,20 @@ function App() {
     setParticles(newParticles);
   }, []);
 
+  // Update joystick center position on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setJoystick(prev => ({
+        ...prev,
+        centerY: window.innerHeight - 120,
+        knobY: prev.active ? prev.knobY : window.innerHeight - 120
+      }));
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Keyboard controls
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -160,6 +193,105 @@ function App() {
     };
   }, []);
 
+  // Virtual joystick handlers
+  const handleJoystickStart = useCallback((clientX: number, clientY: number) => {
+    setJoystick(prev => ({
+      ...prev,
+      active: true,
+      knobX: clientX,
+      knobY: clientY
+    }));
+  }, []);
+
+  const handleJoystickMove = useCallback((clientX: number, clientY: number) => {
+    setJoystick(prev => {
+      if (!prev.active) return prev;
+
+      const deltaX = clientX - prev.centerX;
+      const deltaY = clientY - prev.centerY;
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      const maxDistance = 40; // Joystick radius
+
+      let newKnobX = clientX;
+      let newKnobY = clientY;
+      let normalizedDeltaX = deltaX;
+      let normalizedDeltaY = deltaY;
+
+      if (distance > maxDistance) {
+        const angle = Math.atan2(deltaY, deltaX);
+        newKnobX = prev.centerX + Math.cos(angle) * maxDistance;
+        newKnobY = prev.centerY + Math.sin(angle) * maxDistance;
+        normalizedDeltaX = Math.cos(angle) * maxDistance;
+        normalizedDeltaY = Math.sin(angle) * maxDistance;
+      }
+
+      return {
+        ...prev,
+        knobX: newKnobX,
+        knobY: newKnobY,
+        deltaX: normalizedDeltaX / maxDistance, // Normalize to -1 to 1
+        deltaY: normalizedDeltaY / maxDistance
+      };
+    });
+  }, []);
+
+  const handleJoystickEnd = useCallback(() => {
+    setJoystick(prev => ({
+      ...prev,
+      active: false,
+      knobX: prev.centerX,
+      knobY: prev.centerY,
+      deltaX: 0,
+      deltaY: 0
+    }));
+  }, []);
+
+  // Touch event handlers for joystick
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    handleJoystickStart(touch.clientX, touch.clientY);
+  }, [handleJoystickStart]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    if (e.touches.length > 0) {
+      const touch = e.touches[0];
+      handleJoystickMove(touch.clientX, touch.clientY);
+    }
+  }, [handleJoystickMove]);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    handleJoystickEnd();
+  }, [handleJoystickEnd]);
+
+  // Mouse event handlers for joystick (for desktop testing)
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    handleJoystickStart(e.clientX, e.clientY);
+  }, [handleJoystickStart]);
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    handleJoystickMove(e.clientX, e.clientY);
+  }, [handleJoystickMove]);
+
+  const handleMouseUp = useCallback(() => {
+    handleJoystickEnd();
+  }, [handleJoystickEnd]);
+
+  // Add mouse event listeners when joystick is active
+  useEffect(() => {
+    if (joystick.active) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [joystick.active, handleMouseMove, handleMouseUp]);
+
   // Bioluminescent pulse
   // Game loop
   useEffect(() => {
@@ -175,6 +307,12 @@ function App() {
         if (keys.has('arrowright') || keys.has('d')) newX += 4;
         if (keys.has('arrowup') || keys.has('w')) newY -= 3;
         if (keys.has('arrowdown') || keys.has('s')) newY += 3;
+
+        // Virtual joystick controls
+        if (joystick.active) {
+          newX += joystick.deltaX * 5; // Adjust speed multiplier as needed
+          newY += joystick.deltaY * 4;
+        }
 
         // Boundaries
         newX = Math.max(0, Math.min(window.innerWidth - 80, newX));
@@ -384,7 +522,7 @@ function App() {
       }));
 
       // Trigger bioluminescence
-      if (keys.has(' ')) {
+      if (keys.has(' ') || joystick.active) { // Trigger bioluminescence when joystick is active
        // Center bioluminescent pulse on the lure (adjusted for SVG)
        const lureX = anglerfishPos.x + 40; // Adjusted for SVG lure position
        const lureY = anglerfishPos.y + 10; // Adjusted for SVG lure position
@@ -401,7 +539,7 @@ function App() {
 
     const interval = setInterval(gameLoop, 16);
     return () => clearInterval(interval);
-  }, [keys, anglerfishPos, gameStarted, cameraY, glowEffect.radius, sonarWaves]);
+  }, [keys, anglerfishPos, gameStarted, cameraY, glowEffect.radius, sonarWaves, joystick]);
 
   const startGame = () => {
     setGameStarted(true);
@@ -732,10 +870,63 @@ function App() {
         <div className="bg-black bg-opacity-70 text-cyan-300 px-4 py-2 rounded-lg text-sm border border-cyan-600">
           <div>WASD/Arrows: Swim</div>
           <div>SPACE: Bioluminescence</div>
+          <div className="text-cyan-300">Touch: Use joystick</div>
           <div className="text-red-400">Avoid red mines! (-50 points)</div>
           <div className="text-red-300">Deep mines move randomly!</div>
           <div className="text-yellow-400">Light grows with score!</div>
           <div className="text-yellow-400">Descend into the abyss!</div>
+        </div>
+      </div>
+
+      {/* Virtual Joystick */}
+      <div className="fixed bottom-4 left-4 z-30">
+        <div
+          className="relative w-20 h-20 bg-gray-800 bg-opacity-60 border-2 border-cyan-400 rounded-full"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          style={{
+            touchAction: 'none',
+            userSelect: 'none'
+          }}
+        >
+          {/* Joystick base */}
+          <div className="absolute inset-2 bg-gray-700 bg-opacity-40 rounded-full border border-cyan-500" />
+          
+          {/* Joystick knob */}
+          <div
+            className="absolute w-6 h-6 bg-cyan-400 rounded-full border-2 border-cyan-300 transition-all duration-75 ease-out"
+            style={{
+              left: `${joystick.knobX - joystick.centerX + 40 - 12}px`,
+              top: `${joystick.knobY - joystick.centerY + 40 - 12}px`,
+              boxShadow: joystick.active 
+                ? '0 0 12px rgba(34, 211, 238, 0.8)' 
+                : '0 0 6px rgba(34, 211, 238, 0.4)',
+              transform: joystick.active ? 'scale(1.1)' : 'scale(1)'
+            }}
+          />
+          
+          {/* Direction indicators */}
+          {joystick.active && (
+            <>
+              <div className="absolute inset-0 border border-cyan-300 rounded-full animate-ping opacity-30" />
+              <div 
+                className="absolute w-1 h-8 bg-cyan-400 opacity-60"
+                style={{
+                  left: '39px',
+                  top: '6px',
+                  transformOrigin: 'bottom center',
+                  transform: `rotate(${Math.atan2(joystick.deltaY, joystick.deltaX) * 180 / Math.PI + 90}deg)`
+                }}
+              />
+            </>
+          )}
+        </div>
+        
+        {/* Joystick label */}
+        <div className="text-xs text-cyan-300 text-center mt-1 opacity-70">
+          Move
         </div>
       </div>
     </div>
