@@ -790,7 +790,7 @@ function App() {
                   style={{
                     width: `${15 + Math.random() * 25}px`,
                     height: `${12 + Math.random() * 20}px`,
-                    filter: `hue-rotate(${180 + Math.random() * 180}deg) saturate(1.2) brightness(0.7) drop-shadow(0 0 8px rgba(34, 211, 238, 0.3))`,
+                    filter: `hue-rotate(${180}deg) saturate(1.2) brightness(0.7) drop-shadow(0 0 8px rgba(34, 211, 238, 0.3))`,
                     transform: `rotate(${-15 + Math.random() * 30}deg) ${Math.random() > 0.5 ? 'scaleX(-1)' : ''}`
                   }}
                 />
