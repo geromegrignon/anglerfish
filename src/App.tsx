@@ -14,6 +14,7 @@ interface Prey {
   visible: boolean;
   visibilityTimer: number;
   type: 'small' | 'medium' | 'large';
+  fishSvg: 'fish-1' | 'fish-2';
 }
 
 interface Mine {
@@ -70,6 +71,7 @@ function App() {
     const newPrey: Prey[] = [];
     for (let i = 0; i < 200; i++) {
       const types: ('small' | 'medium' | 'large')[] = ['small', 'small', 'small', 'medium', 'medium', 'large'];
+      const fishSvgs: ('fish-1' | 'fish-2')[] = ['fish-1', 'fish-2'];
       newPrey.push({
         id: i,
         x: Math.random() * 1400 + 200,
@@ -77,7 +79,8 @@ function App() {
         collected: false,
         visible: false,
         visibilityTimer: 0,
-        type: types[Math.floor(Math.random() * types.length)]
+        type: types[Math.floor(Math.random() * types.length)],
+        fishSvg: fishSvgs[Math.floor(Math.random() * fishSvgs.length)]
       });
     }
     setPrey(newPrey);
@@ -264,6 +267,7 @@ function App() {
         const deepestPrey = Math.max(...prev.map(p => p.y));
         if (anglerfishPos.y > deepestPrey - 500 && prev.length < 400) {
           const types: ('small' | 'medium' | 'large')[] = ['small', 'small', 'small', 'medium', 'medium', 'large'];
+          const fishSvgs: ('fish-1' | 'fish-2')[] = ['fish-1', 'fish-2'];
           const newPreyItems = [];
           for (let i = 0; i < 20; i++) {
             newPreyItems.push({
@@ -273,7 +277,8 @@ function App() {
               collected: false,
               visible: false,
               visibilityTimer: 0,
-              type: types[Math.floor(Math.random() * types.length)]
+              type: types[Math.floor(Math.random() * types.length)],
+              fishSvg: fishSvgs[Math.floor(Math.random() * fishSvgs.length)]
             });
           }
           return [...prev, ...newPreyItems];
@@ -611,15 +616,37 @@ function App() {
             >
               {preyItem.type === 'large' && (
                 <div className="relative">
-                  <Fish className="w-8 h-8 text-red-400 drop-shadow-lg animate-pulse" />
+                  <img 
+                    src={`/${preyItem.fishSvg}.svg`} 
+                    alt="Large Fish" 
+                    className="w-8 h-8 drop-shadow-lg animate-pulse"
+                    style={{
+                      filter: 'hue-rotate(0deg) saturate(1.5) brightness(1.2) drop-shadow(0 0 4px rgba(239, 68, 68, 0.6))'
+                    }}
+                  />
                   <div className="absolute top-1 left-1 w-2 h-2 bg-red-300 rounded-full animate-ping" />
                 </div>
               )}
               {preyItem.type === 'medium' && (
-                <Fish className="w-6 h-6 text-orange-400 drop-shadow-md animate-bounce" style={{ animationDuration: '2s' }} />
+                <img 
+                  src={`/${preyItem.fishSvg}.svg`} 
+                  alt="Medium Fish" 
+                  className="w-6 h-6 drop-shadow-md animate-bounce"
+                  style={{ 
+                    animationDuration: '2s',
+                    filter: 'hue-rotate(30deg) saturate(1.3) brightness(1.1) drop-shadow(0 0 3px rgba(251, 146, 60, 0.5))'
+                  }}
+                />
               )}
               {preyItem.type === 'small' && (
-                <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse opacity-80" />
+                <img 
+                  src={`/${preyItem.fishSvg}.svg`} 
+                  alt="Small Fish" 
+                  className="w-4 h-4 animate-pulse opacity-80"
+                  style={{
+                    filter: 'hue-rotate(120deg) saturate(1.2) brightness(1.0) drop-shadow(0 0 2px rgba(74, 222, 128, 0.4))'
+                  }}
+                />
               )}
             </div>
           )
