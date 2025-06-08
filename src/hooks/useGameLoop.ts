@@ -179,7 +179,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
 
     // Check for depth milestones (every 1000m)
     const currentMilestone = Math.floor(currentDepth / 1000) * 1000;
-    if (currentMilestone > lastMilestoneDepth && currentMilestone >= 3000 && currentMilestone % 1000 === 0) {
+    if (currentMilestone > lastMilestoneDepth && currentMilestone >= 2500 && currentMilestone % 1000 === 0) {
       const zoneIndex = Math.floor((currentMilestone - 3000) / 1000);
       const zoneName = zoneNames[zoneIndex % zoneNames.length];
       
@@ -188,8 +188,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         depth: currentMilestone,
         zoneName,
         opacity: 1,
-        scale: 0.5,
-        duration: 4000 // 4 seconds
+        scale: 0.8,
+        duration: 5000 // 5 seconds
       };
       
       setDepthMilestones(prev => [...prev, newMilestone]);
@@ -201,17 +201,17 @@ export const useGameLoop = (props: UseGameLoopProps) => {
 
     // Update milestone animations
     setDepthMilestones(prev => prev.map(milestone => {
-      const progress = (4000 - milestone.duration) / 4000;
+      const progress = (5000 - milestone.duration) / 5000;
       let newOpacity = milestone.opacity;
       let newScale = milestone.scale;
       
-      if (progress < 0.2) {
+      if (progress < 0.15) {
         // Fade in and scale up
-        newOpacity = progress / 0.2;
-        newScale = 0.5 + (progress / 0.2) * 0.5;
-      } else if (progress > 0.8) {
+        newOpacity = progress / 0.15;
+        newScale = 0.8 + (progress / 0.15) * 0.2;
+      } else if (progress > 0.85) {
         // Fade out
-        const fadeProgress = (progress - 0.8) / 0.2;
+        const fadeProgress = (progress - 0.85) / 0.15;
         newOpacity = 1 - fadeProgress;
       } else {
         // Fully visible
