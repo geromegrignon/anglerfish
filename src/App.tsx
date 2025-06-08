@@ -146,14 +146,9 @@ function App() {
   return (
     <div 
       ref={canvasRef}
-      className="relative w-full h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 overflow-hidden"
+      className="relative w-full h-screen bg-black overflow-hidden"
       style={{
         touchAction: 'none',
-        background: `linear-gradient(to bottom, 
-          rgb(17, 24, 39) 0%, 
-          rgb(0, 0, 0) 30%, 
-          rgb(0, 0, 0) 70%, 
-          rgb(17, 24, 39) 100%)`,
         // Force hardware acceleration
         transform: 'translate3d(0, 0, 0)',
         willChange: 'transform'
