@@ -146,9 +146,10 @@ function App() {
   return (
     <div 
       ref={canvasRef}
-      className="relative w-full h-screen bg-blue-950 overflow-hidden"
+      className="relative w-full h-screen overflow-hidden"
       style={{
         touchAction: 'none',
+        background: 'rgb(3, 7, 18)', // Very dark blue, almost black
         // Force hardware acceleration
         transform: 'translate3d(0, 0, 0)',
         willChange: 'transform'
