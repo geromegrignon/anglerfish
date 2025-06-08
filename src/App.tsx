@@ -799,56 +799,6 @@ function App() {
           );
         })}
         
-        {/* Abyss background effects */}
-        <div className="absolute inset-0">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute bg-blue-900 opacity-5 rounded-full animate-pulse"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                width: `${Math.random() * 200 + 100}px`,
-                height: `${Math.random() * 200 + 100}px`,
-                animationDelay: `${Math.random() * 4}s`,
-                animationDuration: `${Math.random() * 4 + 3}s`
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Floating particles */}
-        {Array.from({ length: 30 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute bg-gray-400 opacity-20 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${Math.random() * 4 + 2}px`,
-              height: `${Math.random() * 4 + 2}px`,
-              animation: `floatDown ${8 + Math.random() * 6}s linear infinite`,
-              animationDelay: `${Math.random() * 8}s`
-            }}
-          />
-        ))}
-        
-        {/* Bioluminescent plankton effects */}
-        {Array.from({ length: 15 }).map((_, i) => (
-          <div
-            key={`plankton-${i}`}
-            className="absolute bg-cyan-400 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${1 + Math.random() * 2}px`,
-              height: `${1 + Math.random() * 2}px`,
-              animation: `twinkle ${2 + Math.random() * 3}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 5}s`,
-              boxShadow: '0 0 4px rgba(34, 211, 238, 0.8)'
-            }}
-          />
-        ))}
 
         <div className="text-center z-10">
           <h1 className="text-7xl font-bold text-cyan-400 mb-4 drop-shadow-lg animate-pulse">
