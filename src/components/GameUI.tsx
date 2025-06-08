@@ -31,21 +31,24 @@ export const GameUI: React.FC<GameUIProps> = ({
           />
         </div>
         
-        {/* Depth indicator - directly under hunger bar */}
-        <div className="text-lg font-bold text-cyan-300 mt-2">
-          {Math.floor(depth).toLocaleString()}m
-        </div>
-        
-        {/* Hit Points - below hunger bar, opposite side from depth */}
-        <div className="flex items-center mt-2 justify-end">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <Heart
-              key={index}
-              className={`w-6 h-6 ml-1 text-red-500 ${
-                index < hitPoints ? 'fill-red-500' : 'fill-none'
-              }`}
-            />
-          ))}
+        {/* Bottom row with depth and hit points */}
+        <div className="flex justify-between items-center mt-2">
+          {/* Depth indicator */}
+          <div className="text-lg font-bold text-cyan-300">
+            {Math.floor(depth).toLocaleString()}m
+          </div>
+          
+          {/* Hit Points */}
+          <div className="flex items-center">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <Heart
+                key={index}
+                className={`w-6 h-6 ml-1 text-red-500 ${
+                  index < hitPoints ? 'fill-red-500' : 'fill-none'
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
