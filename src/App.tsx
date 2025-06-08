@@ -1131,34 +1131,121 @@ function App() {
       {/* Fixed UI elements that don't move with camera */}
       <div className="fixed top-4 left-4 z-20 space-y-2">
         {/* Hunger Bar */}
-        <div className="bg-black bg-opacity-70 px-4 py-3 rounded-lg border border-red-600">
-          <div className="text-sm text-red-300 mb-1">HUNGER</div>
-          <div className="w-48 h-4 bg-gray-800 rounded-full border border-red-500">
+        <div className="bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-sm px-5 py-4 rounded-xl border border-red-500/30 shadow-2xl">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-sm font-semibold text-red-300 tracking-wide">HUNGER</div>
+            <div className="text-xs font-mono text-gray-400 bg-gray-800/50 px-2 py-1 rounded-md">{Math.floor(hunger)}%</div>
+          </div>
+          <div className="w-52 h-3 bg-gray-800/80 rounded-full border border-red-500/20 overflow-hidden shadow-inner">
             <div 
-              className="h-full rounded-full transition-all duration-300"
+              className="h-full rounded-full transition-all duration-500 ease-out relative"
               style={{
                 width: `${hunger}%`,
                 background: hunger > 60 
-                  ? 'linear-gradient(90deg, #10b981, #34d399)' 
+                  ? 'linear-gradient(90deg, #059669, #10b981, #34d399)' 
                   : hunger > 30 
-                  ? 'linear-gradient(90deg, #f59e0b, #fbbf24)' 
-                  : 'linear-gradient(90deg, #ef4444, #f87171)',
+                  ? 'linear-gradient(90deg, #d97706, #f59e0b, #fbbf24)' 
+                  : 'linear-gradient(90deg, #dc2626, #ef4444, #f87171)',
                 boxShadow: hunger > 60 
-                  ? '0 0 8px rgba(16, 185, 129, 0.6)' 
+                  ? '0 0 12px rgba(16, 185, 129, 0.8), inset 0 1px 2px rgba(255,255,255,0.2)' 
                   : hunger > 30 
-                  ? '0 0 8px rgba(245, 158, 11, 0.6)' 
-                  : '0 0 8px rgba(239, 68, 68, 0.6)'
+                  ? '0 0 12px rgba(245, 158, 11, 0.8), inset 0 1px 2px rgba(255,255,255,0.2)' 
+                  : '0 0 12px rgba(239, 68, 68, 0.8), inset 0 1px 2px rgba(255,255,255,0.2)'
               }}
-            />
+            >
+              {/* Animated shine effect */}
+              <div 
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"
+                style={{ animationDuration: '2s' }}
+              />
+            </div>
           </div>
-          <div className="text-xs text-gray-400 mt-1">{Math.floor(hunger)}%</div>
+          {hunger <= 20 && (
+            <div className="text-xs text-red-400 mt-2 animate-pulse font-medium">
+              ⚠️ CRITICAL HUNGER LEVEL
+            </div>
+          )}
         </div>
         
         {/* Depth and Stats */}
-        <div className="bg-black bg-opacity-70 text-cyan-400 px-4 py-2 rounded-lg border border-cyan-600">
-          <div className="text-sm text-gray-400">Depth: {Math.floor(depth)}m</div>
-          <div className="text-sm text-yellow-400">Max: {Math.floor(maxDepthReached)}m</div>
-          <div className="text-xs text-cyan-300">Light: {Math.floor(lightRadius)}px</div>
+        <div className="bg-gradient-to-br from-cyan-900/95 to-blue-900/95 backdrop-blur-sm px-5 py-4 rounded-xl border border-cyan-500/30 shadow-2xl">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-cyan-300 tracking-wide">DEPTH</span>
+              <span className="text-lg font-mono font-bold text-cyan-100">{Math.floor(depth)}m</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-yellow-400 font-medium">Record</span>
+              <span className="text-sm font-mono text-yellow-300">{Math.floor(maxDepthReached)}m</span>
+            </div>
+            <div className="border-t border-cyan-500/20 pt-2 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-cyan-400">Light Radius</span>
+                <span className="text-xs font-mono text-cyan-200">{Math.floor(lightRadius)}px</span>
+              </div>
+              {lightBonusActive && (
+                <div className="flex items-center justify-between animate-pulse">
+                  <span className="text-xs text-yellow-300 font-medium">⚡ Boost</span>
+                  <span className="text-xs font-mono text-yellow-200">{Math.ceil(lightBonusTimer / 1000)}s</span>
+                </div>
+              )}
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-400">Survival</span>
+                <span className="text-xs font-mono text-gray-300">
+                  {Math.floor(survivalTime / 60000)}:{String(Math.floor((survivalTime % 60000) / 1000)).padStart(2, '0')}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Instructions Panel */}
+      <div className="fixed top-4 right-4 z-20">
+        <div className="bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-sm px-5 py-4 rounded-xl border border-gray-500/30 shadow-2xl max-w-xs">
+          <div className="text-sm font-semibold text-gray-200 mb-3 tracking-wide border-b border-gray-600/30 pb-2">
+            CONTROLS & OBJECTIVES
+          </div>
+          <div className="space-y-2 text-xs">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+              <span className="text-cyan-300 font-medium">WASD/Arrows:</span>
+              <span className="text-gray-300">Swim</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+              <span className="text-cyan-300 font-medium">SPACE:</span>
+              <span className="text-gray-300">Bioluminescence</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+              <span className="text-cyan-300 font-medium">Touch:</span>
+              <span className="text-gray-300">Use joystick</span>
+            </div>
+            
+            <div className="border-t border-gray-600/30 pt-2 mt-3 space-y-2">
+              <div className="flex items-center space-x-2">
+                <span className="text-green-400">🐟</span>
+                <span className="text-green-300 text-xs">Eat fish: Restore hunger</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-yellow-400">⚡</span>
+                <span className="text-yellow-300 text-xs">Light boost: +8s vision</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-red-400">💣</span>
+                <span className="text-red-300 text-xs">Mines: Drain hunger (-30)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-orange-400">⚠️</span>
+                <span className="text-orange-300 text-xs">Deeper = Faster hunger loss</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-cyan-400">🎯</span>
+                <span className="text-cyan-300 text-xs">Score = Maximum depth</span>
+              </div>
+            </div>
+          </div>
           {lightBonusActive && (
             <div className="text-xs text-yellow-300 animate-pulse">
               ⚡ Boost: {Math.ceil(lightBonusTimer / 1000)}s
@@ -1170,24 +1257,11 @@ function App() {
         </div>
       </div>
 
-      {/* Instructions */}
-      <div className="fixed top-4 right-4 z-20">
-        <div className="bg-black bg-opacity-70 text-cyan-300 px-4 py-2 rounded-lg text-sm border border-cyan-600">
-          <div>WASD/Arrows: Swim</div>
-          <div>SPACE: Bioluminescence</div>
-          <div className="text-cyan-300">Touch: Use joystick</div>
-          <div className="text-green-400">🐟 Eat fish: Restore hunger</div>
-          <div className="text-yellow-400">⚡ Light boost: +8s vision</div>
-          <div className="text-red-400">💣 Mines: Drain hunger (-30)</div>
-          <div className="text-orange-400">⚠️ Deeper = Faster hunger loss</div>
-          <div className="text-cyan-400">🎯 Score = Maximum depth</div>
-        </div>
-      </div>
 
       {/* Virtual Joystick */}
-      <div className="fixed bottom-4 left-4 z-30">
+      <div className="fixed bottom-6 left-6 z-30">
         <div
-          className="relative w-20 h-20 bg-gray-800 bg-opacity-60 border-2 border-cyan-400 rounded-full"
+          className="relative w-24 h-24 bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-sm border-2 border-cyan-400/60 rounded-full shadow-2xl"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -1198,17 +1272,17 @@ function App() {
           }}
         >
           {/* Joystick base */}
-          <div className="absolute inset-2 bg-gray-700 bg-opacity-40 rounded-full border border-cyan-500" />
+          <div className="absolute inset-3 bg-gradient-to-br from-gray-700/60 to-gray-800/60 rounded-full border border-cyan-500/40 shadow-inner" />
           
           {/* Joystick knob */}
           <div
-            className="absolute w-6 h-6 bg-cyan-400 rounded-full border-2 border-cyan-300 transition-all duration-75 ease-out"
+            className="absolute w-8 h-8 bg-gradient-to-br from-cyan-300 to-cyan-500 rounded-full border-2 border-cyan-200 transition-all duration-75 ease-out shadow-lg"
             style={{
-              left: `${joystick.knobX - joystick.centerX + 40 - 12}px`,
-              top: `${joystick.knobY - joystick.centerY + 40 - 12}px`,
+              left: `${joystick.knobX - joystick.centerX + 48 - 16}px`,
+              top: `${joystick.knobY - joystick.centerY + 48 - 16}px`,
               boxShadow: joystick.active 
-                ? '0 0 12px rgba(34, 211, 238, 0.8)' 
-                : '0 0 6px rgba(34, 211, 238, 0.4)',
+                ? '0 0 16px rgba(34, 211, 238, 0.9), inset 0 2px 4px rgba(255,255,255,0.3)' 
+                : '0 0 8px rgba(34, 211, 238, 0.5), inset 0 2px 4px rgba(255,255,255,0.2)',
               transform: joystick.active ? 'scale(1.1)' : 'scale(1)'
             }}
           />
@@ -1216,12 +1290,12 @@ function App() {
           {/* Direction indicators */}
           {joystick.active && (
             <>
-              <div className="absolute inset-0 border border-cyan-300 rounded-full animate-ping opacity-30" />
+              <div className="absolute inset-0 border-2 border-cyan-300 rounded-full animate-ping opacity-40" />
               <div 
-                className="absolute w-1 h-8 bg-cyan-400 opacity-60"
+                className="absolute w-1 h-10 bg-gradient-to-t from-cyan-400 to-cyan-200 opacity-70 rounded-full"
                 style={{
-                  left: '39px',
-                  top: '6px',
+                  left: '47px',
+                  top: '7px',
                   transformOrigin: 'bottom center',
                   transform: `rotate(${Math.atan2(joystick.deltaY, joystick.deltaX) * 180 / Math.PI + 90}deg)`
                 }}
@@ -1231,7 +1305,7 @@ function App() {
         </div>
         
         {/* Joystick label */}
-        <div className="text-xs text-cyan-300 text-center mt-1 opacity-70">
+        <div className="text-xs text-cyan-300 text-center mt-2 opacity-80 font-medium tracking-wide">
           Move
         </div>
       </div>
