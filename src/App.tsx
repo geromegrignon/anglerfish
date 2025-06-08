@@ -137,11 +137,11 @@ function App() {
   // Initialize light bonuses
   useEffect(() => {
     const newLightBonuses: LightBonus[] = [];
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 5; i++) { // Much fewer initial bonuses
       newLightBonuses.push({
         id: i,
         x: Math.random() * 1400 + 200,
-        y: Math.random() * 4000 + 500,
+        y: 2000 + i * 1000 + Math.random() * 500, // Spread them every ~1000m
         collected: false,
         pulsePhase: Math.random() * Math.PI * 2
       });
@@ -470,13 +470,14 @@ function App() {
       // Spawn new light bonuses as we go deeper
       setLightBonuses(prev => {
         const deepestBonus = Math.max(...prev.map(b => b.y));
-        if (anglerfishPos.y > deepestBonus - 800 && prev.length < 60) {
+        if (anglerfishPos.y > deepestBonus - 200 && prev.length < 20) { // Much more restrictive spawning
           const newBonuses = [];
-          for (let i = 0; i < 3; i++) {
+          // Only spawn 1 bonus every ~1000m
+          if (Math.random() < 0.3) { // 30% chance to spawn when conditions are met
             newBonuses.push({
-              id: Date.now() + i + 2000,
+              id: Date.now() + 2000,
               x: Math.random() * 1400 + 200,
-              y: deepestBonus + Math.random() * 800 + 400,
+              y: deepestBonus + 800 + Math.random() * 400, // Spawn much further apart
               collected: false,
               pulsePhase: Math.random() * Math.PI * 2
             });
