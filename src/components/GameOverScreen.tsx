@@ -55,17 +55,10 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
 
         <div className="space-y-3">
           <button
-            onClick={() => onRestart('explore')}
-            className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
-          >
-            🌊 Hunt Again (Explore)
-          </button>
-          
-          <button
             onClick={() => onRestart('speedrun')}
             className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
-            ⚡ Hunt Again (Speed Run)
+            ⚡ Hunt Again
           </button>
         </div>
       </div>

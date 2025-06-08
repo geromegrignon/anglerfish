@@ -70,7 +70,7 @@ export interface JoystickState {
   deltaY: number;
 }
 
-export type GameMode = 'explore' | 'speedrun';
+export type GameMode = 'speedrun';
 
 export interface GameModeConfig {
   mode: GameMode;

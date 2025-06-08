@@ -143,22 +143,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       if (keys.has('arrowleft') || keys.has('a')) newX -= 4 * speedMultiplier;
       if (keys.has('arrowright') || keys.has('d')) newX += 4 * speedMultiplier;
       
-      // Vertical movement (only in explore mode)
-      if (gameModeConfig.allowVerticalMovement) {
-        if (keys.has('arrowup') || keys.has('w')) newY -= 3 * speedMultiplier;
-        if (keys.has('arrowdown') || keys.has('s')) newY += 3 * speedMultiplier;
-      }
-      
-      // Auto-scroll in speed run mode
-      if (gameModeConfig.autoScroll) {
-        newY += gameModeConfig.scrollSpeed;
-      }
-
-      // Virtual joystick controls
-      if (joystick.active && gameModeConfig.allowVerticalMovement) {
-        newX += joystick.deltaX * 5 * speedMultiplier;
-        newY += joystick.deltaY * 4 * speedMultiplier;
-      }
+      // Auto-scroll (always active in speed run mode)
+      newY += gameModeConfig.scrollSpeed;
 
       // Boundaries
       newX = Math.max(0, Math.min(window.innerWidth - 80, newX));

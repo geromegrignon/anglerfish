@@ -42,9 +42,9 @@ export const GameUI: React.FC<GameUIProps> = ({
               {Math.floor(depth).toLocaleString()}m
             </div>
             <div className={`text-xs font-semibold ${
-              gameMode === 'speedrun' ? 'text-purple-300' : 'text-blue-300'
+              'text-purple-300'
             }`}>
-              {gameMode === 'speedrun' ? '⚡ SPEED RUN' : '🌊 EXPLORE'}
+              ⚡ SPEED RUN
             </div>
           </div>
           

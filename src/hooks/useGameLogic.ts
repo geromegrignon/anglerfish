@@ -35,12 +35,12 @@ export const useGameLogic = () => {
   const [slowedDown, setSlowedDown] = useState(false);
   const [slowdownTimer, setSlowdownTimer] = useState(0);
   const [triggerEcholocation, setTriggerEcholocation] = useState(false);
-  const [gameMode, setGameMode] = useState<GameMode>('explore');
+  const [gameMode, setGameMode] = useState<GameMode>('speedrun');
   const [gameModeConfig, setGameModeConfig] = useState<GameModeConfig>({
-    mode: 'explore',
-    autoScroll: false,
-    allowVerticalMovement: true,
-    scrollSpeed: 0
+    mode: 'speedrun',
+    autoScroll: true,
+    allowVerticalMovement: false,
+    scrollSpeed: 2
   });
   const [joystick, setJoystick] = useState<JoystickState>({
     active: false,
@@ -52,12 +52,12 @@ export const useGameLogic = () => {
     deltaY: 0
   });
 
-  const startGame = useCallback((mode: GameMode = 'explore') => {
+  const startGame = useCallback((mode: GameMode = 'speedrun') => {
     const config: GameModeConfig = {
       mode,
-      autoScroll: mode === 'speedrun',
-      allowVerticalMovement: mode === 'explore',
-      scrollSpeed: mode === 'speedrun' ? 2 : 0
+      autoScroll: true,
+      allowVerticalMovement: false,
+      scrollSpeed: 2
     };
     
     setGameMode(mode);

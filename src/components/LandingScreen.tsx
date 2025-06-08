@@ -136,11 +136,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
 
         <div className="mt-8 text-center text-gray-400 text-sm">
           <p>Use your bioluminescent lure to reveal hidden prey in the darkness</p>
-          <p className="mb-2">The deeper you go, the more dangerous it becomes...</p>
-          <p className="text-xs">
-            <span className="text-blue-300">Explore:</span> Classic gameplay with full movement control<br/>
-            <span className="text-purple-300">Speed Run:</span> Race to the depths with automatic descent
-          </p>
+          <p>The deeper you go, the more dangerous it becomes...</p>
         </div>
       </div>
     </div>
