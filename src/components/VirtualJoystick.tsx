@@ -25,8 +25,8 @@ export const VirtualJoystick: React.FC<VirtualJoystickProps> = ({
       <div
         className="absolute w-20 h-20 border-2 border-white/30 rounded-full bg-black/20 backdrop-blur-sm"
         style={{
-          left: `${joystick.centerX - 40}px`,
-          top: `${joystick.centerY - 40}px`,
+          left: '20px',
+          bottom: '20px',
         }}
       >
         <div
@@ -47,7 +47,7 @@ export const VirtualJoystick: React.FC<VirtualJoystickProps> = ({
         className="absolute w-16 h-16 border-2 border-cyan-400/50 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center active:bg-cyan-400/20 transition-all duration-150"
         style={{
           right: '20px',
-          bottom: '120px',
+          bottom: '20px',
         }}
         onTouchStart={(e) => {
           e.preventDefault();
