@@ -799,24 +799,6 @@ function App() {
           );
         })}
         
-        {/* Abyss background effects */}
-        <div className="absolute inset-0">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute bg-blue-900 opacity-5 rounded-full animate-pulse"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                width: `${Math.random() * 200 + 100}px`,
-                height: `${Math.random() * 200 + 100}px`,
-                animationDelay: `${Math.random() * 4}s`,
-                animationDuration: `${Math.random() * 4 + 3}s`
-              }}
-            />
-          ))}
-        </div>
-
         {/* Floating particles */}
         {Array.from({ length: 30 }).map((_, i) => (
           <div
