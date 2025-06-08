@@ -40,6 +40,7 @@ function App() {
     joystick,
     gameMode,
     gameModeConfig,
+    lastMilestoneDepth,
     
     // Setters
     setAnglerfishPos,
@@ -67,6 +68,8 @@ function App() {
     setJoystick,
     setGameMode,
     setGameModeConfig,
+    setDepthMilestones,
+    setLastMilestoneDepth,
     depthMilestones,
     
     // Actions
