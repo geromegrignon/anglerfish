@@ -327,7 +327,6 @@ function App() {
     }
   }, [joystick.active, handleMouseMove, handleMouseUp]);
 
-  // Bioluminescent pulse
   // Game loop
   useEffect(() => {
     if (!gameStarted || gameOver) return;
@@ -763,4 +762,422 @@ function App() {
             The Abyss Claims Another
           </h2>
           
-          <div className="mb-8 text-gray
+          <div className="mb-8 text-gray-300 space-y-2">
+            <p className="text-xl">
+              <span className="text-blue-400 font-semibold">Maximum Depth:</span> {finalScore.toLocaleString()}m
+            </p>
+            <p className="text-xl">
+              <span className="text-green-400 font-semibold">Survival Time:</span> {timeMinutes}m {timeSeconds}s
+            </p>
+          </div>
+
+          <button
+            onClick={startGame}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
+          >
+            Hunt Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Landing Screen
+  if (!gameStarted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 via-blue-900 to-black relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0">
+          {/* Swimming fish silhouettes */}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div
+              key={`fish-${i}`}
+              className="absolute opacity-20"
+              style={{
+                top: `${Math.random() * 80 + 10}%`,
+                animationName: 'swimAcross',
+                animationDuration: `${Math.random() * 15 + 10}s`,
+                animationDelay: `${Math.random() * 10}s`,
+                animationIterationCount: 'infinite',
+                animationTimingFunction: 'linear'
+              }}
+            >
+              <Fish className="w-8 h-8 text-blue-300" />
+            </div>
+          ))}
+
+          {/* Floating particles */}
+          {Array.from({ length: 20 }).map((_, i) => (
+            <div
+              key={`particle-${i}`}
+              className="absolute w-1 h-1 bg-blue-200 rounded-full opacity-40"
+              style={{
+                left: `${Math.random() * 100}%`,
+                animationName: 'floatDown',
+                animationDuration: `${Math.random() * 8 + 5}s`,
+                animationDelay: `${Math.random() * 5}s`,
+                animationIterationCount: 'infinite',
+                animationTimingFunction: 'linear'
+              }}
+            />
+          ))}
+
+          {/* Twinkling lights */}
+          {Array.from({ length: 15 }).map((_, i) => (
+            <div
+              key={`light-${i}`}
+              className="absolute w-2 h-2 bg-cyan-300 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationName: 'twinkle',
+                animationDuration: `${Math.random() * 3 + 2}s`,
+                animationDelay: `${Math.random() * 2}s`,
+                animationIterationCount: 'infinite'
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Main content */}
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-8">
+          <div className="text-center mb-12">
+            <h1 className="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 mb-4 drop-shadow-2xl">
+              ABYSS HUNTER
+            </h1>
+            <p className="text-xl md:text-2xl text-blue-200 mb-2 drop-shadow-lg">
+              Survive the Endless Deep
+            </p>
+            <p className="text-lg text-gray-300 drop-shadow-md">
+              An Anglerfish's Journey into Darkness
+            </p>
+          </div>
+
+          {/* Controls & Objectives Card */}
+          <div className="bg-black/40 backdrop-blur-sm border border-blue-500/30 rounded-xl p-6 mb-8 max-w-2xl w-full">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Controls */}
+              <div>
+                <h3 className="text-xl font-bold text-cyan-300 mb-3 flex items-center">
+                  <Zap className="w-5 h-5 mr-2" />
+                  Controls
+                </h3>
+                <div className="space-y-2 text-sm text-gray-300">
+                  <p><span className="text-blue-400 font-mono">WASD / Arrow Keys</span> - Move</p>
+                  <p><span className="text-blue-400 font-mono">Spacebar</span> - Bioluminescent pulse</p>
+                  <p><span className="text-blue-400 font-mono">Touch/Drag</span> - Virtual joystick (mobile)</p>
+                </div>
+              </div>
+
+              {/* Objectives */}
+              <div>
+                <h3 className="text-xl font-bold text-cyan-300 mb-3 flex items-center">
+                  <Circle className="w-5 h-5 mr-2" />
+                  Objectives
+                </h3>
+                <div className="space-y-2 text-sm text-gray-300">
+                  <p>• Hunt prey to maintain hunger</p>
+                  <p>• Avoid explosive mines</p>
+                  <p>• Escape net traps quickly</p>
+                  <p>• Descend as deep as possible</p>
+                  <p>• Collect light bonuses for better vision</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={startGame}
+            className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-4 px-12 rounded-lg text-2xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-blue-400/50"
+          >
+            Begin the Hunt
+          </button>
+
+          <div className="mt-8 text-center text-gray-400 text-sm">
+            <p>Use your bioluminescent lure to reveal hidden prey in the darkness</p>
+            <p>The deeper you go, the more dangerous it becomes...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Game Screen
+  return (
+    <div 
+      ref={canvasRef}
+      className="relative w-full h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 overflow-hidden"
+      style={{
+        background: `linear-gradient(to bottom, 
+          rgb(17, 24, 39) 0%, 
+          rgb(0, 0, 0) 30%, 
+          rgb(0, 0, 0) 70%, 
+          rgb(17, 24, 39) 100%)`
+      }}
+    >
+      {/* Marine snow particles */}
+      {particles.map(particle => (
+        <div
+          key={particle.id}
+          className="absolute bg-white rounded-full pointer-events-none"
+          style={{
+            left: `${particle.x}px`,
+            top: `${particle.y - cameraY}px`,
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            opacity: particle.opacity,
+            transform: `translateZ(0)` // Force GPU acceleration
+          }}
+        />
+      ))}
+
+      {/* Bioluminescent waves */}
+      {sonarWaves.map(wave => (
+        <div
+          key={wave.id}
+          className="absolute border-2 border-cyan-400 rounded-full pointer-events-none"
+          style={{
+            left: `${wave.x - wave.radius}px`,
+            top: `${wave.y - wave.radius - cameraY}px`,
+            width: `${wave.radius * 2}px`,
+            height: `${wave.radius * 2}px`,
+            opacity: wave.opacity,
+            boxShadow: `0 0 ${wave.radius / 2}px rgba(34, 211, 238, ${wave.opacity * 0.5})`
+          }}
+        />
+      ))}
+
+      {/* Anglerfish light glow */}
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          left: `${anglerfishPos.x + 40 - lightRadius}px`,
+          top: `${anglerfishPos.y + 10 - lightRadius - cameraY}px`,
+          width: `${lightRadius * 2}px`,
+          height: `${lightRadius * 2}px`,
+          background: `radial-gradient(circle, 
+            rgba(34, 211, 238, ${lightBonusActive ? 0.4 : 0.2}) 0%, 
+            rgba(34, 211, 238, ${lightBonusActive ? 0.2 : 0.1}) 30%, 
+            transparent 70%)`,
+          filter: 'blur(8px)'
+        }}
+      />
+
+      {/* Prey */}
+      {prey.map(preyItem => {
+        if (preyItem.collected || !preyItem.visible) return null;
+        
+        const size = preyItem.type === 'large' ? 24 : preyItem.type === 'medium' ? 18 : 12;
+        const opacity = Math.min(1, preyItem.visibilityTimer / 1000);
+        
+        return (
+          <img
+            key={preyItem.id}
+            src={`/${preyItem.fishSvg}.svg`}
+            alt="prey"
+            className="absolute pointer-events-none"
+            style={{
+              left: `${preyItem.x - size/2}px`,
+              top: `${preyItem.y - size/2 - cameraY}px`,
+              width: `${size}px`,
+              height: `${size}px`,
+              opacity: opacity,
+              filter: `drop-shadow(0 0 ${size/3}px rgba(34, 211, 238, ${opacity * 0.8}))`,
+              transform: 'scaleX(-1)' // Face left
+            }}
+          />
+        );
+      })}
+
+      {/* Light bonuses */}
+      {lightBonuses.map(bonus => {
+        if (bonus.collected) return null;
+        
+        const pulseScale = 1 + Math.sin(bonus.pulsePhase) * 0.3;
+        const glowIntensity = 0.5 + Math.sin(bonus.pulsePhase) * 0.3;
+        
+        return (
+          <div
+            key={bonus.id}
+            className="absolute pointer-events-none"
+            style={{
+              left: `${bonus.x - 15}px`,
+              top: `${bonus.y - 15 - cameraY}px`,
+              transform: `scale(${pulseScale})`,
+            }}
+          >
+            <Zap 
+              className="w-8 h-8 text-yellow-300"
+              style={{
+                filter: `drop-shadow(0 0 ${10 * glowIntensity}px rgba(253, 224, 71, ${glowIntensity}))`
+              }}
+            />
+          </div>
+        );
+      })}
+
+      {/* Net traps */}
+      {netTraps.map(trap => {
+        const pulseOpacity = 0.3 + Math.sin(trap.pulsePhase) * 0.2;
+        const isVisible = trap.triggered || Math.sin(trap.pulsePhase) > 0;
+        
+        if (!isVisible) return null;
+        
+        return (
+          <div
+            key={trap.id}
+            className="absolute pointer-events-none"
+            style={{
+              left: `${trap.x - 20}px`,
+              top: `${trap.y - 20 - cameraY}px`,
+            }}
+          >
+            <div 
+              className={`w-10 h-10 border-2 ${trap.triggered ? 'border-red-500' : 'border-orange-400'} rounded-lg`}
+              style={{
+                opacity: trap.triggered ? 0.8 : pulseOpacity,
+                background: trap.triggered 
+                  ? 'rgba(239, 68, 68, 0.2)' 
+                  : `rgba(251, 146, 60, ${pulseOpacity * 0.3})`,
+                filter: trap.triggered 
+                  ? 'drop-shadow(0 0 15px rgba(239, 68, 68, 0.8))'
+                  : `drop-shadow(0 0 10px rgba(251, 146, 60, ${pulseOpacity}))`
+              }}
+            >
+              {/* Net pattern */}
+              <div className="absolute inset-1 border border-current opacity-50" />
+              <div className="absolute inset-2 border border-current opacity-30" />
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Mines */}
+      {mines.map(mine => {
+        if (mine.exploded) return null;
+        
+        const pulseScale = 1 + Math.sin(mine.pulsePhase) * 0.2;
+        const glowIntensity = 0.4 + Math.sin(mine.pulsePhase) * 0.3;
+        
+        return (
+          <div
+            key={mine.id}
+            className="absolute pointer-events-none"
+            style={{
+              left: `${mine.x - 20}px`,
+              top: `${mine.y - 20 - cameraY}px`,
+              transform: `scale(${pulseScale})`,
+            }}
+          >
+            <Bomb 
+              className="w-10 h-10 text-red-500"
+              style={{
+                filter: `drop-shadow(0 0 ${15 * glowIntensity}px rgba(239, 68, 68, ${glowIntensity}))`
+              }}
+            />
+          </div>
+        );
+      })}
+
+      {/* Anglerfish */}
+      <img
+        src="/anglerfish.svg"
+        alt="anglerfish"
+        className="absolute z-10 pointer-events-none"
+        style={{
+          left: `${anglerfishPos.x}px`,
+          top: `${anglerfishPos.y - cameraY}px`,
+          width: '80px',
+          height: '60px',
+          filter: slowedDown 
+            ? 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.8)) brightness(0.7)' 
+            : 'drop-shadow(0 0 15px rgba(34, 211, 238, 0.6))'
+        }}
+      />
+
+      {/* UI Elements */}
+      <div className="absolute top-4 left-4 z-20">
+        {/* Hunger bar */}
+        <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 mb-2 border border-red-500/30">
+          <div className="flex items-center mb-1">
+            <Fish className="w-4 h-4 text-red-400 mr-2" />
+            <span className="text-red-300 text-sm font-semibold">Hunger</span>
+          </div>
+          <div className="w-32 h-3 bg-gray-700 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-gradient-to-r from-red-500 to-red-300 transition-all duration-300"
+              style={{ width: `${hunger}%` }}
+            />
+          </div>
+          <div className="text-xs text-gray-400 mt-1">{Math.round(hunger)}%</div>
+        </div>
+
+        {/* Depth indicator */}
+        <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-blue-500/30">
+          <div className="flex items-center mb-1">
+            <Circle className="w-4 h-4 text-blue-400 mr-2" />
+            <span className="text-blue-300 text-sm font-semibold">Depth</span>
+          </div>
+          <div className="text-lg font-bold text-cyan-300">
+            {Math.floor(depth).toLocaleString()}m
+          </div>
+        </div>
+      </div>
+
+      {/* Light bonus timer */}
+      {lightBonusActive && (
+        <div className="absolute top-4 right-4 z-20">
+          <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-yellow-500/30">
+            <div className="flex items-center mb-1">
+              <Zap className="w-4 h-4 text-yellow-400 mr-2" />
+              <span className="text-yellow-300 text-sm font-semibold">Enhanced Vision</span>
+            </div>
+            <div className="text-lg font-bold text-yellow-300">
+              {Math.ceil(lightBonusTimer / 1000)}s
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Slowdown effect indicator */}
+      {slowedDown && (
+        <div className="absolute top-20 right-4 z-20">
+          <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-red-500/30">
+            <div className="flex items-center mb-1">
+              <div className="w-4 h-4 border-2 border-red-400 rounded mr-2" />
+              <span className="text-red-300 text-sm font-semibold">Trapped!</span>
+            </div>
+            <div className="text-lg font-bold text-red-300">
+              {Math.ceil(slowdownTimer / 1000)}s
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Virtual joystick for mobile */}
+      <div className="md:hidden">
+        <div
+          className="absolute w-20 h-20 border-2 border-white/30 rounded-full bg-black/20 backdrop-blur-sm"
+          style={{
+            left: `${joystick.centerX - 40}px`,
+            top: `${joystick.centerY - 40}px`,
+          }}
+        >
+          <div
+            className="absolute w-8 h-8 bg-white/60 rounded-full transition-all duration-75"
+            style={{
+              left: `${joystick.knobX - joystick.centerX + 40 - 16}px`,
+              top: `${joystick.knobY - joystick.centerY + 40 - 16}px`,
+            }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={handleMouseDown}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
