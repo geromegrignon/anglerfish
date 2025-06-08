@@ -222,9 +222,9 @@ function App() {
         let newVisible = preyItem.visible;
         let newTimer = Math.max(0, preyItem.visibilityTimer - 16);
         
-        // Check if prey is within the anglerfish's glow radius
-        const lureX = anglerfishPos.x + 12 + 1.5; // lure position
-        const lureY = anglerfishPos.y - 8 - 1; // lure position
+       // Check if prey is within the anglerfish's glow radius (adjusted for SVG)
+       const lureX = anglerfishPos.x + 40; // lure position
+       const lureY = anglerfishPos.y + 10; // lure position
         const glowDistance = Math.sqrt(
           Math.pow(lureX - preyItem.x, 2) +
           Math.pow(lureY - preyItem.y, 2)
@@ -380,9 +380,9 @@ function App() {
 
       // Trigger bioluminescence
       if (keys.has(' ')) {
-        // Center bioluminescent pulse on the lure
-        const lureX = anglerfishPos.x + 12 + 1.5;
-        const lureY = anglerfishPos.y - 8 - 1;
+       // Center bioluminescent pulse on the lure (adjusted for SVG)
+       const lureX = anglerfishPos.x + 40; // Adjusted for SVG lure position
+       const lureY = anglerfishPos.y + 10; // Adjusted for SVG lure position
         const newWave: SonarWave = {
           id: Date.now(),
           x: lureX,
@@ -535,70 +535,47 @@ function App() {
             transform: `rotate(${keys.has('arrowleft') || keys.has('a') ? '-5deg' : keys.has('arrowright') || keys.has('d') ? '5deg' : '0deg'})`
           }}
         >
-          {/* Anglerfish body */}
+          {/* Anglerfish SVG with glow effects */}
           <div className="relative">
-            {/* Lure */}
-            <div className="absolute -top-8 left-12 w-1 h-8 bg-gray-600">
-              {/* Lure glow effect - positioned around the lure orb */}
-              <div
-                className="absolute pointer-events-none"
-                style={{
-                  left: `${1.5 - glowEffect.radius}px`,
-                  top: `${-1 - glowEffect.radius}px`,
-                  width: `${glowEffect.radius * 2}px`,
-                  height: `${glowEffect.radius * 2}px`,
-                  background: `radial-gradient(circle, rgba(34, 211, 238, ${glowEffect.intensity}) 0%, rgba(34, 211, 238, ${glowEffect.intensity * 0.7}) 30%, rgba(34, 211, 238, ${glowEffect.intensity * 0.4}) 60%, transparent 100%)`,
-                  borderRadius: '50%',
-                  filter: 'blur(2px)',
-                  animation: 'pulse 2s ease-in-out infinite'
-                }}
-              />
-              
-              {/* Secondary glow layer for more depth */}
-              <div
-                className="absolute pointer-events-none"
-                style={{
-                  left: `${1.5 - glowEffect.radius * 0.6}px`,
-                  top: `${-1 - glowEffect.radius * 0.6}px`,
-                  width: `${glowEffect.radius * 1.2}px`,
-                  height: `${glowEffect.radius * 1.2}px`,
-                  background: `radial-gradient(circle, rgba(0, 255, 255, ${glowEffect.intensity * 0.8}) 0%, rgba(0, 255, 255, ${glowEffect.intensity * 0.3}) 50%, transparent 70%)`,
-                  borderRadius: '50%',
-                  filter: 'blur(4px)',
-                  animation: 'pulse 3s ease-in-out infinite reverse'
-                }}
-              />
-              
-              <div 
-                className="absolute -top-1 -left-1 w-3 h-3 bg-cyan-400 rounded-full animate-pulse shadow-lg shadow-cyan-400"
-                style={{
-                  boxShadow: `0 0 ${8 + score * 0.1}px rgba(34, 211, 238, ${0.8 + glowEffect.intensity}), 0 0 ${16 + score * 0.2}px rgba(0, 255, 255, ${0.4 + glowEffect.intensity * 0.5})`
-                }}
-              />
-            </div>
+            {/* Lure glow effect - positioned around where the lure would be on the SVG */}
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: `${40 - glowEffect.radius}px`, // Adjusted for SVG lure position
+                top: `${10 - glowEffect.radius}px`, // Adjusted for SVG lure position
+                width: `${glowEffect.radius * 2}px`,
+                height: `${glowEffect.radius * 2}px`,
+                background: `radial-gradient(circle, rgba(34, 211, 238, ${glowEffect.intensity}) 0%, rgba(34, 211, 238, ${glowEffect.intensity * 0.7}) 30%, rgba(34, 211, 238, ${glowEffect.intensity * 0.4}) 60%, transparent 100%)`,
+                borderRadius: '50%',
+                filter: 'blur(2px)',
+                animation: 'pulse 2s ease-in-out infinite'
+              }}
+            />
             
-            {/* Main body */}
-            <div className="w-20 h-12 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 rounded-full relative shadow-xl">
-              {/* Mouth with teeth */}
-              <div className="absolute -left-3 top-3 w-8 h-6 bg-black rounded-l-full">
-                <div className="absolute top-1 left-1 w-1 h-4 bg-white opacity-80" />
-                <div className="absolute top-0 left-2 w-1 h-3 bg-white opacity-80" />
-                <div className="absolute top-2 left-3 w-1 h-2 bg-white opacity-80" />
-              </div>
-              
-              {/* Eye */}
-              <div className="absolute left-8 top-2 w-4 h-4 bg-yellow-400 rounded-full">
-                <div className="absolute top-1 left-1 w-2 h-2 bg-black rounded-full" />
-              </div>
-              
-              {/* Fins */}
-              <div className="absolute top-0 left-14 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-8 border-b-gray-600" />
-              <div className="absolute -right-4 top-3 w-0 h-0 border-t-6 border-t-gray-700 border-b-6 border-b-gray-700 border-l-8 border-l-gray-800" />
-              
-              {/* Side fins */}
-              <div className="absolute -bottom-2 left-6 w-0 h-0 border-l-3 border-l-transparent border-r-3 border-r-transparent border-t-4 border-t-gray-600" />
-              <div className="absolute -top-2 left-10 w-0 h-0 border-l-3 border-l-transparent border-r-3 border-r-transparent border-b-4 border-b-gray-600" />
-            </div>
+            {/* Secondary glow layer for more depth */}
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: `${40 - glowEffect.radius * 0.6}px`,
+                top: `${10 - glowEffect.radius * 0.6}px`,
+                width: `${glowEffect.radius * 1.2}px`,
+                height: `${glowEffect.radius * 1.2}px`,
+                background: `radial-gradient(circle, rgba(0, 255, 255, ${glowEffect.intensity * 0.8}) 0%, rgba(0, 255, 255, ${glowEffect.intensity * 0.3}) 50%, transparent 70%)`,
+                borderRadius: '50%',
+                filter: 'blur(4px)',
+                animation: 'pulse 3s ease-in-out infinite reverse'
+              }}
+            />
+            
+            {/* Anglerfish SVG */}
+            <img 
+              src="/anglerfish.svg" 
+              alt="Anglerfish" 
+              className="w-20 h-16 drop-shadow-lg"
+              style={{
+                filter: 'drop-shadow(0 0 8px rgba(34, 211, 238, 0.3))'
+              }}
+            />
           </div>
         </div>
 
