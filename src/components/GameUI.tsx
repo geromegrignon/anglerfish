@@ -41,10 +41,8 @@ export const GameUI: React.FC<GameUIProps> = ({
           {Array.from({ length: 3 }).map((_, index) => (
             <Heart
               key={index}
-              className={`w-6 h-6 ml-1 ${
-                index < hitPoints 
-                  ? 'text-red-500 fill-red-500' 
-                  : 'text-gray-600 fill-gray-600'
+              className={`w-6 h-6 ml-1 text-red-500 ${
+                index < hitPoints ? 'fill-red-500' : 'fill-none'
               }`}
             />
           ))}
