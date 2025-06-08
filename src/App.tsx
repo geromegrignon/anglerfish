@@ -153,7 +153,10 @@ function App() {
           rgb(17, 24, 39) 0%, 
           rgb(0, 0, 0) 30%, 
           rgb(0, 0, 0) 70%, 
-          rgb(17, 24, 39) 100%)`
+          rgb(17, 24, 39) 100%)`,
+        // Force hardware acceleration
+        transform: 'translate3d(0, 0, 0)',
+        willChange: 'transform'
       }}
     >
       <GameEntities
@@ -173,7 +176,7 @@ function App() {
       <img
         src="/anglerfish.svg"
         alt="anglerfish"
-        className="absolute z-10 pointer-events-none"
+        className="absolute z-10 pointer-events-none will-change-transform"
         style={{
           left: `${anglerfishPos.x}px`,
           top: `${anglerfishPos.y - cameraY}px`,
@@ -181,7 +184,8 @@ function App() {
           height: '60px',
           filter: slowedDown 
             ? 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.8)) brightness(0.7)' 
-            : 'drop-shadow(0 0 15px rgba(34, 211, 238, 0.6))'
+            : 'drop-shadow(0 0 15px rgba(34, 211, 238, 0.6))',
+          transform: 'translate3d(0, 0, 0)'
         }}
       />
 

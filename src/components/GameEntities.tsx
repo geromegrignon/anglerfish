@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Zap, Bomb } from 'lucide-react';
 import { 
   Prey, 
@@ -35,20 +35,49 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
   mines,
   cameraY
 }) => {
+  // Viewport culling - only render entities visible on screen
+  const viewportTop = cameraY - 100;
+  const viewportBottom = cameraY + window.innerHeight + 100;
+  
+  const visibleParticles = useMemo(() => 
+    particles.filter(p => p.y >= viewportTop && p.y <= viewportBottom),
+    [particles, viewportTop, viewportBottom]
+  );
+  
+  const visiblePrey = useMemo(() => 
+    prey.filter(p => !p.collected && p.visible && p.y >= viewportTop && p.y <= viewportBottom),
+    [prey, viewportTop, viewportBottom]
+  );
+  
+  const visibleLightBonuses = useMemo(() => 
+    lightBonuses.filter(b => !b.collected && b.y >= viewportTop && b.y <= viewportBottom),
+    [lightBonuses, viewportTop, viewportBottom]
+  );
+  
+  const visibleNetTraps = useMemo(() => 
+    netTraps.filter(t => t.y >= viewportTop && t.y <= viewportBottom),
+    [netTraps, viewportTop, viewportBottom]
+  );
+  
+  const visibleMines = useMemo(() => 
+    mines.filter(m => !m.exploded && m.y >= viewportTop && m.y <= viewportBottom),
+    [mines, viewportTop, viewportBottom]
+  );
+
   return (
     <>
-      {/* Marine snow particles */}
-      {particles.map(particle => (
+      {/* Marine snow particles - reduced count for mobile */}
+      {visibleParticles.slice(0, 30).map(particle => (
         <div
           key={particle.id}
-          className="absolute bg-white rounded-full pointer-events-none"
+          className="absolute bg-white rounded-full pointer-events-none will-change-transform"
           style={{
             left: `${particle.x}px`,
             top: `${particle.y - cameraY}px`,
             width: `${particle.size}px`,
             height: `${particle.size}px`,
             opacity: particle.opacity,
-            transform: `translateZ(0)` // Force GPU acceleration
+            transform: `translate3d(0, 0, 0)` // Force GPU acceleration
           }}
         />
       ))}
@@ -57,13 +86,14 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
       {sonarWaves.map(wave => (
         <div
           key={wave.id}
-          className="absolute border-2 border-cyan-400 rounded-full pointer-events-none"
+          className="absolute border-2 border-cyan-400 rounded-full pointer-events-none will-change-transform"
           style={{
             left: `${wave.x - wave.radius}px`,
             top: `${wave.y - wave.radius - cameraY}px`,
             width: `${wave.radius * 2}px`,
             height: `${wave.radius * 2}px`,
             opacity: wave.opacity,
+            transform: `translate3d(0, 0, 0)`,
             boxShadow: `0 0 ${wave.radius / 2}px rgba(34, 211, 238, ${wave.opacity * 0.5})`
           }}
         />
@@ -71,7 +101,7 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
 
       {/* Anglerfish light glow */}
       <div
-        className="absolute rounded-full pointer-events-none"
+        className="absolute rounded-full pointer-events-none will-change-transform"
         style={{
           left: `${anglerfishPos.x + 40 - lightRadius}px`,
           top: `${anglerfishPos.y + 10 - lightRadius - cameraY}px`,
@@ -81,14 +111,13 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
             rgba(34, 211, 238, ${lightBonusActive ? 0.4 : 0.2}) 0%, 
             rgba(34, 211, 238, ${lightBonusActive ? 0.2 : 0.1}) 30%, 
             transparent 70%)`,
-          filter: 'blur(8px)'
+          filter: 'blur(8px)',
+          transform: `translate3d(0, 0, 0)`
         }}
       />
 
       {/* Prey */}
-      {prey.map(preyItem => {
-        if (preyItem.collected || !preyItem.visible) return null;
-        
+      {visiblePrey.map(preyItem => {
         const size = preyItem.type === 'large' ? 24 : preyItem.type === 'medium' ? 18 : 12;
         const opacity = Math.min(1, preyItem.visibilityTimer / 1000);
         
@@ -97,7 +126,7 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
             key={preyItem.id}
             src={`/${preyItem.fishSvg}.svg`}
             alt="prey"
-            className="absolute pointer-events-none"
+            className="absolute pointer-events-none will-change-transform"
             style={{
               left: `${preyItem.x - size/2}px`,
               top: `${preyItem.y - size/2 - cameraY}px`,
@@ -105,27 +134,25 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
               height: `${size}px`,
               opacity: opacity,
               filter: `drop-shadow(0 0 ${size/3}px rgba(34, 211, 238, ${opacity * 0.8}))`,
-              transform: 'scaleX(-1)' // Face left
+              transform: 'scaleX(-1) translate3d(0, 0, 0)' // Face left + GPU acceleration
             }}
           />
         );
       })}
 
       {/* Light bonuses */}
-      {lightBonuses.map(bonus => {
-        if (bonus.collected) return null;
-        
+      {visibleLightBonuses.map(bonus => {
         const pulseScale = 1 + Math.sin(bonus.pulsePhase) * 0.3;
         const glowIntensity = 0.5 + Math.sin(bonus.pulsePhase) * 0.3;
         
         return (
           <div
             key={bonus.id}
-            className="absolute pointer-events-none"
+            className="absolute pointer-events-none will-change-transform"
             style={{
               left: `${bonus.x - 15}px`,
               top: `${bonus.y - 15 - cameraY}px`,
-              transform: `scale(${pulseScale})`,
+              transform: `scale(${pulseScale}) translate3d(0, 0, 0)`,
             }}
           >
             <Zap 
@@ -139,7 +166,7 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
       })}
 
       {/* Net traps */}
-      {netTraps.map(trap => {
+      {visibleNetTraps.map(trap => {
         const pulseOpacity = 0.3 + Math.sin(trap.pulsePhase) * 0.2;
         const isVisible = trap.triggered || Math.sin(trap.pulsePhase) > 0;
         
@@ -148,10 +175,11 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
         return (
           <div
             key={trap.id}
-            className="absolute pointer-events-none"
+            className="absolute pointer-events-none will-change-transform"
             style={{
               left: `${trap.x - 20}px`,
               top: `${trap.y - 20 - cameraY}px`,
+              transform: `translate3d(0, 0, 0)`
             }}
           >
             <div 
@@ -175,20 +203,18 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
       })}
 
       {/* Mines */}
-      {mines.map(mine => {
-        if (mine.exploded) return null;
-        
+      {visibleMines.map(mine => {
         const pulseScale = 1 + Math.sin(mine.pulsePhase) * 0.2;
         const glowIntensity = 0.4 + Math.sin(mine.pulsePhase) * 0.3;
         
         return (
           <div
             key={mine.id}
-            className="absolute pointer-events-none"
+            className="absolute pointer-events-none will-change-transform"
             style={{
               left: `${mine.x - 20}px`,
               top: `${mine.y - 20 - cameraY}px`,
-              transform: `scale(${pulseScale})`,
+              transform: `scale(${pulseScale}) translate3d(0, 0, 0)`,
             }}
           >
             <Bomb 

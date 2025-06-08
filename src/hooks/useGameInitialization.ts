@@ -16,16 +16,16 @@ export const useGameInitialization = ({
   setLightBonuses,
   setParticles
 }: UseGameInitializationProps) => {
-  // Initialize prey
+  // Initialize prey (reduced count for mobile performance)
   useEffect(() => {
     const newPrey: Prey[] = [];
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 150; i++) { // Reduced from 200
       const types: ('small' | 'medium' | 'large')[] = ['small', 'small', 'small', 'medium', 'medium', 'large'];
       const fishSvgs: ('fish-1' | 'fish-2')[] = ['fish-1', 'fish-2'];
       newPrey.push({
         id: i,
         x: Math.random() * 1400 + 200,
-        y: Math.random() * 4000 + 100,
+        y: Math.random() * 3000 + 100, // Reduced initial spawn area
         collected: false,
         visible: false,
         visibilityTimer: 0,
@@ -36,14 +36,14 @@ export const useGameInitialization = ({
     setPrey(newPrey);
   }, [setPrey]);
 
-  // Initialize mines
+  // Initialize mines (reduced count)
   useEffect(() => {
     const newMines: Mine[] = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 35; i++) { // Reduced from 50
       newMines.push({
         id: i,
         x: Math.random() * 1400 + 200,
-        y: Math.random() * 4000 + 500,
+        y: Math.random() * 3000 + 500, // Reduced initial spawn area
         exploded: false,
         pulsePhase: Math.random() * Math.PI * 2,
         velocityX: 0,
@@ -56,14 +56,14 @@ export const useGameInitialization = ({
     setMines(newMines);
   }, [setMines]);
 
-  // Initialize net traps
+  // Initialize net traps (reduced count)
   useEffect(() => {
     const newNetTraps: NetTrap[] = [];
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 20; i++) { // Reduced from 30
       newNetTraps.push({
         id: i,
         x: Math.random() * 1400 + 200,
-        y: Math.random() * 4000 + 1000,
+        y: Math.random() * 3000 + 1000, // Reduced initial spawn area
         triggered: false,
         pulsePhase: Math.random() * Math.PI * 2
       });
@@ -78,7 +78,7 @@ export const useGameInitialization = ({
       newLightBonuses.push({
         id: i,
         x: Math.random() * 1400 + 200,
-        y: 2000 + i * 1000 + Math.random() * 500,
+        y: 2000 + i * 800 + Math.random() * 400, // Reduced spacing
         collected: false,
         pulsePhase: Math.random() * Math.PI * 2
       });
@@ -86,14 +86,14 @@ export const useGameInitialization = ({
     setLightBonuses(newLightBonuses);
   }, [setLightBonuses]);
 
-  // Initialize floating particles (marine snow)
+  // Initialize floating particles (marine snow) - reduced count
   useEffect(() => {
     const newParticles = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 30; i++) { // Reduced from 50
       newParticles.push({
         id: i,
         x: Math.random() * window.innerWidth,
-        y: Math.random() * 2000 - 1000,
+        y: Math.random() * 1500 - 750, // Reduced initial area
         speed: Math.random() * 1 + 0.5,
         size: Math.random() * 3 + 1,
         opacity: Math.random() * 0.6 + 0.2
