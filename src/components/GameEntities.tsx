@@ -44,6 +44,15 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
     [particles, viewportTop, viewportBottom]
   );
   
+  const marineSnow = useMemo(() => 
+    visibleParticles.filter(p => p.type === 'snow'),
+    [visibleParticles]
+  );
+  
+  const planktonParticles = useMemo(() => 
+    visibleParticles.filter(p => p.type === 'plankton'),
+    [visibleParticles]
+  
   const visiblePrey = useMemo(() => 
     prey.filter(p => !p.collected && p.visible && p.y >= viewportTop && p.y <= viewportBottom),
     [prey, viewportTop, viewportBottom]
@@ -66,8 +75,8 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
 
   return (
     <>
-      {/* Marine snow particles - reduced count for mobile */}
-      {visibleParticles.slice(0, 30).map(particle => (
+      {/* Marine snow particles */}
+      {marineSnow.map(particle => (
         <div
           key={particle.id}
           className="absolute bg-white rounded-full pointer-events-none will-change-transform"
@@ -81,6 +90,47 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
           }}
         />
       ))}
+      
+      {/* Bioluminescent plankton particles */}
+      {planktonParticles.map(particle => {
+        const pulseIntensity = particle.pulsePhase ? 0.5 + Math.sin(particle.pulsePhase) * 0.5 : 1;
+        const glowSize = particle.size * 3;
+        
+        return (
+          <div
+            key={particle.id}
+            className="absolute rounded-full pointer-events-none will-change-transform"
+            style={{
+              left: `${particle.x - glowSize/2}px`,
+              top: `${particle.y - glowSize/2 - cameraY}px`,
+              width: `${glowSize}px`,
+              height: `${glowSize}px`,
+              background: `radial-gradient(circle, 
+                ${particle.color}${Math.floor(pulseIntensity * particle.opacity * 255).toString(16).padStart(2, '0')} 0%, 
+                ${particle.color}${Math.floor(pulseIntensity * particle.opacity * 128).toString(16).padStart(2, '0')} 30%, 
+                transparent 70%)`,
+              filter: `blur(${particle.size}px)`,
+              transform: `translate3d(0, 0, 0)`,
+              opacity: pulseIntensity * particle.opacity
+            }}
+          >
+            {/* Core particle */}
+            <div
+              className="absolute rounded-full"
+              style={{
+                left: '50%',
+                top: '50%',
+                width: `${particle.size}px`,
+                height: `${particle.size}px`,
+                backgroundColor: particle.color,
+                transform: 'translate(-50%, -50%)',
+                opacity: pulseIntensity,
+                filter: 'blur(0.5px)'
+              }}
+            />
+          </div>
+        );
+      })}
 
       {/* Bioluminescent waves */}
       {sonarWaves.map(wave => (

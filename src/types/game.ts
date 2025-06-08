@@ -50,6 +50,9 @@ export interface Particle {
   speed: number;
   size: number;
   opacity: number;
+  type: 'snow' | 'plankton';
+  pulsePhase?: number;
+  color?: string;
 }
 
 export interface LightBonus {

@@ -98,17 +98,37 @@ export const useGameInitialization = ({
 
   // Initialize floating particles (marine snow) - reduced count
   useEffect(() => {
-    const newParticles = [];
-    for (let i = 0; i < 30; i++) { // Reduced from 50
+    const newParticles: Particle[] = [];
+    
+    // Marine snow particles
+    for (let i = 0; i < 20; i++) {
       newParticles.push({
         id: i,
         x: Math.random() * window.innerWidth,
         y: Math.random() * 1500 - 750, // Reduced initial area
         speed: Math.random() * 1 + 0.5,
         size: Math.random() * 3 + 1,
-        opacity: Math.random() * 0.6 + 0.2
+        opacity: Math.random() * 0.6 + 0.2,
+        type: 'snow'
       });
     }
+    
+    // Bioluminescent plankton particles
+    for (let i = 20; i < 60; i++) {
+      const colors = ['#00FFFF', '#00CED1', '#40E0D0', '#48D1CC', '#20B2AA', '#87CEEB'];
+      newParticles.push({
+        id: i,
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * 2000 - 1000,
+        speed: Math.random() * 0.8 + 0.3,
+        size: Math.random() * 2 + 1,
+        opacity: Math.random() * 0.4 + 0.3,
+        type: 'plankton',
+        pulsePhase: Math.random() * Math.PI * 2,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
+    
     setParticles(newParticles);
   }, [setParticles]);
 };
