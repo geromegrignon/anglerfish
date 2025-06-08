@@ -146,7 +146,7 @@ function App() {
   return (
     <div 
       ref={canvasRef}
-      className="relative w-full h-screen bg-black overflow-hidden"
+      className="relative w-full h-screen bg-blue-950 overflow-hidden"
       style={{
         touchAction: 'none',
         // Force hardware acceleration
