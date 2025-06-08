@@ -65,7 +65,10 @@ interface JoystickState {
 function App() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [anglerfishPos, setAnglerfishPos] = useState<Position>({ x: 100, y: 300 });
-  const [score, setScore] = useState(0);
+  const [hunger, setHunger] = useState(100); // Hunger level (0-100)
+  const [maxDepthReached, setMaxDepthReached] = useState(2000);
+  const [gameOver, setGameOver] = useState(false);
+  const [survivalTime, setSurvivalTime] = useState(0);
   const [prey, setPrey] = useState<Prey[]>([]);
   const [mines, setMines] = useState<Mine[]>([]);
   const [sonarWaves, setSonarWaves] = useState<SonarWave[]>([]);
@@ -125,20 +128,20 @@ function App() {
     setMines(newMines);
   }, []);
 
-  // Update glow effect based on score
+  // Update glow effect based on hunger level
   useEffect(() => {
     const baseRadius = 60;
-    const maxRadius = 200;
-    const radiusIncrease = Math.min(140, score * 0.5); // Grows with score
+    const maxRadius = 120;
+    const radiusIncrease = Math.min(60, hunger * 0.6); // Grows with hunger
     const newRadius = baseRadius + radiusIncrease;
     
     const baseIntensity = 0.3;
-    const maxIntensity = 0.8;
-    const intensityIncrease = Math.min(0.5, score * 0.002);
+    const maxIntensity = 0.7;
+    const intensityIncrease = Math.min(0.4, hunger * 0.004);
     const newIntensity = baseIntensity + intensityIncrease;
     
     setGlowEffect({ radius: newRadius, intensity: newIntensity });
-  }, [score]);
+  }, [hunger]);
 
   // Initialize floating particles (marine snow)
   useEffect(() => {
@@ -295,9 +298,22 @@ function App() {
   // Bioluminescent pulse
   // Game loop
   useEffect(() => {
-    if (!gameStarted) return;
+    if (!gameStarted || gameOver) return;
 
     const gameLoop = () => {
+      // Update survival time
+      setSurvivalTime(prev => prev + 16);
+      
+      // Decrease hunger over time (faster at deeper levels)
+      const hungerDecayRate = 0.008 + (depth - 2000) * 0.000002; // Hunger depletes faster as you go deeper
+      setHunger(prev => {
+        const newHunger = Math.max(0, prev - hungerDecayRate);
+        if (newHunger <= 0) {
+          setGameOver(true);
+        }
+        return newHunger;
+      });
+      
       // Move anglerfish based on keys
       setAnglerfishPos(prev => {
         let newX = prev.x;
@@ -325,7 +341,9 @@ function App() {
       setCameraY(anglerfishPos.y - window.innerHeight / 2);
 
       // Update depth based on anglerfish position
-      setDepth(2000 + Math.max(0, anglerfishPos.y - 300));
+      const currentDepth = 2000 + Math.max(0, anglerfishPos.y - 300);
+      setDepth(currentDepth);
+      setMaxDepthReached(prev => Math.max(prev, currentDepth));
 
       // Update particles (marine snow)
       setParticles(prev => prev.map(particle => ({
@@ -456,7 +474,6 @@ function App() {
         newMine.pulsePhase = mine.pulsePhase + 0.05;
         
         // Only move mines if we're deep enough (below 3000m depth)
-        const currentDepth = 2000 + Math.max(0, anglerfishPos.y - 300);
         if (currentDepth > 3000 && !mine.exploded) {
           // Decrease direction change timer
           newMine.changeDirectionTimer = mine.changeDirectionTimer - 16;
@@ -498,8 +515,9 @@ function App() {
             Math.pow(anglerfishPos.y + 25 - preyItem.y, 2)
           );
           if (distance < 35) {
-            const points = preyItem.type === 'large' ? 25 : preyItem.type === 'medium' ? 15 : 10;
-            setScore(s => s + points);
+            // Restore hunger based on prey size
+            const hungerRestore = preyItem.type === 'large' ? 25 : preyItem.type === 'medium' ? 15 : 8;
+            setHunger(h => Math.min(100, h + hungerRestore));
             return { ...preyItem, collected: true };
           }
         }
@@ -514,7 +532,7 @@ function App() {
             Math.pow(anglerfishPos.y + 25 - mine.y, 2)
           );
           if (distance < 45) {
-            setScore(s => Math.max(0, s - 50)); // Lose 50 points, but don't go below 0
+            setHunger(h => Math.max(0, h - 30)); // Lose hunger when hitting mines
             return { ...mine, exploded: true };
           }
         }
@@ -539,17 +557,87 @@ function App() {
 
     const interval = setInterval(gameLoop, 16);
     return () => clearInterval(interval);
-  }, [keys, anglerfishPos, gameStarted, cameraY, glowEffect.radius, sonarWaves, joystick]);
+  }, [keys, anglerfishPos, gameStarted, gameOver, cameraY, glowEffect.radius, sonarWaves, joystick, depth]);
 
   const startGame = () => {
     setGameStarted(true);
-    setScore(0);
+    setHunger(100);
+    setMaxDepthReached(2000);
+    setGameOver(false);
+    setSurvivalTime(0);
     setAnglerfishPos({ x: 100, y: 300 });
     setCameraY(0);
     setDepth(2000);
     // Reset mines
     setMines(prev => prev.map(mine => ({ ...mine, exploded: false })));
+    // Reset prey
+    setPrey(prev => prev.map(preyItem => ({ ...preyItem, collected: false })));
   };
+
+  // Game Over Screen
+  if (gameOver) {
+    const finalScore = Math.floor(maxDepthReached);
+    const timeMinutes = Math.floor(survivalTime / 60000);
+    const timeSeconds = Math.floor((survivalTime % 60000) / 1000);
+    
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-red-900 flex items-center justify-center relative overflow-hidden">
+        {/* Death ambiance effects */}
+        <div className="absolute inset-0">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute bg-red-900 opacity-20 rounded-full animate-pulse"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                width: `${Math.random() * 300 + 150}px`,
+                height: `${Math.random() * 300 + 150}px`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${Math.random() * 2 + 2}s`
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="text-center z-10">
+          <h1 className="text-6xl font-bold text-red-400 mb-4 drop-shadow-lg animate-pulse">
+            STARVED
+          </h1>
+          <h2 className="text-3xl text-red-300 mb-6 drop-shadow-md">
+            The Abyss Claims Another
+          </h2>
+          
+          <div className="mb-8 text-gray-300 space-y-3 bg-black bg-opacity-70 p-8 rounded-lg border-2 border-red-500">
+            <p className="text-4xl font-bold text-cyan-400">Final Depth: {finalScore}m</p>
+            <p className="text-xl text-yellow-400">Survival Time: {timeMinutes}m {timeSeconds}s</p>
+            <div className="mt-4 pt-4 border-t border-gray-600">
+              <p className="text-red-300">💀 Hunger consumed you in the depths</p>
+              <p className="text-gray-400 text-sm mt-2">The eternal darkness has claimed another predator...</p>
+            </div>
+          </div>
+          
+          <div className="space-y-4">
+            <button
+              onClick={startGame}
+              className="bg-cyan-600 hover:bg-cyan-500 text-black px-8 py-4 rounded-lg text-xl font-bold transform transition-all duration-200 hover:scale-105 shadow-lg border-2 border-cyan-400 mr-4"
+            >
+              Hunt Again
+            </button>
+            <button
+              onClick={() => {
+                setGameStarted(false);
+                setGameOver(false);
+              }}
+              className="bg-gray-600 hover:bg-gray-500 text-white px-8 py-4 rounded-lg text-xl font-bold transform transition-all duration-200 hover:scale-105 shadow-lg border-2 border-gray-400"
+            >
+              Return to Surface
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!gameStarted) {
     return (
@@ -595,19 +683,21 @@ function App() {
           <h2 className="text-4xl text-cyan-300 mb-2 drop-shadow-md">
             HUNTER
           </h2>
-          <p className="text-lg text-gray-400 mb-8">Deep Ocean Predator</p>
+          <p className="text-lg text-gray-400 mb-8">Survival in the Depths</p>
           <div className="mb-8 text-gray-300 space-y-2 bg-black bg-opacity-50 p-6 rounded-lg">
             <p className="text-cyan-400 font-semibold">🌊 {depth}m below surface</p>
-            <p>Use WASD or Arrow Keys to swim</p>
-            <p>Press SPACE for bioluminescent pulse</p>
-            <p>Hunt prey in the eternal darkness</p>
-            <p className="text-yellow-400 text-sm">Only your light reveals what lurks in the abyss...</p>
+            <p className="text-red-400 font-semibold">🍽️ SURVIVE BY HUNTING</p>
+            <p>WASD/Arrows: Swim • SPACE: Bioluminescent pulse</p>
+            <p className="text-yellow-400">🐟 Eat fish to restore hunger</p>
+            <p className="text-red-400">💣 Avoid mines (drain hunger)</p>
+            <p className="text-orange-400">⚠️ Hunger depletes faster in deep waters</p>
+            <p className="text-gray-400 text-sm">Survive as long as possible. Score = Maximum depth reached.</p>
           </div>
           <button
             onClick={startGame}
             className="bg-cyan-600 hover:bg-cyan-500 text-black px-8 py-4 rounded-lg text-xl font-bold transform transition-all duration-200 hover:scale-105 shadow-lg border-2 border-cyan-400"
           >
-            Descend into Darkness
+            Begin the Hunt
           </button>
         </div>
       </div>
@@ -833,35 +923,42 @@ function App() {
 
         {/* Abyss ambiance */}
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent opacity-60" />
-
-        {/* Depth milestones */}
-        {depth > 5000 && (
-          <div className="absolute inset-0 bg-black bg-opacity-80 flex items-center justify-center z-30">
-            <div className="bg-gray-900 border-2 border-cyan-400 p-8 rounded-lg text-center">
-              <h2 className="text-4xl font-bold text-cyan-400 mb-4">Abyssal Depths!</h2>
-              <p className="text-xl text-gray-300 mb-4">You've reached the deepest trenches!</p>
-              <p className="text-lg text-cyan-300 mb-6">Depth: {Math.floor(depth)}m | Score: {score}</p>
-              <button
-                onClick={() => {
-                  setGameStarted(false);
-                  setPrey([]);
-                  setMines([]);
-                }}
-                className="bg-cyan-600 hover:bg-cyan-500 text-black px-6 py-3 rounded-lg font-bold border-2 border-cyan-400"
-              >
-                Surface
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Fixed UI elements that don't move with camera */}
-      <div className="fixed top-4 left-4 z-20">
+      <div className="fixed top-4 left-4 z-20 space-y-2">
+        {/* Hunger Bar */}
+        <div className="bg-black bg-opacity-70 px-4 py-3 rounded-lg border border-red-600">
+          <div className="text-sm text-red-300 mb-1">HUNGER</div>
+          <div className="w-48 h-4 bg-gray-800 rounded-full border border-red-500">
+            <div 
+              className="h-full rounded-full transition-all duration-300"
+              style={{
+                width: `${hunger}%`,
+                background: hunger > 60 
+                  ? 'linear-gradient(90deg, #10b981, #34d399)' 
+                  : hunger > 30 
+                  ? 'linear-gradient(90deg, #f59e0b, #fbbf24)' 
+                  : 'linear-gradient(90deg, #ef4444, #f87171)',
+                boxShadow: hunger > 60 
+                  ? '0 0 8px rgba(16, 185, 129, 0.6)' 
+                  : hunger > 30 
+                  ? '0 0 8px rgba(245, 158, 11, 0.6)' 
+                  : '0 0 8px rgba(239, 68, 68, 0.6)'
+              }}
+            />
+          </div>
+          <div className="text-xs text-gray-400 mt-1">{Math.floor(hunger)}%</div>
+        </div>
+        
+        {/* Depth and Stats */}
         <div className="bg-black bg-opacity-70 text-cyan-400 px-4 py-2 rounded-lg border border-cyan-600">
-          <div className="text-xl font-bold">Score: {score}</div>
           <div className="text-sm text-gray-400">Depth: {Math.floor(depth)}m</div>
-          <div className="text-xs text-cyan-300">Light Radius: {Math.floor(glowEffect.radius)}px</div>
+          <div className="text-sm text-yellow-400">Max: {Math.floor(maxDepthReached)}m</div>
+          <div className="text-xs text-cyan-300">Light: {Math.floor(glowEffect.radius)}px</div>
+          <div className="text-xs text-gray-400">
+            Time: {Math.floor(survivalTime / 60000)}:{String(Math.floor((survivalTime % 60000) / 1000)).padStart(2, '0')}
+          </div>
         </div>
       </div>
 
@@ -871,10 +968,11 @@ function App() {
           <div>WASD/Arrows: Swim</div>
           <div>SPACE: Bioluminescence</div>
           <div className="text-cyan-300">Touch: Use joystick</div>
-          <div className="text-red-400">Avoid red mines! (-50 points)</div>
-          <div className="text-red-300">Deep mines move randomly!</div>
-          <div className="text-yellow-400">Light grows with score!</div>
-          <div className="text-yellow-400">Descend into the abyss!</div>
+          <div className="text-green-400">🐟 Eat fish: Restore hunger</div>
+          <div className="text-red-400">💣 Mines: Drain hunger (-30)</div>
+          <div className="text-orange-400">⚠️ Deeper = Faster hunger loss</div>
+          <div className="text-yellow-400">💡 Light grows with hunger</div>
+          <div className="text-cyan-400">🎯 Score = Maximum depth</div>
         </div>
       </div>
 
