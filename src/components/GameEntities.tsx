@@ -43,7 +43,6 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
     particles.filter(p => p.y >= viewportTop && p.y <= viewportBottom),
     [particles, viewportTop, viewportBottom]
   );
-  );
   
   const marineSnow = useMemo(() => 
     visibleParticles.filter(p => p.type === 'snow'),
@@ -53,7 +52,6 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
   const planktonParticles = useMemo(() => 
     visibleParticles.filter(p => p.type === 'plankton'),
     [visibleParticles]
-  );
   );
   
   const visiblePrey = useMemo(() => 
