@@ -13,8 +13,8 @@ export const useJoystick = ({ joystick, setJoystick, onEcholocation }: UseJoysti
     const handleResize = () => {
       setJoystick(prev => ({
         ...prev,
-        centerY: window.innerHeight - 60,
-        knobY: prev.active ? prev.knobY : window.innerHeight - 60
+        centerY: window.innerHeight - 120,
+        knobY: prev.active ? prev.knobY : window.innerHeight - 120
       }));
     };
 
