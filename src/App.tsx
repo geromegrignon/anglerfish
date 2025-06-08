@@ -715,7 +715,7 @@ function App() {
           const animationDelay = Math.random() * 8;
           const animationDuration = 15 + Math.random() * 10;
           const startY = Math.random() * 100;
-          const fishType = Math.random() > 0.5 ? 'fish-1' : 'fish-2';
+          const fishType = Math.random() > 0.5 ? 'fish-2' : 'fish-2';
           const size = 20 + Math.random() * 30;
           const opacity = 0.3 + Math.random() * 0.4;
           
