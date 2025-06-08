@@ -715,16 +715,17 @@ function App() {
           const animationDelay = Math.random() * 8;
           const animationDuration = 15 + Math.random() * 10;
           const startY = Math.random() * 100;
-          const fishType = Math.random() > 0.5 ? 'fish-1' : 'fish-2';
+          const fishType = i % 2 === 0 ? 'fish-1' : 'fish-2';
           const size = 20 + Math.random() * 30;
           const opacity = 0.3 + Math.random() * 0.4;
+          const isRightToLeft = fishType === 'fish-1';
           
           return (
             <div
               key={i}
               className="absolute pointer-events-none"
               style={{
-                left: '-60px',
+                left: isRightToLeft ? 'calc(100vw + 60px)' : '-60px',
                 top: `${startY}%`,
                 animationDelay: `${animationDelay}s`,
                 animationDuration: `${animationDuration}s`,
@@ -734,9 +735,8 @@ function App() {
               }}
             >
               <div
-                className="animate-swim-across"
                 style={{
-                  animation: `swimAcross ${animationDuration}s linear infinite`,
+                  animation: `${isRightToLeft ? 'swimRightToLeft' : 'swimLeftToRight'} ${animationDuration}s linear infinite`,
                   animationDelay: `${animationDelay}s`
                 }}
               >
@@ -748,7 +748,7 @@ function App() {
                     width: `${size}px`,
                     height: `${size * 0.8}px`,
                     filter: `hue-rotate(${Math.random() * 360}deg) saturate(0.8) brightness(0.9) drop-shadow(0 0 ${size/8}px rgba(34, 211, 238, 0.4))`,
-                    transform: `scaleY(${0.8 + Math.sin(i) * 0.2}) ${Math.random() > 0.5 ? 'scaleX(-1)' : ''}`
+                    transform: `scaleY(${0.8 + Math.sin(i) * 0.2}) ${isRightToLeft ? 'scaleX(1)' : 'scaleX(-1)'}`
                   }}
                 />
               </div>
@@ -762,6 +762,7 @@ function App() {
           const animationDuration = 8 + Math.random() * 6;
           const posX = 10 + Math.random() * 80;
           const posY = 20 + Math.random() * 60;
+          const creatureFishType = Math.random() > 0.5 ? 'fish-1' : 'fish-2';
           
           return (
             <div
@@ -784,7 +785,7 @@ function App() {
                 }}
               >
                 <img 
-                  src={`/${Math.random() > 0.5 ? 'fish-1' : 'fish-2'}.svg`} 
+                  src={`/${creatureFishType}.svg`} 
                   alt="Deep Sea Creature" 
                   className="drop-shadow-lg"
                   style={{

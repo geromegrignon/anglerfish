@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Custom animations for the landing page */
-@keyframes swimAcross {
+@keyframes swimLeftToRight {
   0% {
     transform: translateX(-60px) translateY(0px);
     opacity: 0;
@@ -16,6 +16,23 @@
   }
   100% {
     transform: translateX(calc(100vw + 60px)) translateY(-20px);
+    opacity: 0;
+  }
+}
+
+@keyframes swimRightToLeft {
+  0% {
+    transform: translateX(60px) translateY(0px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(calc(-100vw - 60px)) translateY(-20px);
     opacity: 0;
   }
 }
