@@ -100,7 +100,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setSurvivalTime(prev => prev + 16);
     
     // Decrease hunger over time - ALWAYS happens regardless of movement or input
-    const hungerDecayRate = 0.05 + (depth - 2000) * 0.000016;
+    const hungerDecayRate = 0.02; // Consistent 0.02% per frame (roughly 1.2% per second at 60fps)
     setHunger(prev => {
       const newHunger = Math.max(0, prev - hungerDecayRate);
       if (newHunger <= 0) {
@@ -429,7 +429,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           Math.pow(anglerfishPos.y + 25 - preyItem.y, 2)
         );
         if (distance < 35) {
-          const hungerRestore = preyItem.type === 'large' ? 25 : preyItem.type === 'medium' ? 15 : 8;
+          const hungerRestore = 5; // Always restore exactly 5% regardless of prey size
           setHunger(h => Math.min(100, h + hungerRestore));
           return { ...preyItem, collected: true };
         }
