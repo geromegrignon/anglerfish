@@ -44,6 +44,27 @@ export const GameUI: React.FC<GameUIProps> = ({
           </div>
 
           {/* in game effects */}
+          <div className="flex items-center space-x-2">
+            {/* Light bonus effect */}
+            {lightBonusActive && (
+              <div className="flex items-center bg-black/50 backdrop-blur-sm rounded-lg px-2 py-1 border border-yellow-500/30">
+                <Zap className="w-4 h-4 text-yellow-400 mr-1" />
+                <span className="text-yellow-300 text-sm font-bold">
+                  {Math.ceil(lightBonusTimer / 1000)}s
+                </span>
+              </div>
+            )}
+            
+            {/* Slowdown/trap effect */}
+            {slowedDown && (
+              <div className="flex items-center bg-black/50 backdrop-blur-sm rounded-lg px-2 py-1 border border-red-500/30">
+                <div className="w-4 h-4 border-2 border-red-400 rounded mr-1" />
+                <span className="text-red-300 text-sm font-bold">
+                  {Math.ceil(slowdownTimer / 1000)}s
+                </span>
+              </div>
+            )}
+          </div>
           
           {/* Hit Points */}
           <div className="flex items-center">
@@ -59,35 +80,6 @@ export const GameUI: React.FC<GameUIProps> = ({
         </div>
       </div>
 
-      {/* Light bonus timer */}
-      {lightBonusActive && (
-        <div className="absolute top-8 md:top-4 right-4 z-20">
-          <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-yellow-500/30">
-            <div className="flex items-center mb-1">
-              <Zap className="w-4 h-4 text-yellow-400 mr-2" />
-              <span className="text-yellow-300 text-sm font-semibold">Enhanced Vision</span>
-            </div>
-            <div className="text-lg font-bold text-yellow-300">
-              {Math.ceil(lightBonusTimer / 1000)}s
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Slowdown effect indicator */}
-      {slowedDown && (
-        <div className="absolute top-24 md:top-20 right-4 z-20">
-          <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-red-500/30">
-            <div className="flex items-center mb-1">
-              <div className="w-4 h-4 border-2 border-red-400 rounded mr-2" />
-              <span className="text-red-300 text-sm font-semibold">Trapped!</span>
-            </div>
-            <div className="text-lg font-bold text-red-300">
-              {Math.ceil(slowdownTimer / 1000)}s
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };
