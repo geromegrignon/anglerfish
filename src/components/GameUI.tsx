@@ -58,7 +58,7 @@ export const GameUI: React.FC<GameUIProps> = ({
       </div>
 
       {/* In-game effects - absolutely centered */}
-      <div className="absolute top-1§ md:top-12 left-1/2 transform -translate-x-1/2 z-20">
+      <div className="absolute top-16 md:top-12 left-1/2 transform -translate-x-1/2 z-20">
         <div className="flex items-center space-x-3">
           {/* Light bonus effect */}
           {lightBonusActive && (
