@@ -43,29 +43,6 @@ export const GameUI: React.FC<GameUIProps> = ({
             </div>
           </div>
 
-          {/* in game effects */}
-          <div className="flex items-center space-x-2">
-            {/* Light bonus effect */}
-            {lightBonusActive && (
-              <div className="flex items-center bg-black/50 backdrop-blur-sm rounded-lg px-2 py-1 border border-yellow-500/30">
-                <Zap className="w-4 h-4 text-yellow-400 mr-1" />
-                <span className="text-yellow-300 text-sm font-bold">
-                  {Math.ceil(lightBonusTimer / 1000)}s
-                </span>
-              </div>
-            )}
-            
-            {/* Slowdown/trap effect */}
-            {slowedDown && (
-              <div className="flex items-center bg-black/50 backdrop-blur-sm rounded-lg px-2 py-1 border border-red-500/30">
-                <div className="w-4 h-4 border-2 border-red-400 rounded mr-1" />
-                <span className="text-red-300 text-sm font-bold">
-                  {Math.ceil(slowdownTimer / 1000)}s
-                </span>
-              </div>
-            )}
-          </div>
-          
           {/* Hit Points */}
           <div className="flex items-center">
             {Array.from({ length: 3 }).map((_, index) => (
@@ -78,6 +55,29 @@ export const GameUI: React.FC<GameUIProps> = ({
             ))}
           </div>
         </div>
+      </div>
+
+      {/* In-game effects - positioned absolutely in center */}
+      <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-20 flex items-center space-x-2">
+        {/* Light bonus effect */}
+        {lightBonusActive && (
+          <div className="flex items-center bg-black/50 backdrop-blur-sm rounded-lg px-2 py-1 border border-yellow-500/30">
+            <Zap className="w-4 h-4 text-yellow-400 mr-1" />
+            <span className="text-yellow-300 text-sm font-bold">
+              {Math.ceil(lightBonusTimer / 1000)}s
+            </span>
+          </div>
+        )}
+        
+        {/* Slowdown/trap effect */}
+        {slowedDown && (
+          <div className="flex items-center bg-black/50 backdrop-blur-sm rounded-lg px-2 py-1 border border-red-500/30">
+            <div className="w-4 h-4 border-2 border-red-400 rounded mr-1" />
+            <span className="text-red-300 text-sm font-bold">
+              {Math.ceil(slowdownTimer / 1000)}s
+            </span>
+          </div>
+        )}
       </div>
 
     </>
