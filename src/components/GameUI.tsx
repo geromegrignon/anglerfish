@@ -41,11 +41,6 @@ export const GameUI: React.FC<GameUIProps> = ({
             <div className="text-lg font-bold text-cyan-300">
               {Math.floor(depth).toLocaleString()}m
             </div>
-            <div className={`text-xs font-semibold ${
-              'text-purple-300'
-            }`}>
-              ⚡ SPEED RUN
-            </div>
           </div>
           
           {/* Hit Points */}
