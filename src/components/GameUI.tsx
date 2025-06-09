@@ -43,29 +43,6 @@ export const GameUI: React.FC<GameUIProps> = ({
             </div>
           </div>
 
-          {/* in game effects */}
-          <div className="flex items-center space-x-2">
-            {/* Light bonus effect */}
-            {lightBonusActive && (
-              <div className="flex items-center">
-                <Zap className="w-4 h-4 text-yellow-400 mr-1" />
-                <span className="text-yellow-300 text-sm font-bold">
-                  {Math.ceil(lightBonusTimer / 1000)}s
-                </span>
-              </div>
-            )}
-            
-            {/* Slowdown/trap effect */}
-            {slowedDown && (
-              <div className="flex items-center">
-                <div className="w-4 h-4 border-2 border-red-400 rounded mr-1" />
-                <span className="text-red-300 text-sm font-bold">
-                  {Math.ceil(slowdownTimer / 1000)}s
-                </span>
-              </div>
-            )}
-          </div>
-          
           {/* Hit Points */}
           <div className="flex items-center">
             {Array.from({ length: 3 }).map((_, index) => (
@@ -77,6 +54,31 @@ export const GameUI: React.FC<GameUIProps> = ({
               />
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* In-game effects - absolutely centered */}
+      <div className="absolute top-20 md:top-16 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="flex items-center space-x-3">
+          {/* Light bonus effect */}
+          {lightBonusActive && (
+            <div className="flex items-center">
+              <Zap className="w-4 h-4 text-yellow-400 mr-1" />
+              <span className="text-yellow-300 text-sm font-bold">
+                {Math.ceil(lightBonusTimer / 1000)}s
+              </span>
+            </div>
+          )}
+          
+          {/* Slowdown/trap effect */}
+          {slowedDown && (
+            <div className="flex items-center">
+              <div className="w-4 h-4 border-2 border-red-400 rounded mr-1" />
+              <span className="text-red-300 text-sm font-bold">
+                {Math.ceil(slowdownTimer / 1000)}s
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
