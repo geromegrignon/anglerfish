@@ -42,6 +42,8 @@ export const GameUI: React.FC<GameUIProps> = ({
               {Math.floor(depth).toLocaleString()}m
             </div>
           </div>
+
+          {/* in game effects */}
           
           {/* Hit Points */}
           <div className="flex items-center">
