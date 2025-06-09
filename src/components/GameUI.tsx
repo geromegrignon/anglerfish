@@ -23,15 +23,23 @@ export const GameUI: React.FC<GameUIProps> = ({
   slowedDown,
   slowdownTimer
 }) => {
+  // Debug: Log hunger value to console
+  console.log('Current hunger:', hunger);
+
   return (
     <>
       {/* Hunger bar - full width on mobile, max-3xl on larger screens */}
       <div className="absolute top-8 md:top-4 left-4 right-4 z-20 max-w-3xl mx-auto">
         <div className="h-4 bg-gray-700/80 rounded-full overflow-hidden backdrop-blur-sm border border-red-500/30">
           <div 
-            className="h-full bg-gradient-to-r from-red-500 to-red-300 transition-all duration-300"
+            className="h-full bg-gradient-to-r from-red-500 to-red-300 transition-all duration-100"
             style={{ width: `${hunger}%` }}
           />
+        </div>
+        
+        {/* Debug: Show exact hunger percentage */}
+        <div className="text-xs text-white mt-1">
+          Hunger: {hunger.toFixed(1)}%
         </div>
         
         {/* Bottom row with depth and hit points */}
