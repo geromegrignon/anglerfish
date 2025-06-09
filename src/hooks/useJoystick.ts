@@ -36,21 +36,19 @@ export const useJoystick = ({ joystick, setJoystick, onEcholocation }: UseJoysti
       if (!prev.active) return prev;
 
       const deltaX = clientX - prev.centerX;
-      const deltaY = clientY - prev.centerY;
-      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      // Only track horizontal movement
+      const distance = Math.abs(deltaX);
       const maxDistance = 40;
 
       let newKnobX = clientX;
-      let newKnobY = clientY;
+      let newKnobY = prev.centerY; // Keep Y position fixed
       let normalizedDeltaX = deltaX;
-      let normalizedDeltaY = deltaY;
+      let normalizedDeltaY = 0; // No vertical movement
 
       if (distance > maxDistance) {
-        const angle = Math.atan2(deltaY, deltaX);
-        newKnobX = prev.centerX + Math.cos(angle) * maxDistance;
-        newKnobY = prev.centerY + Math.sin(angle) * maxDistance;
-        normalizedDeltaX = Math.cos(angle) * maxDistance;
-        normalizedDeltaY = Math.sin(angle) * maxDistance;
+        // Clamp horizontal movement only
+        newKnobX = prev.centerX + (deltaX > 0 ? maxDistance : -maxDistance);
+        normalizedDeltaX = deltaX > 0 ? maxDistance : -maxDistance;
       }
 
       return {
@@ -58,7 +56,7 @@ export const useJoystick = ({ joystick, setJoystick, onEcholocation }: UseJoysti
         knobX: newKnobX,
         knobY: newKnobY,
         deltaX: normalizedDeltaX / maxDistance,
-        deltaY: normalizedDeltaY / maxDistance
+        deltaY: 0 // No vertical movement
       };
     });
   }, [setJoystick]);

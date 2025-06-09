@@ -87,7 +87,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
               </h3>
               <div className="space-y-2 text-sm text-gray-300">
                 <p><span className="text-blue-400 font-mono">A/D / Left/Right</span> - Move horizontally</p>
-                <p><span className="text-blue-400 font-mono">Spacebar</span> - Bioluminescent pulse</p>
+                <p><span className="text-blue-400 font-mono">Spacebar</span> - Echolocation pulse</p>
                 <p><span className="text-blue-400 font-mono">Touch</span> - Left/Right buttons (mobile)</p>
               </div>
             </div>
