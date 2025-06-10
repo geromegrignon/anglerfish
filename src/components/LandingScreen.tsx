@@ -132,7 +132,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
           </div>
         </div>
 
-        <div className="text-center mb-12">
+        <div className="text-center mb-6">
           <h1 className="text-6xl md:text-8xl font-bold mb-4 drop-shadow-2xl">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500">
               ANG
