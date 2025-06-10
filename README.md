@@ -1,4 +1,6 @@
-# 🐟 Angularfish - Deep Sea Survival Game
+# Angularfish - Deep Sea Survival Game
+
+![Angularfish](./public/og-image.png)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -22,23 +24,26 @@ Angularfish is an open-source browser-based survival game that immerses players 
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn package manager
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/angularfish.git
    cd angularfish
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -58,10 +63,12 @@ npm run preview
 ### Controls
 
 **Desktop:**
+
 - `←/→ Arrow Keys` - Move horizontally
 - `Spacebar` - Echolocation pulse (reveals nearby prey)
 
 **Mobile:**
+
 - Touch left/right side of screen to move
 - Tap the ⚡ button for echolocation
 
@@ -119,16 +126,19 @@ src/
 ### Key Systems
 
 #### Game Loop Architecture
+
 - **60fps target** with adaptive frame skipping for mobile devices
 - **Viewport culling** - only renders entities visible on screen
 - **Performance monitoring** - automatically adjusts update frequency based on device capability
 
 #### Entity System
+
 - **Modular entity types** - Prey, Mines, Traps, Bonuses, Particles
 - **Efficient collision detection** - Uses squared distance calculations to avoid expensive sqrt operations
 - **Dynamic spawning** - Entities spawn procedurally as the player descends
 
 #### Mobile Optimization
+
 - **Touch controls** - Screen-based movement with dedicated echolocation button
 - **Reduced particle counts** - Fewer visual effects on mobile for better performance
 - **Adaptive quality** - Automatically reduces complexity on lower-end devices
@@ -136,13 +146,16 @@ src/
 ## 🎨 Assets & Design
 
 ### Visual Style
+
 - **Deep-sea atmosphere** with gradient backgrounds from dark blue to black
 - **Bioluminescent effects** using CSS animations and dynamic lighting
 - **Particle systems** for marine snow and glowing plankton
 - **Smooth animations** with hardware acceleration for optimal performance
 
 ### Required Assets
+
 All SVG assets should be placed in the `public/` directory:
+
 - `anglerfish.svg` - Main player character
 - `fish-1.svg`, `fish-2.svg` - Prey variants
 - `mine.svg` - Explosive hazards
@@ -162,6 +175,7 @@ All SVG assets should be placed in the `public/` directory:
 ### Code Style
 
 The project uses:
+
 - **TypeScript** for type safety
 - **ESLint** for code quality
 - **Prettier** (recommended) for code formatting
@@ -179,6 +193,7 @@ The project uses:
 We welcome contributions! Here's how you can help:
 
 ### Getting Started
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
