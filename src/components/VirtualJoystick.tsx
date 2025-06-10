@@ -34,7 +34,7 @@ export const VirtualJoystick: React.FC<VirtualJoystickProps> = ({
             className="fixed w-16 h-16 border-2 border-cyan-400/70 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center active:bg-cyan-400/30 transition-all duration-150 touch-manipulation z-50 shadow-lg"
             style={{
               right: '20px',
-              bottom: '20px',
+              bottom: '80px',
             }}
             onTouchStart={(e) => {
               e.preventDefault();
