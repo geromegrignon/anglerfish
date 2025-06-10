@@ -177,6 +177,17 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
               LARFISH
             </span>
           </h1>
+          
+          {/* Alpha Badge */}
+          <div className="flex justify-center mb-4">
+            <div className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-orange-500 to-red-500 border border-orange-400/50 shadow-lg">
+              <div className="w-2 h-2 bg-orange-300 rounded-full mr-2 animate-pulse"></div>
+              <span className="text-white text-sm font-bold tracking-wider" style={{ fontFamily: 'Verdana, sans-serif' }}>
+                ALPHA
+              </span>
+            </div>
+          </div>
+          
           <p className="hidden md:block text-lg md:text-2xl text-blue-200 mb-2 drop-shadow-lg">
             Survive the Endless Deep
           </p>
