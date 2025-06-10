@@ -195,11 +195,11 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
         {/* Start Game Button */}
         <button
           onClick={() => onStartGame('speedrun')}
-          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-full text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-purple-400/50 max-w-md"
+          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-full text-lg md:text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-purple-400/50 max-w-md"
           style={{ fontFamily: 'Chewy, cursive' }}
         >
           <div className="text-center">
-            <div className="text-3xl">Explore the abyss</div>
+            <div className="text-2xl md:text-3xl">Explore the abyss</div>
           </div>
         </button>
       </div>
