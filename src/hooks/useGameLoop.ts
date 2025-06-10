@@ -86,7 +86,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setLightBonuses,
     setElectricBonuses,
     setMines,
-    setNetTraps
+    setNetTraps,
     setFishEaten
   } = props;
 
@@ -622,7 +622,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setElectricFieldTimer, setElectricFieldActive,
     setSlowdownTimer, setSlowedDown, setHunger, setHitPoints, setGameOver, setAnglerfishPos,
     setCameraY, setDepth, setMaxDepthReached, setParticles, setSonarWaves,
-    setPrey, setLightBonuses, setElectricBonuses, setMines, setNetTraps
+    setPrey, setLightBonuses, setElectricBonuses, setMines, setNetTraps,
     setFishEaten
   ]);
 
