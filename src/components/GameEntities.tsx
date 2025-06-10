@@ -405,22 +405,17 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
               transform: `translate3d(0, 0, 0)`
             }}
           >
-            <div 
-              className={`w-10 h-10 border-2 ${trap.triggered ? 'border-red-500' : 'border-orange-400'} rounded-lg`}
+            <img
+              src="/net.svg"
+              alt="net trap"
+              className="w-10 h-10 pointer-events-none"
               style={{
                 opacity: trap.triggered ? 0.8 : pulseOpacity,
-                background: trap.triggered 
-                  ? 'rgba(239, 68, 68, 0.2)' 
-                  : `rgba(251, 146, 60, ${pulseOpacity * 0.3})`,
                 filter: trap.triggered 
-                  ? 'drop-shadow(0 0 15px rgba(239, 68, 68, 0.8))'
-                  : `drop-shadow(0 0 10px rgba(251, 146, 60, ${pulseOpacity}))`
+                  ? 'drop-shadow(0 0 15px rgba(239, 68, 68, 0.8)) hue-rotate(0deg) brightness(1.2)'
+                  : `drop-shadow(0 0 10px rgba(251, 146, 60, ${pulseOpacity})) hue-rotate(20deg) brightness(1.1)`
               }}
-            >
-              {/* Net pattern */}
-              <div className="absolute inset-1 border border-current opacity-50" />
-              <div className="absolute inset-2 border border-current opacity-30" />
-            </div>
+            />
           </div>
         );
       })}
