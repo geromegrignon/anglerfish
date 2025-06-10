@@ -163,7 +163,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
               </h3>
               {isMobile ? (
                 <div className="space-y-2 text-xs md:text-sm text-gray-300">
-                  <p><span className="text-blue-400 font-mono text-xs md:text-sm">← →</span> - Touch buttons to move</p>
+                  <p><span className="text-blue-400 font-mono text-xs md:text-sm">Touch</span> - Left/right side of screen to move</p>
                   <p><span className="text-blue-400 font-mono text-xs md:text-sm">⚡</span> - Echolocation pulse button</p>
                 </div>
               ) : (

@@ -9,6 +9,7 @@ import { useJoystick } from './hooks/useJoystick';
 import { useKeyboard } from './hooks/useKeyboard';
 import { useGameInitialization } from './hooks/useGameInitialization';
 import { useGameLoop } from './hooks/useGameLoop';
+import { useTouchMovement } from './hooks/useTouchMovement';
 
 function App() {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -108,6 +109,8 @@ function App() {
     onEcholocation: () => setTriggerEcholocation(true) 
   });
 
+  // Setup touch movement controls
+  const { handleGameTouchStart, handleGameTouchEnd } = useTouchMovement({ setKeys });
   // Main game loop
   useGameLoop({
     gameStarted,
@@ -175,6 +178,8 @@ function App() {
     <div 
       ref={canvasRef}
       className="relative w-full h-screen overflow-hidden"
+      onTouchStart={handleGameTouchStart}
+      onTouchEnd={handleGameTouchEnd}
       style={{
         touchAction: 'none',
         background: 'rgb(3, 7, 18)', // Very dark blue, almost black
