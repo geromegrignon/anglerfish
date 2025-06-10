@@ -188,17 +188,9 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
           className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-purple-400/50 max-w-md"
         >
           <div className="text-center">
-            <div className="text-3xl mb-2">Explore the abyss</div>
+            <div className="text-3xl">Explore the abyss</div>
           </div>
         </button>
-
-        <div className="mt-8 text-center text-gray-400 text-sm">
-          <p>Use your bioluminescent lure to reveal hidden prey in the darkness</p>
-          <p className="mb-2">The deeper you go, the more dangerous it becomes...</p>
-          <p className="text-xs">
-            <span className="text-purple-300">Speed Run:</span> Race to the depths with automatic descent and left/right movement
-          </p>
-        </div>
       </div>
     </div>
   );
