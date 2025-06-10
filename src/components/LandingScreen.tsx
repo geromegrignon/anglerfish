@@ -7,6 +7,9 @@ interface LandingScreenProps {
 }
 
 export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => {
+  // Detect if device is mobile/touch-enabled
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-blue-900 to-black relative overflow-hidden">
       {/* Animated background elements */}
@@ -158,11 +161,19 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
                 <Zap className="w-5 h-5 mr-2" />
                 Controls
               </h3>
-              <div className="space-y-2 text-xs md:text-sm text-gray-300">
-                <p><span className="text-blue-400 font-mono text-xs md:text-sm">A/D / Left/Right</span> - Move horizontally</p>
-                <p><span className="text-blue-400 font-mono text-xs md:text-sm">Spacebar</span> - Echolocation pulse</p>
-                <p><span className="text-blue-400 font-mono text-xs md:text-sm">Touch</span> - Left/Right buttons (mobile)</p>
-              </div>
+              {isMobile ? (
+                <div className="space-y-2 text-xs md:text-sm text-gray-300">
+                  <p><span className="text-blue-400 font-mono text-xs md:text-sm">← →</span> - Touch buttons to move</p>
+                  <p><span className="text-blue-400 font-mono text-xs md:text-sm">⚡</span> - Echolocation pulse button</p>
+                  <p className="text-gray-400 italic">Touch controls at bottom of screen</p>
+                </div>
+              ) : (
+                <div className="space-y-2 text-xs md:text-sm text-gray-300">
+                  <p><span className="text-blue-400 font-mono text-xs md:text-sm">A/D or ←/→</span> - Move horizontally</p>
+                  <p><span className="text-blue-400 font-mono text-xs md:text-sm">Spacebar</span> - Echolocation pulse</p>
+                  <p className="text-gray-400 italic">Use keyboard controls</p>
+                </div>
+              )}
             </div>
 
             {/* Objectives */}
