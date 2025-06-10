@@ -27,9 +27,6 @@ export const GameUI: React.FC<GameUIProps> = ({
   slowedDown,
   slowdownTimer
 }) => {
-  // Debug: Log hunger value to console
-  console.log('Current hunger:', hunger);
-
   return (
     <>
       {/* Hunger bar - full width on mobile, max-3xl on larger screens */}
@@ -41,13 +38,8 @@ export const GameUI: React.FC<GameUIProps> = ({
           />
         </div>
         
-        {/* Debug: Show exact hunger percentage */}
-        <div className="text-xs text-white mt-1">
-          Hunger: {hunger.toFixed(1)}%
-        </div>
-        
         {/* Bottom row with depth and hit points */}
-        <div className="flex justify-between items-center mt-2">
+        <div className="flex justify-between items-center mt-3">
           {/* Depth indicator with game mode */}
           <div className="flex flex-col">
             <div className="text-lg font-bold text-cyan-300">
