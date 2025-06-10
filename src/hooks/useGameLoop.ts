@@ -348,7 +348,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           const types = ['small', 'small', 'small', 'medium', 'medium', 'large'];
           const fishSvgs = ['fish-1', 'fish-2'];
           const newPreyItems = [];
-          for (let i = 0; i < spawnCount) {
+          for (let i = 0; i < spawnCount; i++) {
             newPreyItems.push({
               id: Date.now() + i,
               x: Math.random() * spawnWidth + 60,
