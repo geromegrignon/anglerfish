@@ -233,7 +233,23 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           newParticles.push({
             id: Date.now() + Math.random() + 1000,
             x: Math.random() * window.innerWidth,
-            y: cameraY - 150 + Math.random() * 100,
+            y: cameraY - 200 + Math.random() * 300, // Spawn in a larger area around camera
+            speed: Math.random() * 0.8 + 0.3,
+            size: Math.random() * 2 + 1,
+            opacity: Math.random() * 0.4 + 0.3,
+            type: 'plankton' as const,
+            pulsePhase: Math.random() * Math.PI * 2,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+        
+        // Also spawn plankton below the camera view
+        if (Math.random() < 0.08 && prev.filter(p => p.type === 'plankton').length < 50) {
+          const colors = ['#00FFFF', '#00CED1', '#40E0D0', '#48D1CC', '#20B2AA', '#87CEEB', '#7FFFD4'];
+          newParticles.push({
+            id: Date.now() + Math.random() + 2000,
+            x: Math.random() * window.innerWidth,
+            y: cameraY + window.innerHeight + Math.random() * 100, // Spawn below viewport
             speed: Math.random() * 0.8 + 0.3,
             size: Math.random() * 2 + 1,
             opacity: Math.random() * 0.4 + 0.3,
