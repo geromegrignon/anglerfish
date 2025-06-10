@@ -44,7 +44,7 @@ export const GameUI: React.FC<GameUIProps> = ({
         <div className="flex justify-between items-center mt-3">
           {/* Depth indicator with game mode */}
           <div className="flex items-center space-x-4">
-            <div className="text-lg font-bold text-cyan-300 min-w-[80px]">
+            <div className="text-lg font-bold text-cyan-300 min-w-[80px]" style={{ fontFamily: 'Chewy, cursive' }}>
               {Math.floor(depth).toLocaleString()}m
             </div>
             
