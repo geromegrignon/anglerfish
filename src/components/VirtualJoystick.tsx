@@ -28,26 +28,28 @@ export const VirtualJoystick: React.FC<VirtualJoystickProps> = ({
     <>
       {/* Mobile Controls - Show on mobile devices */}
       {isMobile && (
-        {/* Echolocation Button - Sticky in bottom right */}
-        <button
-          className="fixed w-16 h-16 border-2 border-cyan-400/70 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center active:bg-cyan-400/30 transition-all duration-150 touch-manipulation z-50 shadow-lg"
-          style={{
-            right: '20px',
-            bottom: '20px',
-          }}
-          onTouchStart={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onEcholocationPress();
-          }}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onEcholocationPress();
-          }}
-        >
-          <Zap className="w-6 h-6 text-cyan-300" />
-        </button>
+        <>
+          {/* Echolocation Button - Sticky in bottom right */}
+          <button
+            className="fixed w-16 h-16 border-2 border-cyan-400/70 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center active:bg-cyan-400/30 transition-all duration-150 touch-manipulation z-50 shadow-lg"
+            style={{
+              right: '20px',
+              bottom: '20px',
+            }}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onEcholocationPress();
+            }}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onEcholocationPress();
+            }}
+          >
+            <Zap className="w-6 h-6 text-cyan-300" />
+          </button>
+        </>
       )}
     </>
   );
