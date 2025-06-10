@@ -188,7 +188,6 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
             {/* Controls */}
             <div>
               <h3 className="text-lg md:text-xl font-bold text-cyan-300 mb-3 flex items-center">
-                <Zap className="w-5 h-5 mr-2" />
                 Controls
               </h3>
               {isMobile ? (
@@ -208,7 +207,6 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
             {/* Objectives */}
             <div>
               <h3 className="text-lg md:text-xl font-bold text-cyan-300 mb-3 flex items-center">
-                <Circle className="w-5 h-5 mr-2" />
                 Objectives
               </h3>
               <div className="space-y-2 text-xs md:text-sm text-gray-300">
