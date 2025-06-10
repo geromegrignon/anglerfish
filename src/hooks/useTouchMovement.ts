@@ -21,11 +21,11 @@ export const useTouchMovement = ({ setKeys }: UseTouchMovementProps) => {
       
       // Add new direction based on current touch position
       if (touchX < screenWidth / 2) {
-        // Left side of screen - move right
-        newKeys.add('arrowright');
-      } else {
-        // Right side of screen - move left
+        // Left side of screen - move left
         newKeys.add('arrowleft');
+      } else {
+        // Right side of screen - move right
+        newKeys.add('arrowright');
       }
       
       return newKeys;
@@ -48,11 +48,11 @@ export const useTouchMovement = ({ setKeys }: UseTouchMovementProps) => {
       
       // Divide screen into left and right halves
       if (touchX < screenWidth / 2) {
-        // Left side of screen - move right
-        newKeys.add('arrowright');
-      } else {
-        // Right side of screen - move left
+        // Left side of screen - move left
         newKeys.add('arrowleft');
+      } else {
+        // Right side of screen - move right
+        newKeys.add('arrowright');
       }
       
       return newKeys;
