@@ -33,7 +33,7 @@ export const GameUI: React.FC<GameUIProps> = ({
     <>
       {/* Hunger bar - full width on mobile, max-3xl on larger screens */}
       <div className="absolute top-8 md:top-4 left-4 right-4 z-20 max-w-3xl mx-auto">
-        <div className="h-4 bg-gray-700/80 rounded-full overflow-hidden backdrop-blur-sm border border-red-500/30">
+        <div className="h-4 bg-gray-700/80 rounded-lg overflow-hidden backdrop-blur-sm border border-red-500/30">
           <div 
             className="h-full bg-gradient-to-r from-red-500 to-red-300"
             style={{ width: `${hunger}%` }}
