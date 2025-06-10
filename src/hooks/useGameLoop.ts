@@ -167,7 +167,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       if (keys.has('arrowright') || keys.has('d')) newX += 2 * speedMultiplier;
       
       // Auto-scroll (always active in speed run mode)
-      newY += gameModeConfig.scrollSpeed / 2;
+      newY += (gameModeConfig.scrollSpeed * 1.5) / 2;
 
       // Boundaries
       newX = Math.max(0, Math.min(window.innerWidth - 80, newX));
@@ -303,15 +303,15 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         const deepestPrey = Math.max(...prev.map(p => p.y));
         const screenWidth = window.innerWidth;
         const spawnWidth = screenWidth - 120; // 60px margin on each side
-        if (anglerfishPos.y > deepestPrey - 500 && prev.length < 300) { // Reduced max count
+        if (anglerfishPos.y > deepestPrey - 300 && prev.length < 300) { // Spawn more frequently
           const types = ['small', 'small', 'small', 'medium', 'medium', 'large'];
           const fishSvgs = ['fish-1', 'fish-2'];
           const newPreyItems = [];
-          for (let i = 0; i < 15; i++) { // Reduced spawn count
+          for (let i = 0; i < 20; i++) { // Increased spawn count for faster progression
             newPreyItems.push({
               id: Date.now() + i,
               x: Math.random() * spawnWidth + 60,
-              y: deepestPrey + Math.random() * 500 + 200,
+              y: deepestPrey + Math.random() * 300 + 150, // Closer spacing
               collected: false,
               visible: false,
               visibilityTimer: 0,
@@ -329,13 +329,13 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         const deepestBonus = Math.max(...prev.map(b => b.y));
         const screenWidth = window.innerWidth;
         const spawnWidth = screenWidth - 120; // 60px margin on each side
-        if (anglerfishPos.y > deepestBonus - 200 && prev.length < 15) {
+        if (anglerfishPos.y > deepestBonus - 150 && prev.length < 15) {
           const newBonuses = [];
-          if (Math.random() < 0.3) {
+          if (Math.random() < 0.45) { // Higher spawn chance
             newBonuses.push({
               id: Date.now() + 2000,
               x: Math.random() * spawnWidth + 60,
-              y: deepestBonus + 800 + Math.random() * 400,
+              y: deepestBonus + 500 + Math.random() * 250, // Closer spacing
               collected: false,
               pulsePhase: Math.random() * Math.PI * 2
             });
@@ -350,13 +350,13 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         const deepestBonus = Math.max(...prev.map(b => b.y));
         const screenWidth = window.innerWidth;
         const spawnWidth = screenWidth - 120; // 60px margin on each side
-        if (anglerfishPos.y > deepestBonus - 400 && prev.length < 8) {
+        if (anglerfishPos.y > deepestBonus - 250 && prev.length < 8) {
           const newBonuses = [];
-          if (Math.random() < 0.15) { // Rarer than light bonuses
+          if (Math.random() < 0.25) { // Higher spawn chance
             newBonuses.push({
               id: Date.now() + 4000,
               x: Math.random() * spawnWidth + 60,
-              y: deepestBonus + 1200 + Math.random() * 600,
+              y: deepestBonus + 700 + Math.random() * 350, // Closer spacing
               collected: false,
               pulsePhase: Math.random() * Math.PI * 2
             });
@@ -373,14 +373,14 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         const spawnWidth = screenWidth - 120; // 60px margin on each side
         const isMobile = window.innerWidth < 768;
         const maxMines = isMobile ? 8 : 80; // Divide by 10 on mobile
-        const spawnCount = isMobile ? 1 : 6; // Reduce spawn count on mobile
-        if (anglerfishPos.y > deepestMine - 800 && prev.length < maxMines) {
+        const spawnCount = isMobile ? 2 : 8; // Increased spawn count
+        if (anglerfishPos.y > deepestMine - 500 && prev.length < maxMines) { // Spawn more frequently
           const newMines = [];
           for (let i = 0; i < spawnCount; i++) {
             newMines.push({
               id: Date.now() + i + 1000,
               x: Math.random() * spawnWidth + 60,
-              y: deepestMine + Math.random() * 600 + 300,
+              y: deepestMine + Math.random() * 400 + 200, // Closer spacing
               exploded: false,
               pulsePhase: Math.random() * Math.PI * 2,
               velocityX: 0,
@@ -400,13 +400,13 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         const deepestTrap = Math.max(...prev.map(t => t.y));
         const screenWidth = window.innerWidth;
         const spawnWidth = screenWidth - 120; // 60px margin on each side
-        if (anglerfishPos.y > deepestTrap - 600 && prev.length < 50) { // Reduced max count
+        if (anglerfishPos.y > deepestTrap - 400 && prev.length < 50) { // Spawn more frequently
           const newTraps = [];
-          for (let i = 0; i < 4; i++) { // Reduced spawn count
+          for (let i = 0; i < 6; i++) { // Increased spawn count
             newTraps.push({
               id: Date.now() + i + 3000,
               x: Math.random() * spawnWidth + 60,
-              y: deepestTrap + Math.random() * 800 + 400,
+              y: deepestTrap + Math.random() * 500 + 250, // Closer spacing
               triggered: false,
               pulsePhase: Math.random() * Math.PI * 2
             });
@@ -439,15 +439,15 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       
       newMine.pulsePhase = mine.pulsePhase + 0.025;
       
-      if (depth > 3000 && !mine.exploded) {
+      if (depth > 2500 && !mine.exploded) { // Mines start moving earlier
         newMine.changeDirectionTimer = mine.changeDirectionTimer - 16;
         
         if (newMine.changeDirectionTimer <= 0) {
           const angle = Math.random() * Math.PI * 2;
-          const speed = (Math.random() * 0.3 + 0.1) / 2;
+          const speed = (Math.random() * 0.45 + 0.15) / 2; // Slightly faster mine movement
           newMine.velocityX = Math.cos(angle) * speed;
           newMine.velocityY = Math.sin(angle) * speed;
-          newMine.changeDirectionTimer = Math.random() * 400 + 200;
+          newMine.changeDirectionTimer = Math.random() * 300 + 150; // Change direction more frequently
         }
         
         newMine.x += newMine.velocityX / 2;

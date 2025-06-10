@@ -29,7 +29,7 @@ export const useGameInitialization = ({
       newPrey.push({
         id: i,
         x: Math.random() * spawnWidth + 60,
-        y: Math.random() * 3000 + 100, // Reduced initial spawn area
+        y: Math.random() * 2000 + 100, // Tighter initial spawn area for faster progression
         collected: false,
         visible: false,
         visibilityTimer: 0,
@@ -51,7 +51,7 @@ export const useGameInitialization = ({
       newMines.push({
         id: i,
         x: Math.random() * spawnWidth + 60,
-        y: Math.random() * 3000 + 500, // Reduced initial spawn area
+        y: Math.random() * 2000 + 300, // Tighter spawn area for faster encounters
         exploded: false,
         pulsePhase: Math.random() * Math.PI * 2,
         velocityX: 0,
@@ -73,7 +73,7 @@ export const useGameInitialization = ({
       newNetTraps.push({
         id: i,
         x: Math.random() * spawnWidth + 60,
-        y: Math.random() * 3000 + 1000, // Reduced initial spawn area
+        y: Math.random() * 1500 + 600, // Tighter spawn area
         triggered: false,
         pulsePhase: Math.random() * Math.PI * 2
       });
@@ -90,7 +90,7 @@ export const useGameInitialization = ({
       newLightBonuses.push({
         id: i,
         x: Math.random() * spawnWidth + 60,
-        y: 2000 + i * 800 + Math.random() * 400, // Reduced spacing
+        y: 1500 + i * 500 + Math.random() * 300, // Closer spacing for faster progression
         collected: false,
         pulsePhase: Math.random() * Math.PI * 2
       });
@@ -107,7 +107,7 @@ export const useGameInitialization = ({
       newElectricBonuses.push({
         id: i,
         x: Math.random() * spawnWidth + 60,
-        y: 3000 + i * 1200 + Math.random() * 600, // Spawn deeper than light bonuses
+        y: 2000 + i * 800 + Math.random() * 400, // Closer spacing
         collected: false,
         pulsePhase: Math.random() * Math.PI * 2
       });
@@ -124,7 +124,7 @@ export const useGameInitialization = ({
       newParticles.push({
         id: i,
         x: Math.random() * window.innerWidth,
-        y: Math.random() * 1500 - 750, // Reduced initial area
+        y: Math.random() * 1000 - 500, // Tighter initial area
         speed: Math.random() * 1 + 0.5,
         size: Math.random() * 3 + 1,
         opacity: Math.random() * 0.6 + 0.2,
@@ -138,7 +138,7 @@ export const useGameInitialization = ({
       newParticles.push({
         id: i,
         x: Math.random() * window.innerWidth,
-        y: Math.random() * 2000 - 1000,
+        y: Math.random() * 1200 - 600,
         speed: Math.random() * 0.8 + 0.3,
         size: Math.random() * 2 + 1,
         opacity: Math.random() * 0.4 + 0.3,
