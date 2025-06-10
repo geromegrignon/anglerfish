@@ -154,24 +154,24 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Controls */}
             <div>
-              <h3 className="text-xl font-bold text-cyan-300 mb-3 flex items-center">
+              <h3 className="text-lg md:text-xl font-bold text-cyan-300 mb-3 flex items-center">
                 <Zap className="w-5 h-5 mr-2" />
                 Controls
               </h3>
-              <div className="space-y-2 text-sm text-gray-300">
-                <p><span className="text-blue-400 font-mono">A/D / Left/Right</span> - Move horizontally</p>
-                <p><span className="text-blue-400 font-mono">Spacebar</span> - Echolocation pulse</p>
-                <p><span className="text-blue-400 font-mono">Touch</span> - Left/Right buttons (mobile)</p>
+              <div className="space-y-2 text-xs md:text-sm text-gray-300">
+                <p><span className="text-blue-400 font-mono text-xs md:text-sm">A/D / Left/Right</span> - Move horizontally</p>
+                <p><span className="text-blue-400 font-mono text-xs md:text-sm">Spacebar</span> - Echolocation pulse</p>
+                <p><span className="text-blue-400 font-mono text-xs md:text-sm">Touch</span> - Left/Right buttons (mobile)</p>
               </div>
             </div>
 
             {/* Objectives */}
             <div>
-              <h3 className="text-xl font-bold text-cyan-300 mb-3 flex items-center">
+              <h3 className="text-lg md:text-xl font-bold text-cyan-300 mb-3 flex items-center">
                 <Circle className="w-5 h-5 mr-2" />
                 Objectives
               </h3>
-              <div className="space-y-2 text-sm text-gray-300">
+              <div className="space-y-2 text-xs md:text-sm text-gray-300">
                 <p>• Hunt prey to maintain hunger</p>
                 <p>• Avoid explosive mines</p>
                 <p>• Escape net traps quickly</p>
