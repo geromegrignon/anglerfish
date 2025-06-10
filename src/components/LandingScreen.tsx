@@ -17,6 +17,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
             key={`fish-${i}`}
             className="absolute opacity-30"
             style={{
+              left: '-60px', // Start off-screen to the left
               top: `${Math.random() * 80 + 10}%`,
               animationName: 'swimAcross',
               animationDuration: `${Math.random() * 15 + 10}s`,
