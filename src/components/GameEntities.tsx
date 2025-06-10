@@ -335,12 +335,55 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
               transform: `scale(${pulseScale}) translate3d(0, 0, 0)`,
             }}
           >
-            <Zap 
-              className="w-8 h-8 text-yellow-400"
+            {/* Wave border container */}
+            <div
+              className="relative w-8 h-8"
               style={{
-                filter: `drop-shadow(0 0 ${15 * glowIntensity}px rgba(255, 255, 0, ${glowIntensity})) brightness(1.3)`
+                filter: `drop-shadow(0 0 ${15 * glowIntensity}px rgba(255, 255, 0, ${glowIntensity}))`
               }}
-            />
+            >
+              {/* Animated wave border */}
+              <div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: 'transparent',
+                  border: '2px solid rgba(255, 255, 0, 0.8)',
+                  borderRadius: '50%',
+                  clipPath: `polygon(
+                    50% 0%,
+                    ${50 + 15 * Math.sin(bonus.pulsePhase * 2)}% ${10 + 5 * Math.cos(bonus.pulsePhase * 3)}%,
+                    ${85 + 10 * Math.sin(bonus.pulsePhase * 2.5)}% ${25 + 8 * Math.cos(bonus.pulsePhase * 2)}%,
+                    ${90 + 8 * Math.sin(bonus.pulsePhase * 3)}% 50%,
+                    ${85 + 10 * Math.sin(bonus.pulsePhase * 2.5 + Math.PI)}% ${75 + 8 * Math.cos(bonus.pulsePhase * 2 + Math.PI)}%,
+                    ${50 + 15 * Math.sin(bonus.pulsePhase * 2 + Math.PI)}% ${90 + 5 * Math.cos(bonus.pulsePhase * 3 + Math.PI)}%,
+                    50% 100%,
+                    ${50 - 15 * Math.sin(bonus.pulsePhase * 2)}% ${90 + 5 * Math.cos(bonus.pulsePhase * 3 + Math.PI)}%,
+                    ${15 - 10 * Math.sin(bonus.pulsePhase * 2.5)}% ${75 + 8 * Math.cos(bonus.pulsePhase * 2 + Math.PI)}%,
+                    ${10 - 8 * Math.sin(bonus.pulsePhase * 3)}% 50%,
+                    ${15 - 10 * Math.sin(bonus.pulsePhase * 2.5 + Math.PI)}% ${25 + 8 * Math.cos(bonus.pulsePhase * 2)}%,
+                    ${50 - 15 * Math.sin(bonus.pulsePhase * 2 + Math.PI)}% ${10 + 5 * Math.cos(bonus.pulsePhase * 3)}%
+                  )`,
+                  opacity: glowIntensity
+                }}
+              />
+              
+              {/* Inner glow effect */}
+              <div
+                className="absolute inset-1 rounded-full"
+                style={{
+                  background: `radial-gradient(circle, rgba(255, 255, 0, ${0.3 * glowIntensity}) 0%, transparent 70%)`,
+                  filter: 'blur(1px)'
+                }}
+              />
+              
+              {/* Zap icon */}
+              <Zap 
+                className="absolute inset-0 w-8 h-8 text-yellow-400"
+                style={{
+                  filter: 'brightness(1.3)'
+                }}
+              />
+            </div>
           </div>
         );
       })}
