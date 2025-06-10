@@ -183,7 +183,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
         </div>
 
         {/* Controls & Objectives Card */}
-        <div className="bg-black/40 backdrop-blur-sm border border-blue-500/30 rounded-xl p-6 mb-8 max-w-2xl w-full">
+        <div className="bg-black/40 backdrop-blur-sm border border-blue-500/30 rounded-xl p-6 mb-8 max-w-2xl w-full" style={{ fontFamily: 'Verdana, sans-serif' }}>
           <div className="grid md:grid-cols-2 gap-6">
             {/* Controls */}
             <div>
