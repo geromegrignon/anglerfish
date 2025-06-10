@@ -149,7 +149,7 @@ function App() {
     setLightBonuses,
     setElectricBonuses,
     setMines,
-    setNetTraps
+    setNetTraps,
     setFishEaten
   });
 
