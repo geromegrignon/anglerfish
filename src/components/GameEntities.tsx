@@ -391,36 +391,29 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
       {/* Net traps */}
       {visibleNetTraps.map(trap => {
         const pulseOpacity = 0.3 + Math.sin(trap.pulsePhase) * 0.2;
-        const isVisible = trap.triggered || Math.sin(trap.pulsePhase) > 0;
-        
-        if (!isVisible) return null;
+        const pulseScale = 1 + Math.sin(trap.pulsePhase) * 0.2;
+        const glowIntensity = 0.4 + Math.sin(trap.pulsePhase) * 0.3;
         
         return (
           <div
             key={trap.id}
             className="absolute pointer-events-none will-change-transform"
             style={{
-              left: `${trap.x - 20}px`,
-              top: `${trap.y - 20 - cameraY}px`,
-              transform: `translate3d(0, 0, 0)`
+              left: `${trap.x - 15}px`,
+              top: `${trap.y - 15 - cameraY}px`,
+              transform: `scale(${pulseScale}) translate3d(0, 0, 0)`,
             }}
           >
-            <div 
-              className={`w-10 h-10 border-2 ${trap.triggered ? 'border-red-500' : 'border-orange-400'} rounded-lg`}
+            <img
+              src="/trap.svg"
+              alt="trap"
+              className="w-8 h-8 pointer-events-none"
               style={{
-                opacity: trap.triggered ? 0.8 : pulseOpacity,
-                background: trap.triggered 
-                  ? 'rgba(239, 68, 68, 0.2)' 
-                  : `rgba(251, 146, 60, ${pulseOpacity * 0.3})`,
                 filter: trap.triggered 
-                  ? 'drop-shadow(0 0 15px rgba(239, 68, 68, 0.8))'
-                  : `drop-shadow(0 0 10px rgba(251, 146, 60, ${pulseOpacity}))`
+                  ? `drop-shadow(0 0 ${15 * glowIntensity}px rgba(239, 68, 68, ${glowIntensity})) brightness(1.2)`
+                  : `drop-shadow(0 0 ${10 * glowIntensity}px rgba(251, 146, 60, ${glowIntensity})) brightness(1.1)`
               }}
-            >
-              {/* Net pattern */}
-              <div className="absolute inset-1 border border-current opacity-50" />
-              <div className="absolute inset-2 border border-current opacity-30" />
-            </div>
+            />
           </div>
         );
       })}
