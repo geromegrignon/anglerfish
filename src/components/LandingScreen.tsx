@@ -200,7 +200,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
           /* Mobile Coming Soon Message */
           <div className="w-full max-w-md text-center">
             <div className="bg-black/60 backdrop-blur-sm border border-orange-500/50 rounded-xl p-6 mb-4">
-              <h3 className="text-xl font-bold text-orange-300 mb-2" style={{ fontFamily: 'Chewy, cursive' }}>
+              <h3 className="text-2xl font-bold text-orange-300 mb-2" style={{ fontFamily: 'Chewy, cursive' }}>
                 Coming Soon to Mobile
               </h3>
             </div>
