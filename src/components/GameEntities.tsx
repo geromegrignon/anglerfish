@@ -234,107 +234,38 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
             top: `${anglerfishPos.y + 30 - 240 - cameraY}px`,
             width: '480px',
             height: '480px',
-            background: 'radial-gradient(circle, rgba(255, 255, 0, 0.15) 0%, rgba(255, 255, 0, 0.08) 40%, transparent 70%)',
-            transform: `scale(${1 + Math.sin(Date.now() * 0.005) * 0.08}) translate3d(0, 0, 0)`,
+            background: 'radial-gradient(circle, rgba(255, 255, 0, 0.1) 0%, rgba(255, 255, 0, 0.05) 50%, transparent 70%)',
+            border: '2px solid rgba(255, 255, 0, 0.6)',
+            filter: 'blur(1px)',
+            boxShadow: `
+              0 0 20px rgba(255, 255, 0, 0.4),
+              0 0 40px rgba(255, 255, 0, 0.2),
+              inset 0 0 20px rgba(255, 255, 0, 0.1)
+            `,
+            transform: `scale(${1 + Math.sin(Date.now() * 0.003) * 0.05}) translate3d(0, 0, 0)`,
           }}
         >
-          {/* Animated wave border */}
-          <div
-            className="absolute inset-0"
-            style={{
-              borderRadius: '50%',
-              border: '3px solid transparent',
-              background: `conic-gradient(
-                from ${Date.now() * 0.002}rad,
-                rgba(255, 255, 0, 0.8) 0deg,
-                rgba(255, 255, 100, 0.6) 60deg,
-                rgba(255, 255, 0, 0.4) 120deg,
-                rgba(255, 255, 100, 0.8) 180deg,
-                rgba(255, 255, 0, 0.6) 240deg,
-                rgba(255, 255, 100, 0.4) 300deg,
-                rgba(255, 255, 0, 0.8) 360deg
-              )`,
-              clipPath: `polygon(
-                50% 0%,
-                ${50 + 12 * Math.sin(Date.now() * 0.003)}% ${8 + 4 * Math.cos(Date.now() * 0.004)}%,
-                ${88 + 8 * Math.sin(Date.now() * 0.0025)}% ${25 + 6 * Math.cos(Date.now() * 0.003)}%,
-                ${92 + 6 * Math.sin(Date.now() * 0.004)}% 50%,
-                ${88 + 8 * Math.sin(Date.now() * 0.0025 + Math.PI)}% ${75 + 6 * Math.cos(Date.now() * 0.003 + Math.PI)}%,
-                ${50 + 12 * Math.sin(Date.now() * 0.003 + Math.PI)}% ${92 + 4 * Math.cos(Date.now() * 0.004 + Math.PI)}%,
-                50% 100%,
-                ${50 - 12 * Math.sin(Date.now() * 0.003)}% ${92 + 4 * Math.cos(Date.now() * 0.004 + Math.PI)}%,
-                ${12 - 8 * Math.sin(Date.now() * 0.0025)}% ${75 + 6 * Math.cos(Date.now() * 0.003 + Math.PI)}%,
-                ${8 - 6 * Math.sin(Date.now() * 0.004)}% 50%,
-                ${12 - 8 * Math.sin(Date.now() * 0.0025 + Math.PI)}% ${25 + 6 * Math.cos(Date.now() * 0.003)}%,
-                ${50 - 12 * Math.sin(Date.now() * 0.003 + Math.PI)}% ${8 + 4 * Math.cos(Date.now() * 0.004)}%
-              )`,
-              filter: 'blur(2px)',
-              boxShadow: `
-                0 0 30px rgba(255, 255, 0, 0.6),
-                0 0 60px rgba(255, 255, 0, 0.3),
-                inset 0 0 30px rgba(255, 255, 0, 0.2)
-              `
-            }}
-          />
-          
-          {/* Electric sparks around the perimeter - more dynamic */}
-          {Array.from({ length: 12 }).map((_, i) => {
-            const baseAngle = (i / 12) * Math.PI * 2;
-            const waveOffset = Math.sin(Date.now() * 0.003 + i * 0.5) * 0.3;
-            const angle = baseAngle + waveOffset + Date.now() * 0.001;
-            const radius = 220 + Math.sin(Date.now() * 0.004 + i) * 15;
-            const sparkX = 240 + Math.cos(angle) * radius;
-            const sparkY = 240 + Math.sin(angle) * radius;
+          {/* Electric sparks around the perimeter */}
+          {Array.from({ length: 8 }).map((_, i) => {
+            const angle = (i / 8) * Math.PI * 2 + Date.now() * 0.001;
+            const sparkX = 240 + Math.cos(angle) * 210;
+            const sparkY = 240 + Math.sin(angle) * 210;
             
             return (
               <div
                 key={i}
-                className="absolute bg-yellow-300 rounded-full"
+                className="absolute w-2 h-2 bg-yellow-300 rounded-full"
                 style={{
-                  width: `${3 + Math.sin(Date.now() * 0.006 + i) * 1}px`,
-                  height: `${3 + Math.sin(Date.now() * 0.006 + i) * 1}px`,
                   left: `${sparkX}px`,
                   top: `${sparkY}px`,
                   transform: 'translate(-50%, -50%)',
-                  opacity: 0.6 + Math.sin(Date.now() * 0.008 + i * 0.7) * 0.4,
-                  filter: 'blur(0.8px)',
-                  boxShadow: `0 0 ${6 + Math.sin(Date.now() * 0.005 + i) * 2}px rgba(255, 255, 0, 0.9)`
+                  opacity: 0.7 + Math.sin(Date.now() * 0.005 + i) * 0.3,
+                  filter: 'blur(0.5px)',
+                  boxShadow: '0 0 4px rgba(255, 255, 0, 0.8)'
                 }}
               />
             );
           })}
-          
-          {/* Inner wave rings */}
-          {Array.from({ length: 3 }).map((_, ringIndex) => (
-            <div
-              key={`ring-${ringIndex}`}
-              className="absolute rounded-full border-2 border-yellow-400"
-              style={{
-                left: '50%',
-                top: '50%',
-                width: `${(ringIndex + 1) * 120}px`,
-                height: `${(ringIndex + 1) * 120}px`,
-                transform: `translate(-50%, -50%) scale(${1 + Math.sin(Date.now() * 0.004 + ringIndex * 0.5) * 0.1})`,
-                opacity: 0.3 - ringIndex * 0.08,
-                borderColor: `rgba(255, 255, 0, ${0.5 - ringIndex * 0.15})`,
-                filter: 'blur(1px)',
-                clipPath: `polygon(
-                  50% 0%,
-                  ${50 + 8 * Math.sin(Date.now() * 0.002 + ringIndex)}% ${15 + 3 * Math.cos(Date.now() * 0.003 + ringIndex)}%,
-                  ${85 + 6 * Math.sin(Date.now() * 0.0015 + ringIndex)}% ${35 + 4 * Math.cos(Date.now() * 0.002 + ringIndex)}%,
-                  ${90 + 4 * Math.sin(Date.now() * 0.003 + ringIndex)}% 50%,
-                  ${85 + 6 * Math.sin(Date.now() * 0.0015 + ringIndex + Math.PI)}% ${65 + 4 * Math.cos(Date.now() * 0.002 + ringIndex + Math.PI)}%,
-                  ${50 + 8 * Math.sin(Date.now() * 0.002 + ringIndex + Math.PI)}% ${85 + 3 * Math.cos(Date.now() * 0.003 + ringIndex + Math.PI)}%,
-                  50% 100%,
-                  ${50 - 8 * Math.sin(Date.now() * 0.002 + ringIndex)}% ${85 + 3 * Math.cos(Date.now() * 0.003 + ringIndex + Math.PI)}%,
-                  ${15 - 6 * Math.sin(Date.now() * 0.0015 + ringIndex)}% ${65 + 4 * Math.cos(Date.now() * 0.002 + ringIndex + Math.PI)}%,
-                  ${10 - 4 * Math.sin(Date.now() * 0.003 + ringIndex)}% 50%,
-                  ${15 - 6 * Math.sin(Date.now() * 0.0015 + ringIndex + Math.PI)}% ${35 + 4 * Math.cos(Date.now() * 0.002 + ringIndex)}%,
-                  ${50 - 8 * Math.sin(Date.now() * 0.002 + ringIndex + Math.PI)}% ${15 + 3 * Math.cos(Date.now() * 0.003 + ringIndex)}%
-                )`
-              }}
-            />
-          ))}
         </div>
       )}
 
