@@ -110,7 +110,7 @@ function App() {
   });
 
   // Setup touch movement controls
-  const { handleGameTouchStart, handleGameTouchEnd } = useTouchMovement({ setKeys });
+  const { handleGameTouchStart, handleGameTouchMove, handleGameTouchEnd } = useTouchMovement({ setKeys });
   // Main game loop
   useGameLoop({
     gameStarted,
@@ -179,6 +179,7 @@ function App() {
       ref={canvasRef}
       className="relative w-full h-screen overflow-hidden"
       onTouchStart={handleGameTouchStart}
+      onTouchMove={handleGameTouchMove}
       onTouchEnd={handleGameTouchEnd}
       style={{
         background: 'rgb(3, 7, 18)', // Very dark blue, almost black
