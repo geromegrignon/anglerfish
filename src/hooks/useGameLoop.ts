@@ -100,7 +100,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setSurvivalTime(prev => prev + 16);
     
     // Decrease hunger over time - ALWAYS happens regardless of movement or input
-    const hungerDecayRate = 0.05; // Consistent 0.05% per frame (roughly 3% per second at 60fps)
+    const hungerDecayRate = 0.025; // Consistent 0.025% per frame (roughly 1.5% per second at 60fps)
     setHunger(prev => {
       const newHunger = Math.max(0, prev - hungerDecayRate);
       if (newHunger <= 0) {
