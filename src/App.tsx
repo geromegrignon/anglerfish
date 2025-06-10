@@ -41,6 +41,7 @@ function App() {
     gameMode,
     gameModeConfig,
     deathCause,
+    fishEaten,
     electricBonuses,
     electricFieldActive,
     electricFieldTimer,
@@ -75,6 +76,7 @@ function App() {
     setGameMode,
     setGameModeConfig,
     setDeathCause,
+    setFishEaten,
     
     // Actions
     startGame
@@ -123,6 +125,7 @@ function App() {
     triggerEcholocation,
     hitPoints,
     gameModeConfig,
+    fishEaten,
     setDeathCause,
     setTriggerEcholocation,
     setSurvivalTime,
@@ -147,6 +150,7 @@ function App() {
     setElectricBonuses,
     setMines,
     setNetTraps
+    setFishEaten
   });
 
   // Game Over Screen
@@ -216,6 +220,7 @@ function App() {
       <GameUI
         hunger={hunger}
         hitPoints={hitPoints}
+        fishEaten={fishEaten}
         gameMode={gameMode}
         depth={depth}
         lightBonusActive={lightBonusActive}

@@ -48,6 +48,7 @@ export const useGameLogic = () => {
     scrollSpeed: 2
   });
   const [deathCause, setDeathCause] = useState<DeathCause>(null);
+  const [fishEaten, setFishEaten] = useState(0);
   const [joystick, setJoystick] = useState<JoystickState>({
     active: false,
     centerX: 80,
@@ -86,6 +87,7 @@ export const useGameLogic = () => {
     setSlowdownTimer(0);
     setTriggerEcholocation(false);
     setDeathCause(null);
+    setFishEaten(0);
     setMines(prev => prev.map(mine => ({ ...mine, exploded: false })));
     setPrey(prev => prev.map(preyItem => ({ ...preyItem, collected: false })));
     setLightBonuses(prev => prev.map(bonus => ({ ...bonus, collected: false })));
@@ -124,6 +126,7 @@ export const useGameLogic = () => {
     gameMode,
     gameModeConfig,
     deathCause,
+    fishEaten,
     
     // Setters
     setAnglerfishPos,
@@ -155,6 +158,7 @@ export const useGameLogic = () => {
     setGameMode,
     setGameModeConfig,
     setDeathCause,
+    setFishEaten,
     
     // Actions
     startGame

@@ -5,6 +5,7 @@ import { GameMode } from '../types/game';
 interface GameUIProps {
   hunger: number;
   hitPoints: number;
+  fishEaten: number;
   gameMode: GameMode;
   depth: number;
   lightBonusActive: boolean;
@@ -18,6 +19,7 @@ interface GameUIProps {
 export const GameUI: React.FC<GameUIProps> = ({
   hunger,
   hitPoints,
+  fishEaten,
   gameMode,
   depth,
   lightBonusActive,
@@ -41,9 +43,24 @@ export const GameUI: React.FC<GameUIProps> = ({
         {/* Bottom row with depth and hit points */}
         <div className="flex justify-between items-center mt-3">
           {/* Depth indicator with game mode */}
-          <div className="flex flex-col">
+          <div className="flex items-center space-x-4">
             <div className="text-lg font-bold text-cyan-300">
               {Math.floor(depth).toLocaleString()}m
+            </div>
+            
+            {/* Fish eaten counter */}
+            <div className="flex items-center space-x-1">
+              <img 
+                src="/fish-2.svg" 
+                alt="fish" 
+                className="w-5 h-5"
+                style={{
+                  filter: 'drop-shadow(0 0 3px rgba(34, 211, 238, 0.6))'
+                }}
+              />
+              <span className="text-sm font-semibold text-cyan-200">
+                {fishEaten}
+              </span>
             </div>
           </div>
 

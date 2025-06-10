@@ -17,6 +17,7 @@ interface UseGameLoopProps {
   triggerEcholocation: boolean;
   hitPoints: number;
   gameModeConfig: GameModeConfig;
+  fishEaten: number;
   setDeathCause: React.Dispatch<React.SetStateAction<DeathCause>>;
   setTriggerEcholocation: React.Dispatch<React.SetStateAction<boolean>>;
   setSurvivalTime: React.Dispatch<React.SetStateAction<number>>;
@@ -41,6 +42,7 @@ interface UseGameLoopProps {
   setElectricBonuses: React.Dispatch<React.SetStateAction<any[]>>;
   setMines: React.Dispatch<React.SetStateAction<any[]>>;
   setNetTraps: React.Dispatch<React.SetStateAction<any[]>>;
+  setFishEaten: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const useGameLoop = (props: UseGameLoopProps) => {
@@ -60,6 +62,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     triggerEcholocation,
     hitPoints,
     gameModeConfig,
+    fishEaten,
     setDeathCause,
     setTriggerEcholocation,
     setSurvivalTime,
@@ -84,6 +87,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setElectricBonuses,
     setMines,
     setNetTraps
+    setFishEaten
   } = props;
 
   const frameCountRef = useRef(0);
@@ -495,6 +499,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           if (preyItem.visible) {
             const hungerRestore = 5; // Always restore exactly 5% regardless of prey size
             setHunger(h => Math.min(100, h + hungerRestore));
+            setFishEaten(count => count + 1);
           }
           return { ...preyItem, collected: true };
         }
@@ -610,6 +615,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
   }, [
     keys, anglerfishPos, gameStarted, gameOver, cameraY, lightRadius, hitPoints,
     sonarWaves, joystick, depth, lightBonusActive, electricFieldActive, slowedDown, triggerEcholocation, gameModeConfig,
+    fishEaten,
     setDeathCause,
     setTriggerEcholocation,
     setSurvivalTime, setLightBonusTimer, setLightBonusActive, setLightRadius, 
@@ -617,6 +623,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setSlowdownTimer, setSlowedDown, setHunger, setHitPoints, setGameOver, setAnglerfishPos,
     setCameraY, setDepth, setMaxDepthReached, setParticles, setSonarWaves,
     setPrey, setLightBonuses, setElectricBonuses, setMines, setNetTraps
+    setFishEaten
   ]);
 
   useEffect(() => {
