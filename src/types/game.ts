@@ -63,6 +63,14 @@ export interface LightBonus {
   pulsePhase: number;
 }
 
+export interface ElectricBonus {
+  id: number;
+  x: number;
+  y: number;
+  collected: boolean;
+  pulsePhase: number;
+}
+
 export interface JoystickState {
   active: boolean;
   centerX: number;

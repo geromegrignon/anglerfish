@@ -12,6 +12,7 @@ interface UseGameLoopProps {
   joystick: JoystickState;
   depth: number;
   lightBonusActive: boolean;
+  electricFieldActive: boolean;
   slowedDown: boolean;
   triggerEcholocation: boolean;
   hitPoints: number;
@@ -22,6 +23,8 @@ interface UseGameLoopProps {
   setLightBonusTimer: React.Dispatch<React.SetStateAction<number>>;
   setLightBonusActive: React.Dispatch<React.SetStateAction<boolean>>;
   setLightRadius: React.Dispatch<React.SetStateAction<number>>;
+  setElectricFieldTimer: React.Dispatch<React.SetStateAction<number>>;
+  setElectricFieldActive: React.Dispatch<React.SetStateAction<boolean>>;
   setSlowdownTimer: React.Dispatch<React.SetStateAction<number>>;
   setSlowedDown: React.Dispatch<React.SetStateAction<boolean>>;
   setHunger: React.Dispatch<React.SetStateAction<number>>;
@@ -35,6 +38,7 @@ interface UseGameLoopProps {
   setSonarWaves: React.Dispatch<React.SetStateAction<SonarWave[]>>;
   setPrey: React.Dispatch<React.SetStateAction<any[]>>;
   setLightBonuses: React.Dispatch<React.SetStateAction<any[]>>;
+  setElectricBonuses: React.Dispatch<React.SetStateAction<any[]>>;
   setMines: React.Dispatch<React.SetStateAction<any[]>>;
   setNetTraps: React.Dispatch<React.SetStateAction<any[]>>;
 }
@@ -51,6 +55,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     joystick,
     depth,
     lightBonusActive,
+    electricFieldActive,
     slowedDown,
     triggerEcholocation,
     hitPoints,
@@ -61,6 +66,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setLightBonusTimer,
     setLightBonusActive,
     setLightRadius,
+    setElectricFieldTimer,
+    setElectricFieldActive,
     setSlowdownTimer,
     setSlowedDown,
     setHunger,
@@ -74,6 +81,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setSonarWaves,
     setPrey,
     setLightBonuses,
+    setElectricBonuses,
     setMines,
     setNetTraps
   } = props;
@@ -117,6 +125,18 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         if (newTimer <= 0) {
           setLightBonusActive(false);
           setLightRadius(40);
+          return 0;
+        }
+        return newTimer;
+      });
+    }
+    
+    // Update electric field timer
+    if (electricFieldActive) {
+      setElectricFieldTimer(prev => {
+        const newTimer = prev - 16;
+        if (newTimer <= 0) {
+          setElectricFieldActive(false);
           return 0;
         }
         return newTimer;
@@ -325,6 +345,27 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         return prev;
       });
 
+      // Spawn new electric bonuses as we go deeper
+      setElectricBonuses(prev => {
+        const deepestBonus = Math.max(...prev.map(b => b.y));
+        const screenWidth = window.innerWidth;
+        const spawnWidth = screenWidth - 120; // 60px margin on each side
+        if (anglerfishPos.y > deepestBonus - 400 && prev.length < 8) {
+          const newBonuses = [];
+          if (Math.random() < 0.15) { // Rarer than light bonuses
+            newBonuses.push({
+              id: Date.now() + 4000,
+              x: Math.random() * spawnWidth + 60,
+              y: deepestBonus + 1200 + Math.random() * 600,
+              collected: false,
+              pulsePhase: Math.random() * Math.PI * 2
+            });
+          }
+          return [...prev, ...newBonuses];
+        }
+        return prev;
+      });
+
       // Spawn new mines as we go deeper
       setMines(prev => {
         const deepestMine = Math.max(...prev.map(m => m.y));
@@ -380,6 +421,11 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setLightBonuses(prev => prev.map(bonus => ({
       ...bonus,
       pulsePhase: bonus.pulsePhase + 0.04
+    })));
+
+    setElectricBonuses(prev => prev.map(bonus => ({
+      ...bonus,
+      pulsePhase: bonus.pulsePhase + 0.06
     })));
 
     setNetTraps(prev => prev.map(trap => ({
@@ -454,6 +500,22 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       return bonus;
     }));
 
+    // Check collisions with electric bonuses
+    setElectricBonuses(prev => prev.map(bonus => {
+      if (!bonus.collected) {
+        const distance = Math.sqrt(
+          Math.pow(anglerfishPos.x + 40 - bonus.x, 2) +
+          Math.pow(anglerfishPos.y + 25 - bonus.y, 2)
+        );
+        if (distance < 30) {
+          setElectricFieldActive(true);
+          setElectricFieldTimer(6000);
+          return { ...bonus, collected: true };
+        }
+      }
+      return bonus;
+    }));
+
     // Check collisions with net traps
     setNetTraps(prev => prev.map(trap => {
       if (!trap.triggered) {
@@ -492,6 +554,22 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       return mine;
     }));
 
+    // Electric field destroys mines within range
+    if (electricFieldActive) {
+      setMines(prev => prev.map(mine => {
+        if (!mine.exploded) {
+          const distance = Math.sqrt(
+            Math.pow(anglerfishPos.x + 40 - mine.x, 2) +
+            Math.pow(anglerfishPos.y + 30 - mine.y, 2)
+          );
+          if (distance < 80) { // Electric field radius
+            return { ...mine, exploded: true };
+          }
+        }
+        return mine;
+      }));
+    }
+
     // Trigger bioluminescence (keyboard spacebar or mobile button)
     if (keys.has(' ') || triggerEcholocation) {
       const lureX = anglerfishPos.x + 40;
@@ -512,13 +590,14 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     }
   }, [
     keys, anglerfishPos, gameStarted, gameOver, cameraY, lightRadius, hitPoints,
-    sonarWaves, joystick, depth, lightBonusActive, slowedDown, triggerEcholocation, gameModeConfig,
+    sonarWaves, joystick, depth, lightBonusActive, electricFieldActive, slowedDown, triggerEcholocation, gameModeConfig,
     setDeathCause,
     setTriggerEcholocation,
     setSurvivalTime, setLightBonusTimer, setLightBonusActive, setLightRadius, 
+    setElectricFieldTimer, setElectricFieldActive,
     setSlowdownTimer, setSlowedDown, setHunger, setHitPoints, setGameOver, setAnglerfishPos,
     setCameraY, setDepth, setMaxDepthReached, setParticles, setSonarWaves,
-    setPrey, setLightBonuses, setMines, setNetTraps
+    setPrey, setLightBonuses, setElectricBonuses, setMines, setNetTraps
   ]);
 
   useEffect(() => {

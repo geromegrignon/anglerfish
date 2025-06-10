@@ -41,6 +41,9 @@ function App() {
     gameMode,
     gameModeConfig,
     deathCause,
+    electricBonuses,
+    electricFieldActive,
+    electricFieldTimer,
     
     // Setters
     setAnglerfishPos,
@@ -62,6 +65,9 @@ function App() {
     setLightBonusActive,
     setLightBonusTimer,
     setLightBonuses,
+    setElectricBonuses,
+    setElectricFieldActive,
+    setElectricFieldTimer,
     setSlowedDown,
     setSlowdownTimer,
     setTriggerEcholocation,
@@ -80,6 +86,7 @@ function App() {
     setMines,
     setNetTraps,
     setLightBonuses,
+    setElectricBonuses,
     setParticles
   });
 
@@ -111,6 +118,7 @@ function App() {
     joystick,
     depth,
     lightBonusActive,
+    electricFieldActive,
     slowedDown,
     triggerEcholocation,
     hitPoints,
@@ -121,6 +129,8 @@ function App() {
     setLightBonusTimer,
     setLightBonusActive,
     setLightRadius,
+    setElectricFieldTimer,
+    setElectricFieldActive,
     setSlowdownTimer,
     setSlowedDown,
     setHunger,
@@ -134,6 +144,7 @@ function App() {
     setSonarWaves,
     setPrey,
     setLightBonuses,
+    setElectricBonuses,
     setMines,
     setNetTraps
   });
@@ -174,8 +185,10 @@ function App() {
         anglerfishPos={anglerfishPos}
         lightRadius={lightRadius}
         lightBonusActive={lightBonusActive}
+        electricFieldActive={electricFieldActive}
         prey={prey}
         lightBonuses={lightBonuses}
+        electricBonuses={electricBonuses}
         netTraps={netTraps}
         mines={mines}
         cameraY={cameraY}
@@ -193,7 +206,9 @@ function App() {
           height: '60px',
           filter: slowedDown 
             ? 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.8)) brightness(0.7)' 
-            : 'drop-shadow(0 0 15px rgba(34, 211, 238, 0.6))',
+            : electricFieldActive
+              ? 'drop-shadow(0 0 20px rgba(255, 255, 0, 0.8)) brightness(1.2)'
+              : 'drop-shadow(0 0 15px rgba(34, 211, 238, 0.6))',
           transform: 'translate3d(0, 0, 0)'
         }}
       />
@@ -205,6 +220,8 @@ function App() {
         depth={depth}
         lightBonusActive={lightBonusActive}
         lightBonusTimer={lightBonusTimer}
+        electricFieldActive={electricFieldActive}
+        electricFieldTimer={electricFieldTimer}
         slowedDown={slowedDown}
         slowdownTimer={slowdownTimer}
       />

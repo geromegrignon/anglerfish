@@ -9,6 +9,8 @@ interface GameUIProps {
   depth: number;
   lightBonusActive: boolean;
   lightBonusTimer: number;
+  electricFieldActive: boolean;
+  electricFieldTimer: number;
   slowedDown: boolean;
   slowdownTimer: number;
 }
@@ -20,6 +22,8 @@ export const GameUI: React.FC<GameUIProps> = ({
   depth,
   lightBonusActive,
   lightBonusTimer,
+  electricFieldActive,
+  electricFieldTimer,
   slowedDown,
   slowdownTimer
 }) => {
@@ -74,6 +78,16 @@ export const GameUI: React.FC<GameUIProps> = ({
               <Zap className="w-4 h-4 text-yellow-400 mr-1" />
               <span className="text-yellow-300 text-sm font-bold">
                 {Math.ceil(lightBonusTimer / 1000)}s
+              </span>
+            </div>
+          )}
+          
+          {/* Electric field effect */}
+          {electricFieldActive && (
+            <div className="flex items-center">
+              <Zap className="w-4 h-4 text-yellow-300 mr-1" />
+              <span className="text-yellow-200 text-sm font-bold">
+                ⚡ {Math.ceil(electricFieldTimer / 1000)}s
               </span>
             </div>
           )}

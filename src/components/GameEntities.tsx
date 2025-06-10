@@ -5,6 +5,7 @@ import {
   Mine, 
   NetTrap, 
   LightBonus, 
+  ElectricBonus,
   SonarWave, 
   Particle, 
   Position 
@@ -16,8 +17,10 @@ interface GameEntitiesProps {
   anglerfishPos: Position;
   lightRadius: number;
   lightBonusActive: boolean;
+  electricFieldActive: boolean;
   prey: Prey[];
   lightBonuses: LightBonus[];
+  electricBonuses: ElectricBonus[];
   netTraps: NetTrap[];
   mines: Mine[];
   cameraY: number;
@@ -29,8 +32,10 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
   anglerfishPos,
   lightRadius,
   lightBonusActive,
+  electricFieldActive,
   prey,
   lightBonuses,
+  electricBonuses,
   netTraps,
   mines,
   cameraY
@@ -62,6 +67,11 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
   const visibleLightBonuses = useMemo(() => 
     lightBonuses.filter(b => !b.collected && b.y >= viewportTop && b.y <= viewportBottom),
     [lightBonuses, viewportTop, viewportBottom]
+  );
+  
+  const visibleElectricBonuses = useMemo(() => 
+    electricBonuses.filter(b => !b.collected && b.y >= viewportTop && b.y <= viewportBottom),
+    [electricBonuses, viewportTop, viewportBottom]
   );
   
   const visibleNetTraps = useMemo(() => 
@@ -260,6 +270,31 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
               className="w-8 h-8 pointer-events-none"
               style={{
                 filter: `drop-shadow(0 0 ${10 * glowIntensity}px rgba(253, 224, 71, ${glowIntensity})) brightness(1.2)`
+              }}
+            />
+          </div>
+        );
+      })}
+
+      {/* Electric bonuses */}
+      {visibleElectricBonuses.map(bonus => {
+        const pulseScale = 1 + Math.sin(bonus.pulsePhase) * 0.3;
+        const glowIntensity = 0.5 + Math.sin(bonus.pulsePhase) * 0.3;
+        
+        return (
+          <div
+            key={bonus.id}
+            className="absolute pointer-events-none will-change-transform"
+            style={{
+              left: `${bonus.x - 15}px`,
+              top: `${bonus.y - 15 - cameraY}px`,
+              transform: `scale(${pulseScale}) translate3d(0, 0, 0)`,
+            }}
+          >
+            <Zap 
+              className="w-8 h-8 text-yellow-400"
+              style={{
+                filter: `drop-shadow(0 0 ${15 * glowIntensity}px rgba(255, 255, 0, ${glowIntensity})) brightness(1.3)`
               }}
             />
           </div>

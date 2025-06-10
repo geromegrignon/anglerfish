@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
-import { Prey, Mine, NetTrap, LightBonus, Particle } from '../types/game';
+import { Prey, Mine, NetTrap, LightBonus, ElectricBonus, Particle } from '../types/game';
 
 interface UseGameInitializationProps {
   setPrey: React.Dispatch<React.SetStateAction<Prey[]>>;
   setMines: React.Dispatch<React.SetStateAction<Mine[]>>;
   setNetTraps: React.Dispatch<React.SetStateAction<NetTrap[]>>;
   setLightBonuses: React.Dispatch<React.SetStateAction<LightBonus[]>>;
+  setElectricBonuses: React.Dispatch<React.SetStateAction<ElectricBonus[]>>;
   setParticles: React.Dispatch<React.SetStateAction<Particle[]>>;
 }
 
@@ -14,6 +15,7 @@ export const useGameInitialization = ({
   setMines,
   setNetTraps,
   setLightBonuses,
+  setElectricBonuses,
   setParticles
 }: UseGameInitializationProps) => {
   // Initialize prey (reduced count for mobile performance)
@@ -95,6 +97,23 @@ export const useGameInitialization = ({
     }
     setLightBonuses(newLightBonuses);
   }, [setLightBonuses]);
+
+  // Initialize electric bonuses
+  useEffect(() => {
+    const newElectricBonuses: ElectricBonus[] = [];
+    const screenWidth = window.innerWidth;
+    const spawnWidth = screenWidth - 120; // 60px margin on each side
+    for (let i = 0; i < 3; i++) {
+      newElectricBonuses.push({
+        id: i,
+        x: Math.random() * spawnWidth + 60,
+        y: 3000 + i * 1200 + Math.random() * 600, // Spawn deeper than light bonuses
+        collected: false,
+        pulsePhase: Math.random() * Math.PI * 2
+      });
+    }
+    setElectricBonuses(newElectricBonuses);
+  }, [setElectricBonuses]);
 
   // Initialize floating particles (marine snow) - reduced count
   useEffect(() => {

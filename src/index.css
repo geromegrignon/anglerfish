@@ -85,6 +85,16 @@ body {
   }
 }
 
+/* Electric field spark animations */
+@keyframes spark-0 { 0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.5); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); } }
+@keyframes spark-1 { 0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.6); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } }
+@keyframes spark-2 { 0%, 100% { opacity: 0.2; transform: translate(-50%, -50%) scale(0.4); } 50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.3); } }
+@keyframes spark-3 { 0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.7); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.0); } }
+@keyframes spark-4 { 0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.5); } 50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.4); } }
+@keyframes spark-5 { 0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.6); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } }
+@keyframes spark-6 { 0%, 100% { opacity: 0.2; transform: translate(-50%, -50%) scale(0.4); } 50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.2); } }
+@keyframes spark-7 { 0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.8); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.0); } }
+
 /* Optimize image rendering */
 img {
   image-rendering: -webkit-optimize-contrast;

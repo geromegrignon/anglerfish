@@ -7,6 +7,7 @@ import {
   SonarWave, 
   Particle, 
   LightBonus, 
+  ElectricBonus,
   JoystickState,
   GameMode,
   GameModeConfig,
@@ -33,6 +34,9 @@ export const useGameLogic = () => {
   const [lightBonusActive, setLightBonusActive] = useState(false);
   const [lightBonusTimer, setLightBonusTimer] = useState(0);
   const [lightBonuses, setLightBonuses] = useState<LightBonus[]>([]);
+  const [electricBonuses, setElectricBonuses] = useState<ElectricBonus[]>([]);
+  const [electricFieldActive, setElectricFieldActive] = useState(false);
+  const [electricFieldTimer, setElectricFieldTimer] = useState(0);
   const [slowedDown, setSlowedDown] = useState(false);
   const [slowdownTimer, setSlowdownTimer] = useState(0);
   const [triggerEcholocation, setTriggerEcholocation] = useState(false);
@@ -76,6 +80,8 @@ export const useGameLogic = () => {
     setLightRadius(40);
     setLightBonusActive(false);
     setLightBonusTimer(0);
+    setElectricFieldActive(false);
+    setElectricFieldTimer(0);
     setSlowedDown(false);
     setSlowdownTimer(0);
     setTriggerEcholocation(false);
@@ -83,6 +89,7 @@ export const useGameLogic = () => {
     setMines(prev => prev.map(mine => ({ ...mine, exploded: false })));
     setPrey(prev => prev.map(preyItem => ({ ...preyItem, collected: false })));
     setLightBonuses(prev => prev.map(bonus => ({ ...bonus, collected: false })));
+    setElectricBonuses(prev => prev.map(bonus => ({ ...bonus, collected: false })));
     setNetTraps(prev => prev.map(trap => ({ ...trap, triggered: false })));
   }, []);
 
@@ -107,6 +114,9 @@ export const useGameLogic = () => {
     lightBonusActive,
     lightBonusTimer,
     lightBonuses,
+    electricBonuses,
+    electricFieldActive,
+    electricFieldTimer,
     slowedDown,
     slowdownTimer,
     triggerEcholocation,
@@ -135,6 +145,9 @@ export const useGameLogic = () => {
     setLightBonusActive,
     setLightBonusTimer,
     setLightBonuses,
+    setElectricBonuses,
+    setElectricFieldActive,
+    setElectricFieldTimer,
     setSlowedDown,
     setSlowdownTimer,
     setTriggerEcholocation,
