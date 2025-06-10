@@ -565,7 +565,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
             Math.pow(anglerfishPos.x + 40 - mine.x, 2) +
             Math.pow(anglerfishPos.y + 30 - mine.y, 2)
           );
-          if (distance < 240) { // Electric field radius (3x bigger)
+          if (distance < 120) { // Electric field radius - smaller and more balanced
             return { ...mine, exploded: true };
           }
         }

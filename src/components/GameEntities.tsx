@@ -230,10 +230,10 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
         <div
           className="absolute rounded-full pointer-events-none will-change-transform"
           style={{
-            left: `${anglerfishPos.x + 40 - 240}px`,
-            top: `${anglerfishPos.y + 30 - 240 - cameraY}px`,
-            width: '480px',
-            height: '480px',
+            left: `${anglerfishPos.x + 40 - 120}px`,
+            top: `${anglerfishPos.y + 30 - 120 - cameraY}px`,
+            width: '240px',
+            height: '240px',
             background: 'radial-gradient(circle, rgba(255, 255, 0, 0.1) 0%, rgba(255, 255, 0, 0.05) 50%, transparent 70%)',
             border: '2px solid rgba(255, 255, 0, 0.6)',
             filter: 'blur(1px)',
@@ -248,8 +248,8 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
           {/* Electric sparks around the perimeter */}
           {Array.from({ length: 8 }).map((_, i) => {
             const angle = (i / 8) * Math.PI * 2 + Date.now() * 0.001;
-            const sparkX = 240 + Math.cos(angle) * 210;
-            const sparkY = 240 + Math.sin(angle) * 210;
+            const sparkX = 120 + Math.cos(angle) * 105;
+            const sparkY = 120 + Math.sin(angle) * 105;
             
             return (
               <div
