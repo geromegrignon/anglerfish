@@ -199,7 +199,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
         {isMobile && !MOBILE_SUPPORT_ENABLED ? (
           /* Mobile Coming Soon Message */
           <div className="w-full max-w-md text-center">
-            <div className="p-6 mb-4">
+            <div className="p-6">
               <h3 className="text-2xl font-bold text-orange-300" style={{ fontFamily: 'Chewy, cursive' }}>
                 Coming Soon to Mobile
               </h3>
