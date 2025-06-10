@@ -165,7 +165,6 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
                 <div className="space-y-2 text-xs md:text-sm text-gray-300">
                   <p><span className="text-blue-400 font-mono text-xs md:text-sm">← →</span> - Touch buttons to move</p>
                   <p><span className="text-blue-400 font-mono text-xs md:text-sm">⚡</span> - Echolocation pulse button</p>
-                  <p className="text-gray-400 italic">Touch controls at bottom of screen</p>
                 </div>
               ) : (
                 <div className="space-y-2 text-xs md:text-sm text-gray-300">
