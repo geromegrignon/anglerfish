@@ -200,14 +200,9 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
           /* Mobile Coming Soon Message */
           <div className="w-full max-w-md text-center">
             <div className="bg-black/60 backdrop-blur-sm border border-orange-500/50 rounded-xl p-6 mb-4">
-              <Smartphone className="w-12 h-12 text-orange-400 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-orange-300 mb-2" style={{ fontFamily: 'Chewy, cursive' }}>
                 Coming Soon to Mobile
               </h3>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                We're working hard to bring the full Anglerfish experience to mobile devices. 
-                For now, please enjoy the game on desktop for the best experience.
-              </p>
             </div>
             <div className="text-gray-400 text-xs">
               Try visiting on a desktop or laptop computer
