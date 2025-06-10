@@ -133,8 +133,19 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
         </div>
 
         <div className="text-center mb-12">
-          <h1 className="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 mb-4 drop-shadow-2xl">
-            ABYSS HUNTER
+          <h1 className="text-6xl md:text-8xl font-bold mb-4 drop-shadow-2xl">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500">
+              ANGL
+            </span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500">
+              A
+            </span>
+            <span className="text-gray-600">
+              U
+            </span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500">
+              LARFISH
+            </span>
           </h1>
           <p className="text-xl md:text-2xl text-blue-200 mb-2 drop-shadow-lg">
             Survive the Endless Deep
