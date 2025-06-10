@@ -26,7 +26,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
             }}
           >
             <img 
-              src="/fish-2.svg" 
+              src="/fish-1.svg" 
               alt="fish" 
               className="w-8 h-8"
               style={{
