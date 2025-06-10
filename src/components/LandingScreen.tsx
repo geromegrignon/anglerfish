@@ -1,5 +1,5 @@
 import React from 'react';
-import { Zap, Circle } from 'lucide-react';
+import { Zap, Circle, Smartphone } from 'lucide-react';
 import { GameMode } from '../types/game';
 
 interface LandingScreenProps {
@@ -9,6 +9,9 @@ interface LandingScreenProps {
 export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => {
   // Detect if device is mobile/touch-enabled
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+  
+  // Feature flag for mobile support
+  const MOBILE_SUPPORT_ENABLED = false;
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-blue-900 to-black relative overflow-hidden">
@@ -193,15 +196,35 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
         </div>
 
         {/* Start Game Button */}
-        <button
-          onClick={() => onStartGame('speedrun')}
-          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-full text-lg md:text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-purple-400/50 max-w-md"
-          style={{ fontFamily: 'Chewy, cursive' }}
-        >
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl">Explore the abyss</div>
+        {isMobile && !MOBILE_SUPPORT_ENABLED ? (
+          /* Mobile Coming Soon Message */
+          <div className="w-full max-w-md text-center">
+            <div className="bg-black/60 backdrop-blur-sm border border-orange-500/50 rounded-xl p-6 mb-4">
+              <Smartphone className="w-12 h-12 text-orange-400 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-orange-300 mb-2" style={{ fontFamily: 'Chewy, cursive' }}>
+                Coming Soon to Mobile
+              </h3>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                We're working hard to bring the full Anglerfish experience to mobile devices. 
+                For now, please enjoy the game on desktop for the best experience.
+              </p>
+            </div>
+            <div className="text-gray-400 text-xs">
+              Try visiting on a desktop or laptop computer
+            </div>
           </div>
-        </button>
+        ) : (
+          /* Regular Start Game Button */
+          <button
+            onClick={() => onStartGame('speedrun')}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-full text-lg md:text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-purple-400/50 max-w-md"
+            style={{ fontFamily: 'Chewy, cursive' }}
+          >
+            <div className="text-center">
+              <div className="text-2xl md:text-3xl">Explore the abyss</div>
+            </div>
+          </button>
+        )}
       </div>
     </div>
   );
