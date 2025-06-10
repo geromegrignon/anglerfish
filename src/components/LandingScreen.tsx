@@ -78,6 +78,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
             className="absolute w-1 h-1 bg-blue-200 rounded-full opacity-40"
             style={{
               left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`, // Add initial top position
               animationName: 'floatDown',
               animationDuration: `${Math.random() * 8 + 5}s`,
               animationDelay: `${Math.random() * 5}s`,

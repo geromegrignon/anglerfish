@@ -106,7 +106,7 @@ body {
 
 @keyframes floatDown {
   0% {
-    transform: translateY(-10px);
+    transform: translateY(-50px);
     opacity: 0;
   }
   10% {
@@ -116,7 +116,7 @@ body {
     opacity: 0.3;
   }
   100% {
-    transform: translateY(100vh);
+    transform: translateY(calc(100vh + 50px));
     opacity: 0;
   }
 }
