@@ -179,8 +179,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       const speedMultiplier = slowedDown ? 0.3 : 1;
       
       // Horizontal movement (always allowed)
-      if (keys.has('arrowleft') || keys.has('a')) newX -= 2 * speedMultiplier;
-      if (keys.has('arrowright') || keys.has('d')) newX += 2 * speedMultiplier;
+      if (keys.has('arrowleft')) newX -= 2 * speedMultiplier;
+      if (keys.has('arrowright')) newX += 2 * speedMultiplier;
       
       // Auto-scroll (always active in speed run mode)
       newY += gameModeConfig.scrollSpeed / 2;
