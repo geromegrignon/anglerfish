@@ -21,18 +21,21 @@ export const useGameInitialization = ({
   // Mobile detection for performance optimizations
   const isMobile = window.innerWidth < 768;
   
+  // Larger margins on mobile to prevent items spawning too close to edges
+  const horizontalMargin = isMobile ? 100 : 60; // 100px margin on mobile vs 60px on desktop
+  
   // Initialize prey (reduced count for mobile performance)
   useEffect(() => {
     const newPrey: Prey[] = [];
     const screenWidth = window.innerWidth;
-    const spawnWidth = screenWidth - 120; // 60px margin on each side
+    const spawnWidth = screenWidth - (horizontalMargin * 2); // Dynamic margin based on device
     const preyCount = isMobile ? 80 : 150;
     for (let i = 0; i < preyCount; i++) {
       const types: ('small' | 'medium' | 'large')[] = ['small', 'small', 'small', 'medium', 'medium', 'large'];
       const fishSvgs: ('fish-1' | 'fish-2')[] = ['fish-1', 'fish-2'];
       newPrey.push({
         id: i,
-        x: Math.random() * spawnWidth + 60,
+        x: Math.random() * spawnWidth + horizontalMargin,
         y: Math.random() * 3000 + 100, // Reduced initial spawn area
         collected: false,
         visible: false,
@@ -42,18 +45,18 @@ export const useGameInitialization = ({
       });
     }
     setPrey(newPrey);
-  }, [setPrey]);
+  }, [setPrey, isMobile, horizontalMargin]);
 
   // Initialize mines (reduced count)
   useEffect(() => {
     const newMines: Mine[] = [];
     const screenWidth = window.innerWidth;
-    const spawnWidth = screenWidth - 120; // 60px margin on each side
+    const spawnWidth = screenWidth - (horizontalMargin * 2); // Dynamic margin based on device
     const mineCount = isMobile ? 8 : 35;
     for (let i = 0; i < mineCount; i++) {
       newMines.push({
         id: i,
-        x: Math.random() * spawnWidth + 60,
+        x: Math.random() * spawnWidth + horizontalMargin,
         y: Math.random() * 3000 + 500, // Reduced initial spawn area
         exploded: false,
         pulsePhase: Math.random() * Math.PI * 2,
@@ -65,61 +68,61 @@ export const useGameInitialization = ({
       });
     }
     setMines(newMines);
-  }, [setMines]);
+  }, [setMines, isMobile, horizontalMargin]);
 
   // Initialize net traps (reduced count)
   useEffect(() => {
     const newNetTraps: NetTrap[] = [];
     const screenWidth = window.innerWidth;
-    const spawnWidth = screenWidth - 120; // 60px margin on each side
+    const spawnWidth = screenWidth - (horizontalMargin * 2); // Dynamic margin based on device
     const trapCount = isMobile ? 12 : 20;
     for (let i = 0; i < trapCount; i++) {
       newNetTraps.push({
         id: i,
-        x: Math.random() * spawnWidth + 60,
+        x: Math.random() * spawnWidth + horizontalMargin,
         y: Math.random() * 3000 + 1000, // Reduced initial spawn area
         triggered: false,
         pulsePhase: Math.random() * Math.PI * 2
       });
     }
     setNetTraps(newNetTraps);
-  }, [setNetTraps]);
+  }, [setNetTraps, isMobile, horizontalMargin]);
 
   // Initialize light bonuses
   useEffect(() => {
     const newLightBonuses: LightBonus[] = [];
     const screenWidth = window.innerWidth;
-    const spawnWidth = screenWidth - 120; // 60px margin on each side
+    const spawnWidth = screenWidth - (horizontalMargin * 2); // Dynamic margin based on device
     const bonusCount = isMobile ? 3 : 5;
     for (let i = 0; i < bonusCount; i++) {
       newLightBonuses.push({
         id: i,
-        x: Math.random() * spawnWidth + 60,
+        x: Math.random() * spawnWidth + horizontalMargin,
         y: 2000 + i * 800 + Math.random() * 400, // Reduced spacing
         collected: false,
         pulsePhase: Math.random() * Math.PI * 2
       });
     }
     setLightBonuses(newLightBonuses);
-  }, [setLightBonuses]);
+  }, [setLightBonuses, isMobile, horizontalMargin]);
 
   // Initialize electric bonuses
   useEffect(() => {
     const newElectricBonuses: ElectricBonus[] = [];
     const screenWidth = window.innerWidth;
-    const spawnWidth = screenWidth - 120; // 60px margin on each side
+    const spawnWidth = screenWidth - (horizontalMargin * 2); // Dynamic margin based on device
     const bonusCount = isMobile ? 2 : 3;
     for (let i = 0; i < bonusCount; i++) {
       newElectricBonuses.push({
         id: i,
-        x: Math.random() * spawnWidth + 60,
+        x: Math.random() * spawnWidth + horizontalMargin,
         y: 3000 + i * 1200 + Math.random() * 600, // Spawn deeper than light bonuses
         collected: false,
         pulsePhase: Math.random() * Math.PI * 2
       });
     }
     setElectricBonuses(newElectricBonuses);
-  }, [setElectricBonuses]);
+  }, [setElectricBonuses, isMobile, horizontalMargin]);
 
   // Initialize floating particles (marine snow) - reduced count
   useEffect(() => {

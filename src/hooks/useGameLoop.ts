@@ -337,11 +337,15 @@ export const useGameLoop = (props: UseGameLoopProps) => {
 
     // Spawn new entities less frequently
     if (shouldUpdateExpensive) {
+      // Mobile detection and margin calculation
+      const isMobileDevice = window.innerWidth < 768;
+      const horizontalMargin = isMobileDevice ? 100 : 60; // Larger margin on mobile
+      
       // Spawn new prey as we go deeper
       setPrey(prev => {
         const deepestPrey = Math.max(...prev.map(p => p.y));
         const screenWidth = window.innerWidth;
-        const spawnWidth = screenWidth - 120; // 60px margin on each side
+        const spawnWidth = screenWidth - (horizontalMargin * 2); // Dynamic margin
         const maxPrey = isMobile ? 150 : 300;
         const spawnCount = isMobile ? 8 : 15;
         if (anglerfishPos.y > deepestPrey - 500 && prev.length < maxPrey) {
@@ -351,7 +355,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           for (let i = 0; i < spawnCount; i++) {
             newPreyItems.push({
               id: Date.now() + i,
-              x: Math.random() * spawnWidth + 60,
+              x: Math.random() * spawnWidth + horizontalMargin,
               y: deepestPrey + Math.random() * 500 + 200,
               collected: false,
               visible: false,
@@ -369,14 +373,14 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       setLightBonuses(prev => {
         const deepestBonus = Math.max(...prev.map(b => b.y));
         const screenWidth = window.innerWidth;
-        const spawnWidth = screenWidth - 120; // 60px margin on each side
+        const spawnWidth = screenWidth - (horizontalMargin * 2); // Dynamic margin
         const maxBonuses = isMobile ? 8 : 15;
         if (anglerfishPos.y > deepestBonus - 200 && prev.length < maxBonuses) {
           const newBonuses = [];
           if (Math.random() < (isMobile ? 0.2 : 0.3)) {
             newBonuses.push({
               id: Date.now() + 2000,
-              x: Math.random() * spawnWidth + 60,
+              x: Math.random() * spawnWidth + horizontalMargin,
               y: deepestBonus + 800 + Math.random() * 400,
               collected: false,
               pulsePhase: Math.random() * Math.PI * 2
@@ -391,14 +395,14 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       setElectricBonuses(prev => {
         const deepestBonus = Math.max(...prev.map(b => b.y));
         const screenWidth = window.innerWidth;
-        const spawnWidth = screenWidth - 120; // 60px margin on each side
+        const spawnWidth = screenWidth - (horizontalMargin * 2); // Dynamic margin
         const maxElectricBonuses = isMobile ? 4 : 8;
         if (anglerfishPos.y > deepestBonus - 400 && prev.length < maxElectricBonuses) {
           const newBonuses = [];
           if (Math.random() < (isMobile ? 0.1 : 0.15)) {
             newBonuses.push({
               id: Date.now() + 4000,
-              x: Math.random() * spawnWidth + 60,
+              x: Math.random() * spawnWidth + horizontalMargin,
               y: deepestBonus + 1200 + Math.random() * 600,
               collected: false,
               pulsePhase: Math.random() * Math.PI * 2
@@ -413,7 +417,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       setMines(prev => {
         const deepestMine = Math.max(...prev.map(m => m.y));
         const screenWidth = window.innerWidth;
-        const spawnWidth = screenWidth - 120; // 60px margin on each side
+        const spawnWidth = screenWidth - (horizontalMargin * 2); // Dynamic margin
         const maxMines = isMobile ? 12 : 80;
         const spawnCount = isMobile ? 2 : 6;
         if (anglerfishPos.y > deepestMine - 800 && prev.length < maxMines) {
@@ -421,7 +425,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           for (let i = 0; i < spawnCount; i++) {
             newMines.push({
               id: Date.now() + i + 1000,
-              x: Math.random() * spawnWidth + 60,
+              x: Math.random() * spawnWidth + horizontalMargin,
               y: deepestMine + Math.random() * 600 + 300,
               exploded: false,
               pulsePhase: Math.random() * Math.PI * 2,
@@ -441,7 +445,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       setNetTraps(prev => {
         const deepestTrap = Math.max(...prev.map(t => t.y));
         const screenWidth = window.innerWidth;
-        const spawnWidth = screenWidth - 120; // 60px margin on each side
+        const spawnWidth = screenWidth - (horizontalMargin * 2); // Dynamic margin
         const maxTraps = isMobile ? 25 : 50;
         const spawnCount = isMobile ? 2 : 4;
         if (anglerfishPos.y > deepestTrap - 600 && prev.length < maxTraps) {
@@ -449,7 +453,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           for (let i = 0; i < spawnCount; i++) {
             newTraps.push({
               id: Date.now() + i + 3000,
-              x: Math.random() * spawnWidth + 60,
+              x: Math.random() * spawnWidth + horizontalMargin,
               y: deepestTrap + Math.random() * 800 + 400,
               triggered: false,
               pulsePhase: Math.random() * Math.PI * 2
@@ -514,6 +518,16 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       return newMine;
     }));
 
+    // Also update mine boundaries to respect mobile margins
+    setMines(prev => prev.map(mine => {
+      const isMobileDevice = window.innerWidth < 768;
+      const horizontalMargin = isMobileDevice ? 100 : 60;
+      
+      // Clamp mine positions to respect margins
+      const clampedX = Math.max(horizontalMargin, Math.min(window.innerWidth - horizontalMargin, mine.x));
+      
+      return mine.x !== clampedX ? { ...mine, x: clampedX } : mine;
+    }));
     // Check collisions with prey
     // Optimize collision detection - only check nearby prey
     setPrey(prev => prev.map(preyItem => {
