@@ -29,18 +29,6 @@ export const VirtualJoystick: React.FC<VirtualJoystickProps> = ({
       {/* Mobile Controls - Show on mobile devices */}
       {isMobile && (
         <div className="fixed inset-0 pointer-events-none z-30">
-          {/* Touch zones for movement indication */}
-          <div className="absolute inset-0 flex">
-            {/* Left touch zone indicator */}
-            <div className="flex-1 flex items-center justify-center pointer-events-none">
-              <div className="text-white/30 text-6xl font-bold">←</div>
-            </div>
-            {/* Right touch zone indicator */}
-            <div className="flex-1 flex items-center justify-center pointer-events-none">
-              <div className="text-white/30 text-6xl font-bold">→</div>
-            </div>
-          </div>
-          
           <div className="absolute pointer-events-auto">
 
             {/* Echolocation Button */}
