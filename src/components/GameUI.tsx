@@ -45,7 +45,7 @@ export const GameUI: React.FC<GameUIProps> = ({
           {/* Depth indicator with game mode */}
           <div className="flex items-center space-x-4">
             <div className="text-lg font-bold text-cyan-300 min-w-[80px]" style={{ fontFamily: 'Chewy, cursive' }}>
-              {Math.floor(depth).toLocaleString()}m
+              {Math.floor(depth).toLocaleString()}
             </div>
             
             {/* Fish eaten counter */}
