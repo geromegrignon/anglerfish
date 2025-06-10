@@ -41,7 +41,7 @@ export const GameUI: React.FC<GameUIProps> = ({
         </div>
         
         {/* Bottom row with depth and hit points */}
-        <div className="flex justify-between items-center mt-3">
+        <div className="flex justify-between items-center mt-3 px-6">
           {/* Depth indicator with game mode */}
           <div className="flex items-center space-x-4">
             <div className="text-lg font-bold text-cyan-300 min-w-[80px]" style={{ fontFamily: 'Chewy, cursive' }}>
