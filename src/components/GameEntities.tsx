@@ -225,6 +225,50 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
         }}
       />
 
+      {/* Electric field around anglerfish when active */}
+      {electricFieldActive && (
+        <div
+          className="absolute rounded-full pointer-events-none will-change-transform"
+          style={{
+            left: `${anglerfishPos.x + 40 - 240}px`,
+            top: `${anglerfishPos.y + 30 - 240 - cameraY}px`,
+            width: '480px',
+            height: '480px',
+            background: 'radial-gradient(circle, rgba(255, 255, 0, 0.1) 0%, rgba(255, 255, 0, 0.05) 50%, transparent 70%)',
+            border: '2px solid rgba(255, 255, 0, 0.6)',
+            filter: 'blur(1px)',
+            boxShadow: `
+              0 0 20px rgba(255, 255, 0, 0.4),
+              0 0 40px rgba(255, 255, 0, 0.2),
+              inset 0 0 20px rgba(255, 255, 0, 0.1)
+            `,
+            transform: `scale(${1 + Math.sin(Date.now() * 0.003) * 0.05}) translate3d(0, 0, 0)`,
+          }}
+        >
+          {/* Electric sparks around the perimeter */}
+          {Array.from({ length: 8 }).map((_, i) => {
+            const angle = (i / 8) * Math.PI * 2 + Date.now() * 0.001;
+            const sparkX = 240 + Math.cos(angle) * 210;
+            const sparkY = 240 + Math.sin(angle) * 210;
+            
+            return (
+              <div
+                key={i}
+                className="absolute w-2 h-2 bg-yellow-300 rounded-full"
+                style={{
+                  left: `${sparkX}px`,
+                  top: `${sparkY}px`,
+                  transform: 'translate(-50%, -50%)',
+                  opacity: 0.7 + Math.sin(Date.now() * 0.005 + i) * 0.3,
+                  filter: 'blur(0.5px)',
+                  boxShadow: '0 0 4px rgba(255, 255, 0, 0.8)'
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
+
       {/* Prey */}
       {visiblePrey.map(preyItem => {
         const size = preyItem.type === 'large' ? 24 : preyItem.type === 'medium' ? 18 : 12;
