@@ -63,7 +63,7 @@ export const useGameLogic = () => {
       mode,
       autoScroll: true,
       allowVerticalMovement: false,
-      scrollSpeed: 1
+      scrollSpeed: 1.6
     };
     
     setGameMode(mode);
