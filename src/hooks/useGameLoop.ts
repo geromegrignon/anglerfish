@@ -495,7 +495,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           Math.pow(anglerfishPos.y + 25 - preyItem.y, 2)
         );
         if (distance < 35) {
-          // Only restore hunger if the fish is visible
+          // Only restore hunger and count fish if the fish is visible
           if (preyItem.visible) {
             const hungerRestore = 5; // Always restore exactly 5% regardless of prey size
             setHunger(h => Math.min(100, h + hungerRestore));
