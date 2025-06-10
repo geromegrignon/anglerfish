@@ -188,8 +188,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
           className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl border border-purple-400/50 max-w-md"
         >
           <div className="text-center">
-            <div className="text-3xl mb-2">⚡ START HUNT</div>
-            <div className="text-sm opacity-80">Auto-dive into the abyss</div>
+            <div className="text-3xl mb-2">Explore the abyss</div>
           </div>
         </button>
 
