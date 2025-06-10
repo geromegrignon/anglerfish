@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fish, Zap, Circle } from 'lucide-react';
+import { Zap, Circle } from 'lucide-react';
 import { GameMode } from '../types/game';
 
 interface LandingScreenProps {
@@ -15,7 +15,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={`fish-${i}`}
-            className="absolute opacity-20"
+            className="absolute opacity-30"
             style={{
               top: `${Math.random() * 80 + 10}%`,
               animationName: 'swimAcross',
@@ -25,7 +25,15 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
               animationTimingFunction: 'linear'
             }}
           >
-            <Fish className="w-8 h-8 text-blue-300" />
+            <img 
+              src="/fish-2.svg" 
+              alt="fish" 
+              className="w-8 h-8"
+              style={{
+                filter: 'drop-shadow(0 0 4px rgba(147, 197, 253, 0.6)) brightness(0.8)',
+                transform: 'scaleX(-1)' // Face left for swimming animation
+              }}
+            />
           </div>
         ))}
 
