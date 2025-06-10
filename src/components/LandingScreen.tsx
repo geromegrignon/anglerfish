@@ -147,9 +147,6 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
           <p className="text-xl md:text-2xl text-blue-200 mb-2 drop-shadow-lg">
             Survive the Endless Deep
           </p>
-          <p className="text-lg text-gray-300 drop-shadow-md">
-            An Anglerfish's Journey into Darkness
-          </p>
         </div>
 
         {/* Controls & Objectives Card */}
