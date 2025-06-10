@@ -147,7 +147,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
               LARFISH
             </span>
           </h1>
-          <p className="text-lg md:text-2xl text-blue-200 mb-2 drop-shadow-lg">
+          <p className="hidden md:block text-lg md:text-2xl text-blue-200 mb-2 drop-shadow-lg">
             Survive the Endless Deep
           </p>
         </div>
