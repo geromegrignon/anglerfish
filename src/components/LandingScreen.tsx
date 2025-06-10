@@ -180,8 +180,8 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
           
           {/* Alpha Badge */}
           <div className="flex justify-center mb-4">
-            <div className="inline-flex items-center px-3 py-1 rounded border border-orange-400 shadow-lg">
-              <span className="text-orange-400/50 text-sm font-bold tracking-wider" style={{ fontFamily: 'Verdana, sans-serif' }}>
+            <div className="inline-flex items-center px-3 py-1 rounded border border-orange-300 shadow-lg">
+              <span className="text-orange-300 text-sm font-bold tracking-wider" style={{ fontFamily: 'Verdana, sans-serif' }}>
                 ALPHA
               </span>
             </div>
