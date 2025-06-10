@@ -15,7 +15,7 @@ import {
 } from '../types/game';
 
 export const useGameLogic = () => {
-  const [anglerfishPos, setAnglerfishPos] = useState<Position>({ x: 100, y: 300 });
+  const [anglerfishPos, setAnglerfishPos] = useState<Position>({ x: window.innerWidth / 2 - 40, y: 300 });
   const [hunger, setHunger] = useState(100);
   const [hitPoints, setHitPoints] = useState(3);
   const [maxDepthReached, setMaxDepthReached] = useState(2000);
@@ -75,7 +75,7 @@ export const useGameLogic = () => {
     setMaxDepthReached(2000);
     setGameOver(false);
     setSurvivalTime(0);
-    setAnglerfishPos({ x: 100, y: 300 });
+    setAnglerfishPos({ x: window.innerWidth / 2 - 40, y: 300 });
     setCameraY(0);
     setDepth(2000);
     setLightRadius(40);
