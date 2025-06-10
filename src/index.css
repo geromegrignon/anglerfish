@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS custom property for dynamic viewport height */
+:root {
+  --vh: 1vh;
+}
+
 /* Performance optimizations */
 * {
   box-sizing: border-box;
@@ -173,9 +178,21 @@ img {
 /* Disable scrolling and bouncing on mobile */
 html, body {
   position: fixed;
-  height: 100%;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100); /* Fallback to CSS custom property */
   width: 100%;
   overflow: hidden;
+}
+
+/* Ensure root container takes full viewport */
+#root {
+  width: 100%;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100); /* Use CSS custom property */
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 /* Prevent zoom on mobile */

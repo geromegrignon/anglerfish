@@ -2,11 +2,30 @@ import React from 'react';
 import { Zap, Circle, Smartphone } from 'lucide-react';
 import { GameMode } from '../types/game';
 
+// Force viewport height calculation on mobile
+const setVH = () => {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+};
+
 interface LandingScreenProps {
   onStartGame: (mode: GameMode) => void;
 }
 
 export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => {
+  // Set viewport height on mount and resize
+  React.useEffect(() => {
+    setVH();
+    const handleResize = () => setVH();
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, []);
+  
   // Detect if device is mobile/touch-enabled
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
   
@@ -14,7 +33,15 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
   const MOBILE_SUPPORT_ENABLED = false;
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-blue-900 to-black relative overflow-hidden">
+    <div 
+      className="w-full bg-gradient-to-b from-gray-900 via-blue-900 to-black relative overflow-hidden" 
+      style={{ 
+        height: '100vh',
+        height: 'calc(var(--vh, 1vh) * 100)',
+        minHeight: '100vh',
+        minHeight: 'calc(var(--vh, 1vh) * 100)'
+      }}
+    >
       {/* Animated background elements */}
       <div className="absolute inset-0">
         {/* Swimming fish silhouettes */}
@@ -78,7 +105,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-8">
+      <div className="relative z-10 flex flex-col items-center justify-center w-full h-full p-4 md:p-8">
         {/* Hero Anglerfish */}
         <div className="relative mb-8">
           {/* Anglerfish with glowing lure */}
