@@ -202,6 +202,25 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({
           <p className="hidden md:block text-lg md:text-2xl text-blue-200 mb-2 drop-shadow-lg">
             Survive the Endless Deep
           </p>
+
+          {/* Keyboard Controls */}
+          <div className="hidden md:flex justify-center items-center gap-12 my-6">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center justify-center min-w-[2.5rem] h-6 px-2 bg-blue-900/50 text-cyan-300 font-mono text-xs rounded border border-cyan-500/30 shadow-[0_0_8px_rgba(34,211,238,0.3)] backdrop-blur-sm">
+                ←
+              </span>
+              <span className="inline-flex items-center justify-center min-w-[2.5rem] h-6 px-2 bg-blue-900/50 text-cyan-300 font-mono text-xs rounded border border-cyan-500/30 shadow-[0_0_8px_rgba(34,211,238,0.3)] backdrop-blur-sm">
+                →
+              </span>
+              <span className="text-blue-200">Move</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center justify-center min-w-[5rem] h-6 px-2 bg-blue-900/50 text-cyan-300 font-mono text-xs rounded border border-cyan-500/30 shadow-[0_0_8px_rgba(34,211,238,0.3)] backdrop-blur-sm">
+                Space
+              </span>
+              <span className="text-blue-200">Echolocate preys</span>
+            </div>
+          </div>
         </div>
 
         {/* Controls & Objectives Card */}
@@ -232,18 +251,8 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({
                 </div>
               ) : (
                 <div className="space-y-2 text-xs md:text-sm text-gray-300">
-                  <p>
-                    <span className="text-blue-400 font-mono text-xs md:text-sm">
-                      ←/→
-                    </span>{" "}
-                    - Move horizontally
-                  </p>
-                  <p>
-                    <span className="text-blue-400 font-mono text-xs md:text-sm">
-                      Spacebar
-                    </span>{" "}
-                    - Echolocation pulse
-                  </p>
+                  <p>• Use arrow keys to move horizontally</p>
+                  <p>• Press spacebar for echolocation pulse</p>
                 </div>
               )}
             </div>
