@@ -1,9 +1,6 @@
 # 🐟 Angularfish - Deep Sea Survival Game
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 
 > **Alpha Version** - An atmospheric deep-sea survival game where you play as a bioluminescent anglerfish navigating the endless abyss.
 
