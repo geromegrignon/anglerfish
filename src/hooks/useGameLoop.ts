@@ -100,7 +100,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setSurvivalTime(prev => prev + 16);
     
     // Decrease hunger over time - ALWAYS happens regardless of movement or input
-    const hungerDecayRate = 0.1; // Consistent 0.1% per frame (roughly 6% per second at 60fps)
+    const hungerDecayRate = 0.05; // Consistent 0.05% per frame (roughly 3% per second at 60fps)
     setHunger(prev => {
       const newHunger = Math.max(0, prev - hungerDecayRate);
       if (newHunger <= 0) {
@@ -143,11 +143,11 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       const speedMultiplier = slowedDown ? 0.3 : 1;
       
       // Horizontal movement (always allowed)
-      if (keys.has('arrowleft') || keys.has('a')) newX -= 4 * speedMultiplier;
-      if (keys.has('arrowright') || keys.has('d')) newX += 4 * speedMultiplier;
+      if (keys.has('arrowleft') || keys.has('a')) newX -= 2 * speedMultiplier;
+      if (keys.has('arrowright') || keys.has('d')) newX += 2 * speedMultiplier;
       
       // Auto-scroll (always active in speed run mode)
-      newY += gameModeConfig.scrollSpeed;
+      newY += gameModeConfig.scrollSpeed / 2;
 
       // Boundaries
       newX = Math.max(0, Math.min(window.innerWidth - 80, newX));
@@ -174,14 +174,14 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           
           if (particle.type === 'snow') {
             // Marine snow movement
-            newParticle.y = particle.y + particle.speed;
-            newParticle.x = particle.x + Math.sin(Date.now() * 0.001 + particle.id) * 0.3;
+            newParticle.y = particle.y + particle.speed / 2;
+            newParticle.x = particle.x + Math.sin(Date.now() * 0.0005 + particle.id) * 0.15;
           } else if (particle.type === 'plankton') {
             // Plankton movement - more organic, slower
-            newParticle.y = particle.y + particle.speed * 0.7;
-            newParticle.x = particle.x + Math.sin(Date.now() * 0.0008 + particle.id) * 0.8;
+            newParticle.y = particle.y + particle.speed * 0.35;
+            newParticle.x = particle.x + Math.sin(Date.now() * 0.0004 + particle.id) * 0.4;
             // Update pulse phase for bioluminescence
-            newParticle.pulsePhase = (particle.pulsePhase || 0) + 0.05;
+            newParticle.pulsePhase = (particle.pulsePhase || 0) + 0.025;
           }
           
           return newParticle;
@@ -230,8 +230,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     // Update bioluminescent waves
     setSonarWaves(prev => prev.map(wave => ({
       ...wave,
-      radius: wave.radius + 6,
-      opacity: Math.max(0, wave.opacity - 0.025)
+      radius: wave.radius + 3,
+      opacity: Math.max(0, wave.opacity - 0.0125)
     })).filter(wave => wave.opacity > 0));
 
     // Update prey visibility based on bioluminescent waves
@@ -379,33 +379,33 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     // Update pulse phases (every frame for smooth animation)
     setLightBonuses(prev => prev.map(bonus => ({
       ...bonus,
-      pulsePhase: bonus.pulsePhase + 0.08
+      pulsePhase: bonus.pulsePhase + 0.04
     })));
 
     setNetTraps(prev => prev.map(trap => ({
       ...trap,
-      pulsePhase: trap.pulsePhase + 0.03
+      pulsePhase: trap.pulsePhase + 0.015
     })));
 
     // Update mine pulse phases and movement
     setMines(prev => prev.map(mine => {
       let newMine = { ...mine };
       
-      newMine.pulsePhase = mine.pulsePhase + 0.05;
+      newMine.pulsePhase = mine.pulsePhase + 0.025;
       
       if (depth > 3000 && !mine.exploded) {
         newMine.changeDirectionTimer = mine.changeDirectionTimer - 16;
         
         if (newMine.changeDirectionTimer <= 0) {
           const angle = Math.random() * Math.PI * 2;
-          const speed = Math.random() * 0.3 + 0.1;
+          const speed = (Math.random() * 0.3 + 0.1) / 2;
           newMine.velocityX = Math.cos(angle) * speed;
           newMine.velocityY = Math.sin(angle) * speed;
           newMine.changeDirectionTimer = Math.random() * 400 + 200;
         }
         
-        newMine.x += newMine.velocityX;
-        newMine.y += newMine.velocityY;
+        newMine.x += newMine.velocityX / 2;
+        newMine.y += newMine.velocityY / 2;
         
         if (newMine.x < 100 || newMine.x > window.innerWidth - 100) {
           newMine.velocityX *= -1;
