@@ -44,6 +44,9 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
   const viewportTop = cameraY - 100;
   const viewportBottom = cameraY + window.innerHeight + 100;
   
+  // Mobile detection for performance optimizations
+  const isMobile = window.innerWidth < 768;
+  
   const visibleParticles = useMemo(() => 
     particles.filter(p => p.y >= viewportTop && p.y <= viewportBottom),
     [particles, viewportTop, viewportBottom]
@@ -87,7 +90,7 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
   return (
     <>
       {/* Marine snow particles */}
-      {marineSnow.slice(0, 20).map(particle => (
+      {marineSnow.slice(0, isMobile ? 10 : 20).map(particle => (
         <div
           key={particle.id}
           className="absolute bg-white rounded-full pointer-events-none will-change-transform"
@@ -103,7 +106,7 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
       ))}
       
       {/* Bioluminescent plankton particles */}
-      {planktonParticles.map(particle => {
+      {planktonParticles.slice(0, isMobile ? 20 : 40).map(particle => {
         const pulseIntensity = particle.pulsePhase ? 0.5 + Math.sin(particle.pulsePhase) * 0.5 : 1;
         const glowSize = particle.size * 3;
         
@@ -144,7 +147,7 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
       })}
 
       {/* Bioluminescent waves */}
-      {sonarWaves.map(wave => (
+      {sonarWaves.slice(0, isMobile ? 3 : 5).map(wave => (
         <div
           key={wave.id}
           className="absolute border-2 border-cyan-400 rounded-full pointer-events-none will-change-transform"
@@ -160,8 +163,8 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
         />
       ))}
 
-      {/* Bioluminescent plankton particles */}
-      {planktonParticles.slice(0, 40).map(particle => {
+      {/* Secondary plankton glow effects - reduced on mobile */}
+      {!isMobile && planktonParticles.slice(0, 20).map(particle => {
         const pulseIntensity = 0.5 + Math.sin(particle.pulsePhase || 0) * 0.4;
         const glowSize = particle.size * (1 + pulseIntensity * 0.5);
         
@@ -246,7 +249,7 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
           }}
         >
           {/* Electric sparks around the perimeter */}
-          {Array.from({ length: 8 }).map((_, i) => {
+          {Array.from({ length: isMobile ? 4 : 8 }).map((_, i) => {
             const angle = (i / 8) * Math.PI * 2 + Date.now() * 0.001;
             const sparkX = 120 + Math.cos(angle) * 105;
             const sparkY = 120 + Math.sin(angle) * 105;

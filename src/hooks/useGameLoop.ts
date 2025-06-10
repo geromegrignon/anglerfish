@@ -1,6 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { Position, JoystickState, SonarWave, GameModeConfig, DeathCause } from '../types/game';
 
+// Mobile detection
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+
 interface UseGameLoopProps {
   gameStarted: boolean;
   gameOver: boolean;
@@ -92,6 +95,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
 
   const frameCountRef = useRef(0);
   const lastTimeRef = useRef(0);
+  const performanceRef = useRef({ frameTime: 16, skipFrames: false });
 
   // Optimized game loop with frame skipping for mobile
   const gameLoop = useCallback((currentTime: number) => {
@@ -99,14 +103,22 @@ export const useGameLoop = (props: UseGameLoopProps) => {
 
     const deltaTime = currentTime - lastTimeRef.current;
     lastTimeRef.current = currentTime;
+    
+    // Performance monitoring and adaptive frame skipping
+    performanceRef.current.frameTime = deltaTime;
+    performanceRef.current.skipFrames = deltaTime > (isMobile ? 25 : 20); // More aggressive on mobile
 
-    // Skip frames if running too slow (mobile optimization)
-    if (deltaTime > 32) { // If frame took longer than 32ms, skip some updates
+    // Skip frames if running too slow
+    if (performanceRef.current.skipFrames) {
       frameCountRef.current = 0;
     }
 
     frameCountRef.current++;
-    const shouldUpdateExpensive = frameCountRef.current % 2 === 0; // Update expensive operations every other frame
+    
+    // Adaptive update frequency based on device capability
+    const updateFrequency = isMobile ? 3 : 2; // Update expensive operations less frequently on mobile
+    const shouldUpdateExpensive = frameCountRef.current % updateFrequency === 0;
+    const shouldUpdateParticles = frameCountRef.current % (isMobile ? 4 : 2) === 0; // Even less frequent particle updates on mobile
 
     // Update survival time
     setSurvivalTime(prev => prev + 16);
@@ -187,8 +199,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     setDepth(currentDepth);
     setMaxDepthReached(prev => Math.max(prev, currentDepth));
 
-    // Update particles (marine snow) - less frequently on mobile
-    if (shouldUpdateExpensive) {
+    // Update particles - much less frequently on mobile
+    if (shouldUpdateParticles) {
       setParticles(prev => {
         const viewportTop = cameraY - 200;
         const viewportBottom = cameraY + window.innerHeight + 200;
@@ -217,9 +229,12 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       // Add new particles
       setParticles(prev => {
         const newParticles = [];
+        const maxSnowParticles = isMobile ? 15 : 25;
+        const maxPlanktonParticles = isMobile ? 30 : 50;
         
         // Add marine snow
-        if (Math.random() < 0.08 && prev.filter(p => p.type === 'snow').length < 25) {
+        const snowSpawnRate = isMobile ? 0.04 : 0.08;
+        if (Math.random() < snowSpawnRate && prev.filter(p => p.type === 'snow').length < maxSnowParticles) {
           newParticles.push({
             id: Date.now() + Math.random(),
             x: Math.random() * window.innerWidth,
@@ -232,7 +247,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         }
         
         // Add bioluminescent plankton
-        if (Math.random() < 0.12 && prev.filter(p => p.type === 'plankton').length < 50) {
+        const planktonSpawnRate = isMobile ? 0.06 : 0.12;
+        if (Math.random() < planktonSpawnRate && prev.filter(p => p.type === 'plankton').length < maxPlanktonParticles) {
           const colors = ['#00FFFF', '#00CED1', '#40E0D0', '#48D1CC', '#20B2AA', '#87CEEB', '#7FFFD4'];
           newParticles.push({
             id: Date.now() + Math.random() + 1000,
@@ -248,7 +264,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         }
         
         // Also spawn plankton below the camera view
-        if (Math.random() < 0.08 && prev.filter(p => p.type === 'plankton').length < 50) {
+        if (Math.random() < (planktonSpawnRate * 0.7) && prev.filter(p => p.type === 'plankton').length < maxPlanktonParticles) {
           const colors = ['#00FFFF', '#00CED1', '#40E0D0', '#48D1CC', '#20B2AA', '#87CEEB', '#7FFFD4'];
           newParticles.push({
             id: Date.now() + Math.random() + 2000,
@@ -267,43 +283,46 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       });
     }
 
-    // Update bioluminescent waves
+    // Update bioluminescent waves - simplified calculation
     setSonarWaves(prev => prev.map(wave => ({
       ...wave,
       radius: wave.radius + 3,
-      opacity: Math.max(0, wave.opacity - 0.0125)
+      opacity: Math.max(0, wave.opacity - (isMobile ? 0.015 : 0.0125)) // Fade faster on mobile
     })).filter(wave => wave.opacity > 0));
 
-    // Update prey visibility based on bioluminescent waves
+    // Update prey visibility - optimized for mobile
     setPrey(prev => prev.map(preyItem => {
       if (preyItem.collected) return preyItem;
       
       let newVisible = preyItem.visible;
       let newTimer = Math.max(0, preyItem.visibilityTimer - 16);
       
-      const lureX = anglerfishPos.x + 40;
-      const lureY = anglerfishPos.y + 10;
-      const glowDistance = Math.sqrt(
-        Math.pow(lureX - preyItem.x, 2) +
-        Math.pow(lureY - preyItem.y, 2)
-      );
-      
-      if (glowDistance <= lightRadius) {
-        newVisible = true;
-        newTimer = Math.max(newTimer, 2000);
-      }
-      
-      // Check if any bioluminescent wave reveals this prey
-      sonarWaves.forEach(wave => {
-        const distance = Math.sqrt(
-          Math.pow(wave.x - preyItem.x, 2) +
-          Math.pow(wave.y - preyItem.y, 2)
+      // Only check visibility for prey near the viewport (performance optimization)
+      if (Math.abs(preyItem.y - anglerfishPos.y) < 400) {
+        const lureX = anglerfishPos.x + 40;
+        const lureY = anglerfishPos.y + 10;
+        const glowDistance = Math.sqrt(
+          Math.pow(lureX - preyItem.x, 2) +
+          Math.pow(lureY - preyItem.y, 2)
         );
-        if (distance <= wave.radius && distance >= wave.radius - 15) {
+        
+        if (glowDistance <= lightRadius) {
           newVisible = true;
-          newTimer = 4000;
+          newTimer = Math.max(newTimer, 2000);
         }
-      });
+        
+        // Check if any bioluminescent wave reveals this prey (limit to nearby waves)
+        sonarWaves.slice(0, isMobile ? 3 : 5).forEach(wave => {
+          const distance = Math.sqrt(
+            Math.pow(wave.x - preyItem.x, 2) +
+            Math.pow(wave.y - preyItem.y, 2)
+          );
+          if (distance <= wave.radius && distance >= wave.radius - 15) {
+            newVisible = true;
+            newTimer = 4000;
+          }
+        });
+      }
       
       if (newTimer <= 0) {
         newVisible = false;
@@ -323,11 +342,13 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         const deepestPrey = Math.max(...prev.map(p => p.y));
         const screenWidth = window.innerWidth;
         const spawnWidth = screenWidth - 120; // 60px margin on each side
-        if (anglerfishPos.y > deepestPrey - 500 && prev.length < 300) { // Reduced max count
+        const maxPrey = isMobile ? 150 : 300;
+        const spawnCount = isMobile ? 8 : 15;
+        if (anglerfishPos.y > deepestPrey - 500 && prev.length < maxPrey) {
           const types = ['small', 'small', 'small', 'medium', 'medium', 'large'];
           const fishSvgs = ['fish-1', 'fish-2'];
           const newPreyItems = [];
-          for (let i = 0; i < 15; i++) { // Reduced spawn count
+          for (let i = 0; i < spawnCount) {
             newPreyItems.push({
               id: Date.now() + i,
               x: Math.random() * spawnWidth + 60,
@@ -349,9 +370,10 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         const deepestBonus = Math.max(...prev.map(b => b.y));
         const screenWidth = window.innerWidth;
         const spawnWidth = screenWidth - 120; // 60px margin on each side
-        if (anglerfishPos.y > deepestBonus - 200 && prev.length < 15) {
+        const maxBonuses = isMobile ? 8 : 15;
+        if (anglerfishPos.y > deepestBonus - 200 && prev.length < maxBonuses) {
           const newBonuses = [];
-          if (Math.random() < 0.3) {
+          if (Math.random() < (isMobile ? 0.2 : 0.3)) {
             newBonuses.push({
               id: Date.now() + 2000,
               x: Math.random() * spawnWidth + 60,
@@ -370,9 +392,10 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         const deepestBonus = Math.max(...prev.map(b => b.y));
         const screenWidth = window.innerWidth;
         const spawnWidth = screenWidth - 120; // 60px margin on each side
-        if (anglerfishPos.y > deepestBonus - 400 && prev.length < 8) {
+        const maxElectricBonuses = isMobile ? 4 : 8;
+        if (anglerfishPos.y > deepestBonus - 400 && prev.length < maxElectricBonuses) {
           const newBonuses = [];
-          if (Math.random() < 0.15) { // Rarer than light bonuses
+          if (Math.random() < (isMobile ? 0.1 : 0.15)) {
             newBonuses.push({
               id: Date.now() + 4000,
               x: Math.random() * spawnWidth + 60,
@@ -391,9 +414,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         const deepestMine = Math.max(...prev.map(m => m.y));
         const screenWidth = window.innerWidth;
         const spawnWidth = screenWidth - 120; // 60px margin on each side
-        const isMobile = window.innerWidth < 768;
-        const maxMines = isMobile ? 8 : 80; // Divide by 10 on mobile
-        const spawnCount = isMobile ? 1 : 6; // Reduce spawn count on mobile
+        const maxMines = isMobile ? 12 : 80;
+        const spawnCount = isMobile ? 2 : 6;
         if (anglerfishPos.y > deepestMine - 800 && prev.length < maxMines) {
           const newMines = [];
           for (let i = 0; i < spawnCount; i++) {
@@ -420,9 +442,11 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         const deepestTrap = Math.max(...prev.map(t => t.y));
         const screenWidth = window.innerWidth;
         const spawnWidth = screenWidth - 120; // 60px margin on each side
-        if (anglerfishPos.y > deepestTrap - 600 && prev.length < 50) { // Reduced max count
+        const maxTraps = isMobile ? 25 : 50;
+        const spawnCount = isMobile ? 2 : 4;
+        if (anglerfishPos.y > deepestTrap - 600 && prev.length < maxTraps) {
           const newTraps = [];
-          for (let i = 0; i < 4; i++) { // Reduced spawn count
+          for (let i = 0; i < spawnCount; i++) {
             newTraps.push({
               id: Date.now() + i + 3000,
               x: Math.random() * spawnWidth + 60,
@@ -438,26 +462,29 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     }
 
     // Update pulse phases (every frame for smooth animation)
-    setLightBonuses(prev => prev.map(bonus => ({
-      ...bonus,
-      pulsePhase: bonus.pulsePhase + 0.04
-    })));
+    // Update pulse phases less frequently on mobile
+    if (!isMobile || frameCountRef.current % 2 === 0) {
+      setLightBonuses(prev => prev.map(bonus => ({
+        ...bonus,
+        pulsePhase: bonus.pulsePhase + (isMobile ? 0.03 : 0.04)
+      })));
 
-    setElectricBonuses(prev => prev.map(bonus => ({
-      ...bonus,
-      pulsePhase: bonus.pulsePhase + 0.06
-    })));
+      setElectricBonuses(prev => prev.map(bonus => ({
+        ...bonus,
+        pulsePhase: bonus.pulsePhase + (isMobile ? 0.04 : 0.06)
+      })));
 
-    setNetTraps(prev => prev.map(trap => ({
-      ...trap,
-      pulsePhase: trap.pulsePhase + 0.015
-    })));
+      setNetTraps(prev => prev.map(trap => ({
+        ...trap,
+        pulsePhase: trap.pulsePhase + (isMobile ? 0.01 : 0.015)
+      })));
+    }
 
     // Update mine pulse phases and movement
     setMines(prev => prev.map(mine => {
       let newMine = { ...mine };
       
-      newMine.pulsePhase = mine.pulsePhase + 0.025;
+      newMine.pulsePhase = mine.pulsePhase + (isMobile ? 0.02 : 0.025);
       
       if (depth > 3000 && !mine.exploded) {
         newMine.changeDirectionTimer = mine.changeDirectionTimer - 16;
@@ -488,17 +515,14 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     }));
 
     // Check collisions with prey
+    // Optimize collision detection - only check nearby prey
     setPrey(prev => prev.map(preyItem => {
-      if (!preyItem.collected) {
-        const distance = Math.sqrt(
-          Math.pow(anglerfishPos.x + 40 - preyItem.x, 2) +
-          Math.pow(anglerfishPos.y + 25 - preyItem.y, 2)
-        );
-        if (distance < 35) {
-          // Only restore hunger and count fish if the fish is visible
+      if (!preyItem.collected && Math.abs(preyItem.y - anglerfishPos.y) < 100) {
+        // Use squared distance to avoid expensive sqrt calculation
+        const distanceSquared = Math.pow(anglerfishPos.x + 40 - preyItem.x, 2) + Math.pow(anglerfishPos.y + 25 - preyItem.y, 2);
+        if (distanceSquared < 1225) { // 35^2 = 1225
           if (preyItem.visible) {
-            const hungerRestore = 5; // Always restore exactly 5% regardless of prey size
-            setHunger(h => Math.min(100, h + hungerRestore));
+            setHunger(h => Math.min(100, h + 5));
             setFishEaten(count => count + 1);
           }
           return { ...preyItem, collected: true };
@@ -510,11 +534,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     // Check collisions with light bonuses
     setLightBonuses(prev => prev.map(bonus => {
       if (!bonus.collected) {
-        const distance = Math.sqrt(
-          Math.pow(anglerfishPos.x + 40 - bonus.x, 2) +
-          Math.pow(anglerfishPos.y + 25 - bonus.y, 2)
-        );
-        if (distance < 30) {
+        const distanceSquared = Math.pow(anglerfishPos.x + 40 - bonus.x, 2) + Math.pow(anglerfishPos.y + 25 - bonus.y, 2);
+        if (distanceSquared < 900) { // 30^2 = 900
           setLightBonusActive(true);
           setLightBonusTimer(8000);
           setLightRadius(120);
@@ -527,11 +548,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     // Check collisions with electric bonuses
     setElectricBonuses(prev => prev.map(bonus => {
       if (!bonus.collected) {
-        const distance = Math.sqrt(
-          Math.pow(anglerfishPos.x + 40 - bonus.x, 2) +
-          Math.pow(anglerfishPos.y + 25 - bonus.y, 2)
-        );
-        if (distance < 30) {
+        const distanceSquared = Math.pow(anglerfishPos.x + 40 - bonus.x, 2) + Math.pow(anglerfishPos.y + 25 - bonus.y, 2);
+        if (distanceSquared < 900) { // 30^2 = 900
           setElectricFieldActive(true);
           setElectricFieldTimer(6000);
           return { ...bonus, collected: true };
@@ -543,11 +561,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     // Check collisions with net traps
     setNetTraps(prev => prev.map(trap => {
       if (!trap.triggered) {
-        const distance = Math.sqrt(
-          Math.pow(anglerfishPos.x + 40 - trap.x, 2) +
-          Math.pow(anglerfishPos.y + 25 - trap.y, 2)
-        );
-        if (distance < 40) {
+        const distanceSquared = Math.pow(anglerfishPos.x + 40 - trap.x, 2) + Math.pow(anglerfishPos.y + 25 - trap.y, 2);
+        if (distanceSquared < 1600) { // 40^2 = 1600
           setSlowedDown(true);
           setSlowdownTimer(4000);
           return { ...trap, triggered: true };
@@ -559,11 +574,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     // Check collisions with mines
     setMines(prev => prev.map(mine => {
       if (!mine.exploded) {
-        const distance = Math.sqrt(
-          Math.pow(anglerfishPos.x + 40 - mine.x, 2) +
-          Math.pow(anglerfishPos.y + 25 - mine.y, 2)
-        );
-        if (distance < 45) {
+        const distanceSquared = Math.pow(anglerfishPos.x + 40 - mine.x, 2) + Math.pow(anglerfishPos.y + 25 - mine.y, 2);
+        if (distanceSquared < 2025) { // 45^2 = 2025
           setHitPoints(hp => {
             const newHp = Math.max(0, hp - 1);
             if (newHp <= 0) {
@@ -582,11 +594,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
     if (electricFieldActive) {
       setMines(prev => prev.map(mine => {
         if (!mine.exploded) {
-          const distance = Math.sqrt(
-            Math.pow(anglerfishPos.x + 40 - mine.x, 2) +
-            Math.pow(anglerfishPos.y + 30 - mine.y, 2)
-          );
-          if (distance < 120) { // Electric field radius - smaller and more balanced
+          const distanceSquared = Math.pow(anglerfishPos.x + 40 - mine.x, 2) + Math.pow(anglerfishPos.y + 30 - mine.y, 2);
+          if (distanceSquared < 14400) { // 120^2 = 14400
             return { ...mine, exploded: true };
           }
         }

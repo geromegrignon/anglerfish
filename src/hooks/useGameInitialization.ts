@@ -18,12 +18,16 @@ export const useGameInitialization = ({
   setElectricBonuses,
   setParticles
 }: UseGameInitializationProps) => {
+  // Mobile detection for performance optimizations
+  const isMobile = window.innerWidth < 768;
+  
   // Initialize prey (reduced count for mobile performance)
   useEffect(() => {
     const newPrey: Prey[] = [];
     const screenWidth = window.innerWidth;
     const spawnWidth = screenWidth - 120; // 60px margin on each side
-    for (let i = 0; i < 150; i++) { // Reduced from 200
+    const preyCount = isMobile ? 80 : 150;
+    for (let i = 0; i < preyCount; i++) {
       const types: ('small' | 'medium' | 'large')[] = ['small', 'small', 'small', 'medium', 'medium', 'large'];
       const fishSvgs: ('fish-1' | 'fish-2')[] = ['fish-1', 'fish-2'];
       newPrey.push({
@@ -45,8 +49,7 @@ export const useGameInitialization = ({
     const newMines: Mine[] = [];
     const screenWidth = window.innerWidth;
     const spawnWidth = screenWidth - 120; // 60px margin on each side
-    const isMobile = window.innerWidth < 768;
-    const mineCount = isMobile ? 4 : 35; // Divide by ~10 on mobile
+    const mineCount = isMobile ? 8 : 35;
     for (let i = 0; i < mineCount; i++) {
       newMines.push({
         id: i,
@@ -69,7 +72,8 @@ export const useGameInitialization = ({
     const newNetTraps: NetTrap[] = [];
     const screenWidth = window.innerWidth;
     const spawnWidth = screenWidth - 120; // 60px margin on each side
-    for (let i = 0; i < 20; i++) { // Reduced from 30
+    const trapCount = isMobile ? 12 : 20;
+    for (let i = 0; i < trapCount; i++) {
       newNetTraps.push({
         id: i,
         x: Math.random() * spawnWidth + 60,
@@ -86,7 +90,8 @@ export const useGameInitialization = ({
     const newLightBonuses: LightBonus[] = [];
     const screenWidth = window.innerWidth;
     const spawnWidth = screenWidth - 120; // 60px margin on each side
-    for (let i = 0; i < 5; i++) {
+    const bonusCount = isMobile ? 3 : 5;
+    for (let i = 0; i < bonusCount; i++) {
       newLightBonuses.push({
         id: i,
         x: Math.random() * spawnWidth + 60,
@@ -103,7 +108,8 @@ export const useGameInitialization = ({
     const newElectricBonuses: ElectricBonus[] = [];
     const screenWidth = window.innerWidth;
     const spawnWidth = screenWidth - 120; // 60px margin on each side
-    for (let i = 0; i < 3; i++) {
+    const bonusCount = isMobile ? 2 : 3;
+    for (let i = 0; i < bonusCount; i++) {
       newElectricBonuses.push({
         id: i,
         x: Math.random() * spawnWidth + 60,
@@ -119,8 +125,11 @@ export const useGameInitialization = ({
   useEffect(() => {
     const newParticles: Particle[] = [];
     
+    const snowCount = isMobile ? 10 : 20;
+    const planktonCount = isMobile ? 20 : 40;
+    
     // Marine snow particles
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < snowCount; i++) {
       newParticles.push({
         id: i,
         x: Math.random() * window.innerWidth,
@@ -133,7 +142,7 @@ export const useGameInitialization = ({
     }
     
     // Bioluminescent plankton particles
-    for (let i = 20; i < 60; i++) {
+    for (let i = snowCount; i < snowCount + planktonCount; i++) {
       const colors = ['#00FFFF', '#00CED1', '#40E0D0', '#48D1CC', '#20B2AA', '#87CEEB'];
       newParticles.push({
         id: i,
