@@ -59,7 +59,7 @@ export const GameUI: React.FC<GameUIProps> = ({
                 }}
               />
               <span className="text-sm font-semibold text-cyan-200">
-                {fishEaten}
+                {Math.floor(fishEaten / 2)}
               </span>
             </div>
           </div>
