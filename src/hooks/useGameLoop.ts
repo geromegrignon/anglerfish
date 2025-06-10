@@ -469,14 +469,17 @@ export const useGameLoop = (props: UseGameLoopProps) => {
 
     // Check collisions with prey
     setPrey(prev => prev.map(preyItem => {
-      if (!preyItem.collected && preyItem.visible) {
+      if (!preyItem.collected) {
         const distance = Math.sqrt(
           Math.pow(anglerfishPos.x + 40 - preyItem.x, 2) +
           Math.pow(anglerfishPos.y + 25 - preyItem.y, 2)
         );
         if (distance < 35) {
-          const hungerRestore = 5; // Always restore exactly 5% regardless of prey size
-          setHunger(h => Math.min(100, h + hungerRestore));
+          // Only restore hunger if the fish is visible
+          if (preyItem.visible) {
+            const hungerRestore = 5; // Always restore exactly 5% regardless of prey size
+            setHunger(h => Math.min(100, h + hungerRestore));
+          }
           return { ...preyItem, collected: true };
         }
       }
