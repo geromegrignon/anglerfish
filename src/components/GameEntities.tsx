@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Zap, Bomb } from 'lucide-react';
+import { Zap } from 'lucide-react';
 import { 
   Prey, 
   Mine, 
@@ -316,10 +316,12 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
               transform: `scale(${pulseScale}) translate3d(0, 0, 0)`,
             }}
           >
-            <Bomb 
-              className="w-10 h-10 text-red-500"
+            <img
+              src="/mine.svg"
+              alt="mine"
+              className="w-10 h-10 pointer-events-none"
               style={{
-                filter: `drop-shadow(0 0 ${15 * glowIntensity}px rgba(239, 68, 68, ${glowIntensity}))`
+                filter: `drop-shadow(0 0 ${15 * glowIntensity}px rgba(239, 68, 68, ${glowIntensity})) brightness(1.2)`
               }}
             />
           </div>
