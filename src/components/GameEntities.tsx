@@ -254,10 +254,12 @@ export const GameEntities: React.FC<GameEntitiesProps> = ({
               transform: `scale(${pulseScale}) translate3d(0, 0, 0)`,
             }}
           >
-            <Zap 
-              className="w-8 h-8 text-yellow-300"
+            <img
+              src="/light-bonus.svg"
+              alt="light bonus"
+              className="w-8 h-8 pointer-events-none"
               style={{
-                filter: `drop-shadow(0 0 ${10 * glowIntensity}px rgba(253, 224, 71, ${glowIntensity}))`
+                filter: `drop-shadow(0 0 ${10 * glowIntensity}px rgba(253, 224, 71, ${glowIntensity})) brightness(1.2)`
               }}
             />
           </div>
