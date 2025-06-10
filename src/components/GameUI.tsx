@@ -1,5 +1,5 @@
 import React from 'react';
-import { Circle, Zap, Heart } from 'lucide-react';
+import { Zap, Heart } from 'lucide-react';
 import { GameMode } from '../types/game';
 
 interface GameUIProps {

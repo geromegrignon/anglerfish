@@ -206,7 +206,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         const viewportBottom = cameraY + window.innerHeight + 200;
         
         return prev.map(particle => {
-          let newParticle = { ...particle };
+          const newParticle = { ...particle };
           
           if (particle.type === 'snow') {
             // Marine snow movement
@@ -486,7 +486,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
 
     // Update mine pulse phases and movement
     setMines(prev => prev.map(mine => {
-      let newMine = { ...mine };
+      const newMine = { ...mine };
       
       newMine.pulsePhase = mine.pulsePhase + (isMobile ? 0.02 : 0.025);
       

@@ -41,7 +41,7 @@ export const useJoystick = ({ joystick, setJoystick, onEcholocation }: UseJoysti
       const maxDistance = 40;
 
       let newKnobX = clientX;
-      let newKnobY = prev.centerY; // Keep Y position fixed
+      const newKnobY = prev.centerY; // Keep Y position fixed
       let normalizedDeltaX = deltaX;
       let normalizedDeltaY = 0; // No vertical movement
 

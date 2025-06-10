@@ -1,5 +1,4 @@
 import React from 'react';
-import { Zap, Circle, Smartphone } from 'lucide-react';
 import { GameMode } from '../types/game';
 
 // Force viewport height calculation on mobile
