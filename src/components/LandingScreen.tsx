@@ -137,7 +137,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500">
               ANG
             </span>
-            <span className="text-blue-300">
+            <span className="text-blue-200">
               U
             </span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500">
