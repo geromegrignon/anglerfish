@@ -73,6 +73,65 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onStartGame }) => 
 
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-8">
+        {/* Hero Anglerfish */}
+        <div className="relative mb-8">
+          {/* Anglerfish with glowing lure */}
+          <div className="relative">
+            {/* Bioluminescent lure glow */}
+            <div
+              className="absolute rounded-full animate-pulse"
+              style={{
+                left: '140px',
+                top: '20px',
+                width: '80px',
+                height: '80px',
+                background: 'radial-gradient(circle, rgba(34, 211, 238, 0.6) 0%, rgba(34, 211, 238, 0.3) 30%, transparent 70%)',
+                filter: 'blur(8px)',
+                animationDuration: '2s'
+              }}
+            />
+            
+            {/* Main anglerfish */}
+            <img
+              src="/anglerfish.svg"
+              alt="Abyss Hunter - Anglerfish"
+              className="w-32 h-24 md:w-40 md:h-30 relative z-10"
+              style={{
+                filter: 'drop-shadow(0 0 20px rgba(34, 211, 238, 0.8)) brightness(1.1)',
+                animation: 'gentleFloat 4s ease-in-out infinite'
+              }}
+            />
+            
+            {/* Lure light core */}
+            <div
+              className="absolute w-3 h-3 bg-cyan-300 rounded-full animate-pulse"
+              style={{
+                left: '165px',
+                top: '35px',
+                boxShadow: '0 0 15px rgba(34, 211, 238, 1)',
+                animationDuration: '1.5s'
+              }}
+            />
+            
+            {/* Trailing bioluminescent particles */}
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={`trail-${i}`}
+                className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-60"
+                style={{
+                  left: `${120 - i * 15}px`,
+                  top: `${45 + Math.sin(i) * 8}px`,
+                  animationName: 'trailPulse',
+                  animationDuration: '3s',
+                  animationDelay: `${i * 0.3}s`,
+                  animationIterationCount: 'infinite',
+                  filter: 'blur(0.5px)'
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
         <div className="text-center mb-12">
           <h1 className="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 mb-4 drop-shadow-2xl">
             ABYSS HUNTER
