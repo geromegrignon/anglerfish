@@ -2,11 +2,17 @@ import { useCallback, useRef } from "react";
 
 interface UseTouchMovementProps {
   setKeys: React.Dispatch<React.SetStateAction<Set<string>>>;
+  setAnglerfishPos: React.Dispatch<
+    React.SetStateAction<{ x: number; y: number }>
+  >;
 }
 
-export const useTouchMovement = ({ setKeys }: UseTouchMovementProps) => {
+export const useTouchMovement = ({
+  setKeys,
+  setAnglerfishPos,
+}: UseTouchMovementProps) => {
   const lastTouchPositionRef = useRef<{ x: number; y: number } | null>(null);
-  const movementThreshold = 3; // Reduced from 5 to make it more responsive
+  const movementThreshold = 3; // pixels
   const touchStartTimeRef = useRef<number>(0);
   const touchStartPositionRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -26,41 +32,19 @@ export const useTouchMovement = ({ setKeys }: UseTouchMovementProps) => {
 
       const touch = e.touches[0];
       const touchX = touch.clientX;
-      const touchY = touch.clientY;
+      const screenWidth = window.innerWidth;
 
-      // If this is the first move after touch start, initialize the reference
-      if (!lastTouchPositionRef.current) {
-        lastTouchPositionRef.current = { x: touchX, y: touchY };
-        return;
-      }
+      // Calculate the target position for the anglerfish
+      // The anglerfish should be centered on the touch position
+      const targetX = Math.max(0, Math.min(screenWidth - 80, touchX - 40));
 
-      // Calculate movement delta
-      const deltaX = touchX - lastTouchPositionRef.current.x;
-      const deltaY = touchY - lastTouchPositionRef.current.y;
-
-      // Update last position
-      lastTouchPositionRef.current = { x: touchX, y: touchY };
-
-      // Only process movement if it's significant enough
-      if (Math.abs(deltaX) < movementThreshold) return;
-
-      // Clear previous movement keys
-      setKeys((prev) => {
-        const newKeys = new Set(prev);
-        newKeys.delete("arrowleft");
-        newKeys.delete("arrowright");
-
-        // Add new direction based on movement
-        if (deltaX < 0) {
-          newKeys.add("arrowleft");
-        } else {
-          newKeys.add("arrowright");
-        }
-
-        return newKeys;
-      });
+      // Update anglerfish position directly
+      setAnglerfishPos((prev) => ({
+        ...prev,
+        x: targetX,
+      }));
     },
-    [setKeys]
+    [setAnglerfishPos]
   );
 
   const handleGameTouchStart = useCallback(
@@ -70,17 +54,24 @@ export const useTouchMovement = ({ setKeys }: UseTouchMovementProps) => {
 
       const touch = e.touches[0];
       const touchX = touch.clientX;
-      const touchY = touch.clientY;
+      const screenWidth = window.innerWidth;
 
       // Store initial touch position and time
       touchStartTimeRef.current = Date.now();
-      touchStartPositionRef.current = { x: touchX, y: touchY };
-      lastTouchPositionRef.current = { x: touchX, y: touchY };
+      touchStartPositionRef.current = { x: touchX, y: touch.clientY };
+      lastTouchPositionRef.current = { x: touchX, y: touch.clientY };
 
       // Clear previous movement
       clearMovementKeys();
+
+      // Set initial anglerfish position
+      const targetX = Math.max(0, Math.min(screenWidth - 80, touchX - 40));
+      setAnglerfishPos((prev) => ({
+        ...prev,
+        x: targetX,
+      }));
     },
-    [clearMovementKeys]
+    [clearMovementKeys, setAnglerfishPos]
   );
 
   const handleGameTouchEnd = useCallback(
