@@ -734,7 +734,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
       }
 
       // Trigger bioluminescence (keyboard spacebar or mobile button)
-      if (keys.has(" ") || triggerEcholocation) {
+      // Only allow echolocation if no sonar waves are currently active
+      if ((keys.has(" ") || triggerEcholocation) && sonarWaves.length === 0) {
         const lureX = anglerfishPos.x + 40;
         const lureY = anglerfishPos.y + 10;
         const newWave: SonarWave = {
