@@ -1,19 +1,19 @@
-import React, { useRef } from 'react';
-import { LandingScreen } from './components/LandingScreen';
-import { GameOverScreen } from './components/GameOverScreen';
-import { GameUI } from './components/GameUI';
-import { VirtualJoystick } from './components/VirtualJoystick';
-import { GameEntities } from './components/GameEntities';
-import { useGameLogic } from './hooks/useGameLogic';
-import { useJoystick } from './hooks/useJoystick';
-import { useKeyboard } from './hooks/useKeyboard';
-import { useGameInitialization } from './hooks/useGameInitialization';
-import { useGameLoop } from './hooks/useGameLoop';
-import { useTouchMovement } from './hooks/useTouchMovement';
+import React, { useRef } from "react";
+import { LandingScreen } from "./components/LandingScreen";
+import { GameOverScreen } from "./components/GameOverScreen";
+import { GameUI } from "./components/GameUI";
+import { VirtualJoystick } from "./components/VirtualJoystick";
+import { GameEntities } from "./components/GameEntities";
+import { useGameLogic } from "./hooks/useGameLogic";
+import { useJoystick } from "./hooks/useJoystick";
+import { useKeyboard } from "./hooks/useKeyboard";
+import { useGameInitialization } from "./hooks/useGameInitialization";
+import { useGameLoop } from "./hooks/useGameLoop";
+import { useTouchMovement } from "./hooks/useTouchMovement";
 
 function App() {
   const canvasRef = useRef<HTMLDivElement>(null);
-  
+
   const {
     // State
     anglerfishPos,
@@ -46,7 +46,7 @@ function App() {
     electricBonuses,
     electricFieldActive,
     electricFieldTimer,
-    
+
     // Setters
     setAnglerfishPos,
     setHunger,
@@ -78,9 +78,9 @@ function App() {
     setGameModeConfig,
     setDeathCause,
     setFishEaten,
-    
+
     // Actions
-    startGame
+    startGame,
   } = useGameLogic();
 
   // Initialize game entities
@@ -90,7 +90,7 @@ function App() {
     setNetTraps,
     setLightBonuses,
     setElectricBonuses,
-    setParticles
+    setParticles,
   });
 
   // Setup keyboard controls
@@ -102,15 +102,19 @@ function App() {
     handleTouchMove,
     handleTouchEnd,
     handleMouseDown,
-    handleEcholocationPress
-  } = useJoystick({ 
-    joystick, 
-    setJoystick, 
-    onEcholocation: () => setTriggerEcholocation(true) 
+    handleEcholocationPress,
+  } = useJoystick({
+    joystick,
+    setJoystick,
+    onEcholocation: () => setTriggerEcholocation(true),
   });
 
   // Setup touch movement controls
-  const { handleGameTouchStart, handleGameTouchMove, handleGameTouchEnd } = useTouchMovement({ setKeys });
+  const { handleGameTouchStart, handleGameTouchMove, handleGameTouchEnd } =
+    useTouchMovement({
+      setKeys,
+      setAnglerfishPos,
+    });
   // Main game loop
   useGameLoop({
     gameStarted,
@@ -153,7 +157,7 @@ function App() {
     setElectricBonuses,
     setMines,
     setNetTraps,
-    setFishEaten
+    setFishEaten,
   });
 
   // Game Over Screen
@@ -162,7 +166,7 @@ function App() {
       <GameOverScreen
         maxDepthReached={maxDepthReached}
         survivalTime={survivalTime}
-       deathCause={deathCause}
+        deathCause={deathCause}
         onRestart={startGame}
       />
     );
@@ -175,17 +179,17 @@ function App() {
 
   // Game Screen
   return (
-    <div 
+    <div
       ref={canvasRef}
       className="relative w-full h-screen overflow-hidden"
       onTouchStart={handleGameTouchStart}
       onTouchMove={handleGameTouchMove}
       onTouchEnd={handleGameTouchEnd}
       style={{
-        background: 'rgb(3, 7, 18)', // Very dark blue, almost black
+        background: "rgb(3, 7, 18)", // Very dark blue, almost black
         // Force hardware acceleration
-        transform: 'translate3d(0, 0, 0)',
-        willChange: 'transform'
+        transform: "translate3d(0, 0, 0)",
+        willChange: "transform",
       }}
     >
       <GameEntities
@@ -211,14 +215,14 @@ function App() {
         style={{
           left: `${anglerfishPos.x}px`,
           top: `${anglerfishPos.y - cameraY}px`,
-          width: '80px',
-          height: '60px',
-          filter: slowedDown 
-            ? 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.8)) brightness(0.7)' 
+          width: "80px",
+          height: "60px",
+          filter: slowedDown
+            ? "drop-shadow(0 0 20px rgba(239, 68, 68, 0.8)) brightness(0.7)"
             : electricFieldActive
-              ? 'drop-shadow(0 0 20px rgba(255, 255, 0, 0.8)) brightness(1.2)'
-              : 'drop-shadow(0 0 15px rgba(34, 211, 238, 0.6))',
-          transform: 'translate3d(0, 0, 0)'
+            ? "drop-shadow(0 0 20px rgba(255, 255, 0, 0.8)) brightness(1.2)"
+            : "drop-shadow(0 0 15px rgba(34, 211, 238, 0.6))",
+          transform: "translate3d(0, 0, 0)",
         }}
       />
 

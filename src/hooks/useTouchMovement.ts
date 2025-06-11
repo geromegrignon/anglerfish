@@ -12,7 +12,6 @@ export const useTouchMovement = ({
   setAnglerfishPos,
 }: UseTouchMovementProps) => {
   const lastTouchPositionRef = useRef<{ x: number; y: number } | null>(null);
-  const movementThreshold = 3; // pixels
   const touchStartTimeRef = useRef<number>(0);
   const touchStartPositionRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -27,9 +26,6 @@ export const useTouchMovement = ({
 
   const handleGameTouchMove = useCallback(
     (e: React.TouchEvent) => {
-      // Only handle touch movement on mobile devices
-      if (window.innerWidth >= 768) return;
-
       const touch = e.touches[0];
       const touchX = touch.clientX;
       const screenWidth = window.innerWidth;
@@ -49,9 +45,6 @@ export const useTouchMovement = ({
 
   const handleGameTouchStart = useCallback(
     (e: React.TouchEvent) => {
-      // Only handle touch movement on mobile devices
-      if (window.innerWidth >= 768) return;
-
       const touch = e.touches[0];
       const touchX = touch.clientX;
       const screenWidth = window.innerWidth;
@@ -76,9 +69,6 @@ export const useTouchMovement = ({
 
   const handleGameTouchEnd = useCallback(
     (e: React.TouchEvent) => {
-      // Only handle touch movement on mobile devices
-      if (window.innerWidth >= 768) return;
-
       // Reset all touch tracking
       lastTouchPositionRef.current = null;
       touchStartPositionRef.current = null;
