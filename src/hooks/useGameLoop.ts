@@ -617,6 +617,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
         prev.map((preyItem) => {
           if (
             !preyItem.collected &&
+            preyItem.visible && // Only check collision if prey is visible
             Math.abs(preyItem.y - anglerfishPos.y) < 100
           ) {
             // Use squared distance to avoid expensive sqrt calculation
@@ -625,10 +626,8 @@ export const useGameLoop = (props: UseGameLoopProps) => {
               Math.pow(anglerfishPos.y + 25 - preyItem.y, 2);
             if (distanceSquared < 1225) {
               // 35^2 = 1225
-              if (preyItem.visible) {
-                setHunger((h) => Math.min(100, h + 5));
-                setFishEaten((count) => count + 1);
-              }
+              setHunger((h) => Math.min(100, h + 5));
+              setFishEaten((count) => count + 1);
               return { ...preyItem, collected: true };
             }
           }
