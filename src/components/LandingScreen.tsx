@@ -34,7 +34,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({
     ) || window.innerWidth < 768;
 
   // Feature flag for mobile support
-  const MOBILE_SUPPORT_ENABLED = false;
+  const MOBILE_SUPPORT_ENABLED = true;
 
   return (
     <div
@@ -225,48 +225,97 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({
 
         {/* Controls & Objectives Card */}
         <div
-          className="bg-black/40 backdrop-blur-sm border border-blue-500/30 rounded-xl p-6 mb-8 max-w-2xl w-full"
+          className="bg-black/40 backdrop-blur-sm rounded-xl p-6 mb-8 max-w-2xl w-full relative overflow-hidden"
           style={{ fontFamily: "Verdana, sans-serif" }}
         >
-          <div className="space-y-3 text-xs md:text-sm text-gray-300">
-            <p className="flex items-center gap-3">
-              <img
-                src="/fish-1.svg"
-                alt="prey"
-                className="w-5 h-5 opacity-80"
-              />
-              Hunt prey to maintain hunger
-            </p>
-            <p className="flex items-center gap-3">
-              <img src="/mine.svg" alt="mine" className="w-5 h-5 opacity-80" />
-              Avoid explosive mines
-            </p>
-            <p className="flex items-center gap-3">
-              <img src="/trap.svg" alt="trap" className="w-5 h-5 opacity-80" />
-              Escape net traps quickly
-            </p>
-            <p className="flex items-center gap-3">
-              <img
-                src="/anglerfish.svg"
-                alt="dive"
-                className="w-5 h-5 opacity-80"
-              />
-              Auto-dive as deep as possible
-            </p>
-            <p className="flex items-center gap-3">
-              <img
-                src="/light-bonus.svg"
-                alt="light"
-                className="w-5 h-5 opacity-80"
-              />
-              Collect light bonuses for better vision
-            </p>
-            <p className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-5 h-5 text-cyan-300 opacity-80">
-                ⚡
-              </span>
-              Activate electric field to stun prey
-            </p>
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-transparent" />
+
+          {/* Content */}
+          <div className="relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Left Column */}
+              <div className="space-y-3">
+                <div className="group flex items-center gap-3 p-2 rounded-lg hover:bg-blue-900/20 transition-colors">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-cyan-500/10">
+                    <img
+                      src="/fish-1.svg"
+                      alt="prey"
+                      className="w-8 h-8 opacity-90 group-hover:scale-110 transition-transform"
+                    />
+                  </div>
+                  <span className="text-blue-100 group-hover:text-cyan-300 transition-colors">
+                    Hunt prey to maintain hunger
+                  </span>
+                </div>
+
+                <div className="group flex items-center gap-3 p-2 rounded-lg hover:bg-blue-900/20 transition-colors">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-cyan-500/10">
+                    <img
+                      src="/mine.svg"
+                      alt="mine"
+                      className="w-8 h-8 opacity-90 group-hover:scale-110 transition-transform"
+                    />
+                  </div>
+                  <span className="text-blue-100 group-hover:text-cyan-300 transition-colors">
+                    Avoid explosive mines
+                  </span>
+                </div>
+
+                <div className="group flex items-center gap-3 p-2 rounded-lg hover:bg-blue-900/20 transition-colors">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-cyan-500/10">
+                    <img
+                      src="/trap.svg"
+                      alt="trap"
+                      className="w-8 h-8 opacity-90 group-hover:scale-110 transition-transform"
+                    />
+                  </div>
+                  <span className="text-blue-100 group-hover:text-cyan-300 transition-colors">
+                    Escape net traps quickly
+                  </span>
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div className="space-y-3">
+                <div className="group flex items-center gap-3 p-2 rounded-lg hover:bg-blue-900/20 transition-colors">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-cyan-500/10">
+                    <img
+                      src="/anglerfish.svg"
+                      alt="dive"
+                      className="w-8 h-8 opacity-90 group-hover:scale-110 transition-transform"
+                    />
+                  </div>
+                  <span className="text-blue-100 group-hover:text-cyan-300 transition-colors">
+                    Auto-dive as deep as possible
+                  </span>
+                </div>
+
+                <div className="group flex items-center gap-3 p-2 rounded-lg hover:bg-blue-900/20 transition-colors">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-cyan-500/10">
+                    <img
+                      src="/light-bonus.svg"
+                      alt="light"
+                      className="w-8 h-8 opacity-90 group-hover:scale-110 transition-transform"
+                    />
+                  </div>
+                  <span className="text-blue-100 group-hover:text-cyan-300 transition-colors">
+                    Collect light bonuses for better vision
+                  </span>
+                </div>
+
+                <div className="group flex items-center gap-3 p-2 rounded-lg hover:bg-blue-900/20 transition-colors">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-cyan-500/10">
+                    <span className="text-cyan-300 text-lg group-hover:scale-110 transition-transform">
+                      ⚡
+                    </span>
+                  </div>
+                  <span className="text-blue-100 group-hover:text-cyan-300 transition-colors">
+                    Activate electric field to stun prey
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
