@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef } from "react";
 
 interface UseTouchMovementProps {
   setKeys: React.Dispatch<React.SetStateAction<Set<string>>>;
@@ -6,134 +6,101 @@ interface UseTouchMovementProps {
 
 export const useTouchMovement = ({ setKeys }: UseTouchMovementProps) => {
   const lastTouchPositionRef = useRef<{ x: number; y: number } | null>(null);
-  const stationaryTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const movementThreshold = 5; // pixels
-  const stationaryDelay = 150; // milliseconds
+  const movementThreshold = 3; // Reduced from 5 to make it more responsive
+  const touchStartTimeRef = useRef<number>(0);
+  const touchStartPositionRef = useRef<{ x: number; y: number } | null>(null);
 
   const clearMovementKeys = useCallback(() => {
-    setKeys(prev => {
+    setKeys((prev) => {
       const newKeys = new Set(prev);
-      newKeys.delete('arrowleft');
-      newKeys.delete('arrowright');
+      newKeys.delete("arrowleft");
+      newKeys.delete("arrowright");
       return newKeys;
     });
   }, [setKeys]);
 
-  const handleGameTouchMove = useCallback((e: React.TouchEvent) => {
-    // Only handle touch movement on mobile devices
-    if (window.innerWidth >= 768) return;
-    
-    const touch = e.touches[0];
-    const screenWidth = window.innerWidth;
-    const touchX = touch.clientX;
-    const touchY = touch.clientY;
-    
-    // Check if touch has moved significantly
-    if (lastTouchPositionRef.current) {
-      const deltaX = Math.abs(touchX - lastTouchPositionRef.current.x);
-      const deltaY = Math.abs(touchY - lastTouchPositionRef.current.y);
-      const totalMovement = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-      
-      // If touch hasn't moved much, don't update movement
-      if (totalMovement < movementThreshold) {
-        // Clear any existing timer and start a new one
-        if (stationaryTimerRef.current) {
-          clearTimeout(stationaryTimerRef.current);
-        }
-        
-        stationaryTimerRef.current = setTimeout(() => {
-          clearMovementKeys();
-        }, stationaryDelay);
-        
+  const handleGameTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      // Only handle touch movement on mobile devices
+      if (window.innerWidth >= 768) return;
+
+      const touch = e.touches[0];
+      const touchX = touch.clientX;
+      const touchY = touch.clientY;
+
+      // If this is the first move after touch start, initialize the reference
+      if (!lastTouchPositionRef.current) {
+        lastTouchPositionRef.current = { x: touchX, y: touchY };
         return;
       }
-    }
-    
-    // Clear stationary timer since we're moving
-    if (stationaryTimerRef.current) {
-      clearTimeout(stationaryTimerRef.current);
-      stationaryTimerRef.current = null;
-    }
-    
-    // Update last touch position
-    lastTouchPositionRef.current = { x: touchX, y: touchY };
-    
-    // Clear previous movement keys first
-    setKeys(prev => {
-      const newKeys = new Set(prev);
-      newKeys.delete('arrowleft');
-      newKeys.delete('arrowright');
-      
-      // Add new direction based on current touch position
-      if (touchX < screenWidth / 2) {
-        // Left side of screen - move left
-        newKeys.add('arrowleft');
-      } else {
-        // Right side of screen - move right
-        newKeys.add('arrowright');
-      }
-      
-      return newKeys;
-    });
-  }, [setKeys, clearMovementKeys]);
 
-  const handleGameTouchStart = useCallback((e: React.TouchEvent) => {
-    // Only handle touch movement on mobile devices
-    if (window.innerWidth >= 768) return;
-    
-    const touch = e.touches[0];
-    const screenWidth = window.innerWidth;
-    const touchX = touch.clientX;
-    const touchY = touch.clientY;
-    
-    // Store initial touch position
-    lastTouchPositionRef.current = { x: touchX, y: touchY };
-    
-    // Clear any existing stationary timer
-    if (stationaryTimerRef.current) {
-      clearTimeout(stationaryTimerRef.current);
-      stationaryTimerRef.current = null;
-    }
-    
-    // Clear previous movement and set new direction
-    setKeys(prev => {
-      const newKeys = new Set(prev);
-      newKeys.delete('arrowleft');
-      newKeys.delete('arrowright');
-      
-      // Divide screen into left and right halves
-      if (touchX < screenWidth / 2) {
-        // Left side of screen - move left
-        newKeys.add('arrowleft');
-      } else {
-        // Right side of screen - move right
-        newKeys.add('arrowright');
-      }
-      
-      return newKeys;
-    });
-  }, [setKeys]);
+      // Calculate movement delta
+      const deltaX = touchX - lastTouchPositionRef.current.x;
+      const deltaY = touchY - lastTouchPositionRef.current.y;
 
-  const handleGameTouchEnd = useCallback((e: React.TouchEvent) => {
-    // Only handle touch movement on mobile devices
-    if (window.innerWidth >= 768) return;
-    
-    // Clear stationary timer
-    if (stationaryTimerRef.current) {
-      clearTimeout(stationaryTimerRef.current);
-      stationaryTimerRef.current = null;
-    }
-    
-    // Reset touch position tracking
-    lastTouchPositionRef.current = null;
-    
-    // Stop all movement when touch ends
-    clearMovementKeys();
-  }, [clearMovementKeys]);
+      // Update last position
+      lastTouchPositionRef.current = { x: touchX, y: touchY };
+
+      // Only process movement if it's significant enough
+      if (Math.abs(deltaX) < movementThreshold) return;
+
+      // Clear previous movement keys
+      setKeys((prev) => {
+        const newKeys = new Set(prev);
+        newKeys.delete("arrowleft");
+        newKeys.delete("arrowright");
+
+        // Add new direction based on movement
+        if (deltaX < 0) {
+          newKeys.add("arrowleft");
+        } else {
+          newKeys.add("arrowright");
+        }
+
+        return newKeys;
+      });
+    },
+    [setKeys]
+  );
+
+  const handleGameTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      // Only handle touch movement on mobile devices
+      if (window.innerWidth >= 768) return;
+
+      const touch = e.touches[0];
+      const touchX = touch.clientX;
+      const touchY = touch.clientY;
+
+      // Store initial touch position and time
+      touchStartTimeRef.current = Date.now();
+      touchStartPositionRef.current = { x: touchX, y: touchY };
+      lastTouchPositionRef.current = { x: touchX, y: touchY };
+
+      // Clear previous movement
+      clearMovementKeys();
+    },
+    [clearMovementKeys]
+  );
+
+  const handleGameTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      // Only handle touch movement on mobile devices
+      if (window.innerWidth >= 768) return;
+
+      // Reset all touch tracking
+      lastTouchPositionRef.current = null;
+      touchStartPositionRef.current = null;
+
+      // Stop all movement
+      clearMovementKeys();
+    },
+    [clearMovementKeys]
+  );
 
   return {
     handleGameTouchStart,
     handleGameTouchMove,
-    handleGameTouchEnd
+    handleGameTouchEnd,
   };
 };
