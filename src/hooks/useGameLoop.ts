@@ -152,7 +152,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
           const newTimer = prev - 16;
           if (newTimer <= 0) {
             setLightBonusActive(false);
-            setLightRadius(40);
+            setLightRadius(20); // Reset to smaller default radius
             return 0;
           }
           return newTimer;
@@ -646,7 +646,7 @@ export const useGameLoop = (props: UseGameLoopProps) => {
               // 30^2 = 900
               setLightBonusActive(true);
               setLightBonusTimer(8000);
-              setLightRadius(200);
+              setLightRadius(300); // Increased from 200 to 300
               return { ...bonus, collected: true };
             }
           }

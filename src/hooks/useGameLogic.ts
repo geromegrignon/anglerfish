@@ -1,21 +1,24 @@
-import { useState, useCallback } from 'react';
-import { 
-  Position, 
-  Prey, 
-  Mine, 
-  NetTrap, 
-  SonarWave, 
-  Particle, 
-  LightBonus, 
+import { useState, useCallback } from "react";
+import {
+  Position,
+  Prey,
+  Mine,
+  NetTrap,
+  SonarWave,
+  Particle,
+  LightBonus,
   ElectricBonus,
   JoystickState,
   GameMode,
   GameModeConfig,
-  DeathCause
-} from '../types/game';
+  DeathCause,
+} from "../types/game";
 
 export const useGameLogic = () => {
-  const [anglerfishPos, setAnglerfishPos] = useState<Position>({ x: window.innerWidth / 2 - 40, y: 300 });
+  const [anglerfishPos, setAnglerfishPos] = useState<Position>({
+    x: window.innerWidth / 2 - 40,
+    y: 300,
+  });
   const [hunger, setHunger] = useState(100);
   const [hitPoints, setHitPoints] = useState(3);
   const [maxDepthReached, setMaxDepthReached] = useState(2000);
@@ -30,7 +33,7 @@ export const useGameLogic = () => {
   const [particles, setParticles] = useState<Particle[]>([]);
   const [depth, setDepth] = useState(2000);
   const [cameraY, setCameraY] = useState(0);
-  const [lightRadius, setLightRadius] = useState(40);
+  const [lightRadius, setLightRadius] = useState(20);
   const [lightBonusActive, setLightBonusActive] = useState(false);
   const [lightBonusTimer, setLightBonusTimer] = useState(0);
   const [lightBonuses, setLightBonuses] = useState<LightBonus[]>([]);
@@ -40,12 +43,12 @@ export const useGameLogic = () => {
   const [slowedDown, setSlowedDown] = useState(false);
   const [slowdownTimer, setSlowdownTimer] = useState(0);
   const [triggerEcholocation, setTriggerEcholocation] = useState(false);
-  const [gameMode, setGameMode] = useState<GameMode>('speedrun');
+  const [gameMode, setGameMode] = useState<GameMode>("speedrun");
   const [gameModeConfig, setGameModeConfig] = useState<GameModeConfig>({
-    mode: 'speedrun',
+    mode: "speedrun",
     autoScroll: true,
     allowVerticalMovement: false,
-    scrollSpeed: 2
+    scrollSpeed: 2,
   });
   const [deathCause, setDeathCause] = useState<DeathCause>(null);
   const [fishEaten, setFishEaten] = useState(0);
@@ -56,17 +59,17 @@ export const useGameLogic = () => {
     knobX: 80,
     knobY: window.innerHeight - 120,
     deltaX: 0,
-    deltaY: 0
+    deltaY: 0,
   });
 
-  const startGame = useCallback((mode: GameMode = 'speedrun') => {
+  const startGame = useCallback((mode: GameMode = "speedrun") => {
     const config: GameModeConfig = {
       mode,
       autoScroll: true,
       allowVerticalMovement: false,
-      scrollSpeed: 2.56
+      scrollSpeed: 2.56,
     };
-    
+
     setGameMode(mode);
     setGameModeConfig(config);
     setGameStarted(true);
@@ -78,7 +81,7 @@ export const useGameLogic = () => {
     setAnglerfishPos({ x: window.innerWidth / 2 - 40, y: 300 });
     setCameraY(0);
     setDepth(2000);
-    setLightRadius(40);
+    setLightRadius(20);
     setLightBonusActive(false);
     setLightBonusTimer(0);
     setElectricFieldActive(false);
@@ -88,11 +91,17 @@ export const useGameLogic = () => {
     setTriggerEcholocation(false);
     setDeathCause(null);
     setFishEaten(0);
-    setMines(prev => prev.map(mine => ({ ...mine, exploded: false })));
-    setPrey(prev => prev.map(preyItem => ({ ...preyItem, collected: false })));
-    setLightBonuses(prev => prev.map(bonus => ({ ...bonus, collected: false })));
-    setElectricBonuses(prev => prev.map(bonus => ({ ...bonus, collected: false })));
-    setNetTraps(prev => prev.map(trap => ({ ...trap, triggered: false })));
+    setMines((prev) => prev.map((mine) => ({ ...mine, exploded: false })));
+    setPrey((prev) =>
+      prev.map((preyItem) => ({ ...preyItem, collected: false }))
+    );
+    setLightBonuses((prev) =>
+      prev.map((bonus) => ({ ...bonus, collected: false }))
+    );
+    setElectricBonuses((prev) =>
+      prev.map((bonus) => ({ ...bonus, collected: false }))
+    );
+    setNetTraps((prev) => prev.map((trap) => ({ ...trap, triggered: false })));
   }, []);
 
   return {
@@ -127,7 +136,7 @@ export const useGameLogic = () => {
     gameModeConfig,
     deathCause,
     fishEaten,
-    
+
     // Setters
     setAnglerfishPos,
     setHunger,
@@ -159,8 +168,8 @@ export const useGameLogic = () => {
     setGameModeConfig,
     setDeathCause,
     setFishEaten,
-    
+
     // Actions
-    startGame
+    startGame,
   };
 };
